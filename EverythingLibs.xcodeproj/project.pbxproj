@@ -23,8 +23,24 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		65CDA93A1F0FE2DA00D1C0C9 /* Utils */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Utils; sourceTree = BUILT_PRODUCTS_DIR; };
+		6558658B1F14F397002FC352 /* EVTFile.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTFile.hpp; sourceTree = "<group>"; };
+		6558658C1F151859002FC352 /* EVTInt128.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTInt128.hpp; sourceTree = "<group>"; };
+		6558658E1F15247A002FC352 /* EVTNumber.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTNumber.hpp; sourceTree = "<group>"; };
+		655865901F1525C8002FC352 /* EVTBasics.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTBasics.hpp; sourceTree = "<group>"; };
+		655865911F152617002FC352 /* EVTNumbers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = EVTNumbers.hpp; path = EverythingLibs/include/EVTNumbers.hpp; sourceTree = SOURCE_ROOT; };
+		655865921F152A7A002FC352 /* EVTAny.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTAny.hpp; sourceTree = "<group>"; };
+		655865961F1538FB002FC352 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		655865971F153912002FC352 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		65CDA93A1F0FE2DA00D1C0C9 /* EverythingLibs */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EverythingLibs; sourceTree = BUILT_PRODUCTS_DIR; };
 		65CDA93D1F0FE2DA00D1C0C9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		65CDA9441F0FE32400D1C0C9 /* EVT.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVT.hpp; sourceTree = "<group>"; };
+		65CDA9461F0FE38100D1C0C9 /* EVTArguments.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTArguments.hpp; sourceTree = "<group>"; };
+		65CDA9481F0FF18200D1C0C9 /* EVTPointer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTPointer.hpp; sourceTree = "<group>"; };
+		65CDA9491F0FF33B00D1C0C9 /* EVTReadOnly.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTReadOnly.hpp; sourceTree = "<group>"; };
+		65CDA94A1F0FFD1B00D1C0C9 /* EVTArray.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTArray.hpp; sourceTree = "<group>"; };
+		65CDA94B1F0FFD8F00D1C0C9 /* EVTPrint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTPrint.hpp; sourceTree = "<group>"; };
+		65CDA94C1F10108A00D1C0C9 /* EVTOptional.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTOptional.hpp; sourceTree = "<group>"; };
+		65CDA94D1F10195B00D1C0C9 /* EVTUtils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTUtils.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,10 +54,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6558658D1F1523A7002FC352 /* EVTNumbers */ = {
+			isa = PBXGroup;
+			children = (
+				6558658C1F151859002FC352 /* EVTInt128.hpp */,
+				6558658E1F15247A002FC352 /* EVTNumber.hpp */,
+			);
+			path = EVTNumbers;
+			sourceTree = "<group>";
+		};
+		6558658F1F15250F002FC352 /* EVTBasics */ = {
+			isa = PBXGroup;
+			children = (
+				655865921F152A7A002FC352 /* EVTAny.hpp */,
+				65CDA9461F0FE38100D1C0C9 /* EVTArguments.hpp */,
+				65CDA94A1F0FFD1B00D1C0C9 /* EVTArray.hpp */,
+				6558658B1F14F397002FC352 /* EVTFile.hpp */,
+				65CDA94C1F10108A00D1C0C9 /* EVTOptional.hpp */,
+				65CDA9481F0FF18200D1C0C9 /* EVTPointer.hpp */,
+				65CDA94B1F0FFD8F00D1C0C9 /* EVTPrint.hpp */,
+				65CDA9491F0FF33B00D1C0C9 /* EVTReadOnly.hpp */,
+			);
+			path = EVTBasics;
+			sourceTree = "<group>";
+		};
 		65CDA9311F0FE2DA00D1C0C9 = {
 			isa = PBXGroup;
 			children = (
-				65CDA93C1F0FE2DA00D1C0C9 /* Utils */,
+				65CDA93C1F0FE2DA00D1C0C9 /* EverythingLibs */,
+				655865961F1538FB002FC352 /* README.md */,
+				655865971F153912002FC352 /* LICENSE */,
 				65CDA93B1F0FE2DA00D1C0C9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -49,25 +91,39 @@
 		65CDA93B1F0FE2DA00D1C0C9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				65CDA93A1F0FE2DA00D1C0C9 /* Utils */,
+				65CDA93A1F0FE2DA00D1C0C9 /* EverythingLibs */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		65CDA93C1F0FE2DA00D1C0C9 /* Utils */ = {
+		65CDA93C1F0FE2DA00D1C0C9 /* EverythingLibs */ = {
 			isa = PBXGroup;
 			children = (
+				65CDA9451F0FE36000D1C0C9 /* include */,
 				65CDA93D1F0FE2DA00D1C0C9 /* main.cpp */,
 			);
-			path = Utils;
+			path = EverythingLibs;
+			sourceTree = "<group>";
+		};
+		65CDA9451F0FE36000D1C0C9 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				6558658F1F15250F002FC352 /* EVTBasics */,
+				6558658D1F1523A7002FC352 /* EVTNumbers */,
+				65CDA94D1F10195B00D1C0C9 /* EVTUtils.hpp */,
+				655865901F1525C8002FC352 /* EVTBasics.hpp */,
+				655865911F152617002FC352 /* EVTNumbers.hpp */,
+				65CDA9441F0FE32400D1C0C9 /* EVT.hpp */,
+			);
+			path = include;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		65CDA9391F0FE2DA00D1C0C9 /* Utils */ = {
+		65CDA9391F0FE2DA00D1C0C9 /* EverythingLibs */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 65CDA9411F0FE2DA00D1C0C9 /* Build configuration list for PBXNativeTarget "Utils" */;
+			buildConfigurationList = 65CDA9411F0FE2DA00D1C0C9 /* Build configuration list for PBXNativeTarget "EverythingLibs" */;
 			buildPhases = (
 				65CDA9361F0FE2DA00D1C0C9 /* Sources */,
 				65CDA9371F0FE2DA00D1C0C9 /* Frameworks */,
@@ -77,9 +133,9 @@
 			);
 			dependencies = (
 			);
-			name = Utils;
+			name = EverythingLibs;
 			productName = Utils;
-			productReference = 65CDA93A1F0FE2DA00D1C0C9 /* Utils */;
+			productReference = 65CDA93A1F0FE2DA00D1C0C9 /* EverythingLibs */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -96,7 +152,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 65CDA9351F0FE2DA00D1C0C9 /* Build configuration list for PBXProject "Utils" */;
+			buildConfigurationList = 65CDA9351F0FE2DA00D1C0C9 /* Build configuration list for PBXProject "EverythingLibs" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -108,7 +164,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				65CDA9391F0FE2DA00D1C0C9 /* Utils */,
+				65CDA9391F0FE2DA00D1C0C9 /* EverythingLibs */,
 			);
 		};
 /* End PBXProject section */
@@ -131,7 +187,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -184,7 +240,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -227,6 +283,7 @@
 		65CDA9421F0FE2DA00D1C0C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				DEVELOPMENT_TEAM = PRK6268SLD;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -235,6 +292,7 @@
 		65CDA9431F0FE2DA00D1C0C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				DEVELOPMENT_TEAM = PRK6268SLD;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -243,7 +301,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		65CDA9351F0FE2DA00D1C0C9 /* Build configuration list for PBXProject "Utils" */ = {
+		65CDA9351F0FE2DA00D1C0C9 /* Build configuration list for PBXProject "EverythingLibs" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				65CDA93F1F0FE2DA00D1C0C9 /* Debug */,
@@ -252,13 +310,14 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		65CDA9411F0FE2DA00D1C0C9 /* Build configuration list for PBXNativeTarget "Utils" */ = {
+		65CDA9411F0FE2DA00D1C0C9 /* Build configuration list for PBXNativeTarget "EverythingLibs" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				65CDA9421F0FE2DA00D1C0C9 /* Debug */,
 				65CDA9431F0FE2DA00D1C0C9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
