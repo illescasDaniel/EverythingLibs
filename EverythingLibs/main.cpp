@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 	
-	const char* testChar = "hello!";
+	const char* testChar = "hello!!";
 	cout << quoted(testChar) << endl;
 	
 	int number2 = readLine<int>();
