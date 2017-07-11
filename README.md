@@ -44,31 +44,20 @@ float benchmark(const Function& function, size_t iterations = 1)
 
 - **EVTBasics**: a set of classes that makes easier to manage some data.
 
-```c++
-Any // Manage any type of data
-Arguments // Makes easier to use the program arguments by using an array
-Array // An array implementation that is faster and prettier that std::vector
-File // Read & write files in text or binary mode easily
-Optional // Manage optional values that can be null or the internal type
-Pointer // Easier and powerful way to use pointer is C++
-Print // Print any container (including classic arrays, matrices, pointer arrays...)
-ReadOnly // Manage values that can only be modified inside the class but can be accesed outside of it
-```
-
-Github links to some of the libraries:
-- Array.hpp: https://github.com/illescasDaniel/Array.hpp
-- File: https://github.com/illescasDaniel/File
-- Optional: https://github.com/illescasDaniel/Optional
-- Print: https://github.com/illescasDaniel/print.hpp
-- Var & ReadOnly: https://github.com/illescasDaniel/Var-ReadOnly
+- [Any](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTAny.hpp) ` // Manage any type of data`
+- [Arguments](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTArguments.hpp)` // Makes easier to use the program arguments by using an array`
+- [Array](https://github.com/illescasDaniel/Array.hpp) ` // An array implementation that is faster and prettier that std::vector`
+- [File](https://github.com/illescasDaniel/File)` // Read & write files in text or binary mode easily`
+- [Optional](https://github.com/illescasDaniel/Optional)` // Manage optional values that can be null or the internal type`
+- [Pointer](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTPointer.hpp)` // Easier and powerful way to use pointer is C++`
+- [Print](https://github.com/illescasDaniel/print.hpp)` // Print any container (including classic arrays, matrices, pointer arrays...)`
+- [ReadOnly](https://github.com/illescasDaniel/Var-ReadOnly)` // Manage values that can only be modified inside the class but can be accesed outside of it`
 <br>
 
 - **EVTNumbers**: classes related to numbers and mathematics.
 
-```c++
-Int128 // Easier way to use __int128_t (integer of 128bits)
-Number // You can assign any arithmetical type to an object of this type
-```
+- [Int128](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTInt128.hpp) ` // Easier way to use __int128_t (integer of 128bits)`
+- [Number](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTNumber.hpp)` // You can assign any arithmetical type to an object of "Number"`
 
 License [[MIT]](https://github.com/illescasDaniel/EverythingLibs/blob/master/LICENCE):
 ----------
