@@ -2,12 +2,12 @@
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/illescasDaniel/EverythingLibs/blob/master/LICENCE)
 
-A few libraries that will make the programmers life easier 😉.
+A few libraries that will make the programmer's life easier 😉.
 
 Libraries:
 ----------
 
-- EVTUtils: few simple, yet useful, functions.
+- **EVTUtils**: few simple, yet useful, functions.
 
 ```c++
 cplusplusVersion (macro)
@@ -42,7 +42,7 @@ std::string quoted(std::string str)
 float benchmark(const Function& function, size_t iterations = 1)
 ```
 
-- EVTBasics: a set of classes that makes easier to manage some data.
+- **EVTBasics**: a set of classes that makes easier to manage some data.
 
 ```c++
 Any // Manage any type of data
@@ -50,7 +50,7 @@ Arguments // Makes easier to use the program arguments by using an array
 Array // An array implementation that is faster and prettier that std::vector
 File // Read & write files in text or binary mode easily
 Optional // Manage optional values that can be null or the internal type
-Pointer // Easier and powerful way to use pointer is c++
+Pointer // Easier and powerful way to use pointer is C++
 Print // Print any container (including classic arrays, matrices, pointer arrays...)
 ReadOnly // Manage values that can only be modified inside the class but can be accesed outside of it
 ```
@@ -61,18 +61,18 @@ Github links to some of the libraries:
 - Optional: https://github.com/illescasDaniel/Optional
 - Print: https://github.com/illescasDaniel/print.hpp
 - Var & ReadOnly: https://github.com/illescasDaniel/Var-ReadOnly
+<br>
 
-
-- EVTNumbers: classes related to numbers and mathematics.
+- **EVTNumbers**: classes related to numbers and mathematics.
 
 ```c++
 Int128 // Easier way to use __int128_t (integer of 128bits)
 Number // You can assign any arithmetical type to an object of this type
 ```
 
-License [MIT]:
+License [[MIT]](https://github.com/illescasDaniel/EverythingLibs/blob/master/LICENCE):
 ----------
 
-You are allowed to modify, distribute, make commercial or private use of all of these libraries.
-The libraries are provied without warranties of any kind.
-The only requierement is the preservation of copyright and license notices.
+You are allowed to modify, distribute, make commercial or private use of all of these libraries.<br>
+The libraries are provied without warranties of any kind.<br>
+The only requierement is the preservation of copyright and license notices.<br>
