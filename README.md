@@ -60,7 +60,7 @@ Libraries:
 	float benchmark(const Function& function, size_t iterations = 1)
 	```
 	
-License [[MIT]](https://github.com/illescasDaniel/EverythingLibs/blob/master/LICENCE):
+License [[MIT]](https://github.com/illescasDaniel/EverythingLibs/blob/master/LICENSE):
 ----------
 
 You are allowed to modify, distribute, make commercial or private use of all of these libraries.<br>
