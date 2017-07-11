@@ -43,13 +43,13 @@ namespace evt {
 		#define cplusplus11 201100
 		
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
-		static inline bool isOdd(const Type x) {
-			return (x & 1) == 1;
+		static inline bool isOdd(const Type number) {
+			return (number & 1) == 1;
 		}
 		
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
-		static inline bool isEven(const Type x) {
-			return (x & 1) == 0;
+		static inline bool isEven(const Type number) {
+			return (number & 1) == 0;
 		}
 		
 		uint64_t randomNumber(uint64_t upperLimit = std::mt19937_64::max()) {
