@@ -1,13 +1,13 @@
 # Everything Libraries
 
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/illescasDaniel/EverythingLibs/blob/master/LICENCE)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/illescasDaniel/EverythingLibs/blob/master/LICENSE)
 
 A few libraries that will make the programmer's life easier 😉.
 
 Libraries:
 -----------
 
-- **EVTBasics**: a set of classes that makes easier to manage some data.
+- **EVTBasics**:
 
 	- [Any](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTAny.hpp) `// Manage any type of data`
 	- [Arguments](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTArguments.hpp) `// Makes easier to use the program arguments by using an array`
@@ -17,13 +17,11 @@ Libraries:
 	- [Pointer](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTPointer.hpp) `// Easier and powerful way to use pointers in C++`
 	- [Print](https://github.com/illescasDaniel/print.hpp) `// Print any container (including classic arrays, matrices, pointer arrays...)`
 	- [ReadOnly](https://github.com/illescasDaniel/Var-ReadOnly) `// Manage values that can only be modified inside the class but can be accessed outside of it`
-<br>
 
 - **EVTNumbers**: classes related to numbers and mathematics.
 
 	- [Int128](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTInt128.hpp) `// Easier way to use __int128_t (integer of 128bits)`
 	- [Number](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTNumber.hpp) `// You can assign any arithmetical type to an object of "Number"`
-<br>
 
 - **EVTUtils**: few simple, yet useful, functions.
 
