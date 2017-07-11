@@ -64,7 +64,7 @@ License [[MIT]](https://github.com/illescasDaniel/EverythingLibs/blob/master/LIC
 ----------
 
 You are allowed to modify, distribute, make commercial or private use of all of these libraries.<br>
-The libraries are provied without warranties of any kind.<br>
+The libraries are provided without warranties of any kind.<br>
 The only requierement is the preservation of copyright and license notices.<br>
 
 
