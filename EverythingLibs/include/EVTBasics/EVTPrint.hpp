@@ -38,39 +38,25 @@
 #include <initializer_list>
 #include <forward_list>
 
-namespace std {
-	// Stub function (don't use externally) (useful when trying to pass a std::string to the 'to_string' function, to avoid problems)
-	std::string to_string(const std::string& str) {
-		return str;
-	}
-	
-	// Convert char to std::string
-	std::string to_string(const char& chr) {
-		return std::string(1,chr);
-	}
-}
-
 namespace evt {
 	
+	namespace internalPrintEVT {
+		
+		// Extra functions for the "to_string()" function
+		inline std::string to_string(const std::string& str) { return str; }
+		inline std::string to_string(const char chr) { return std::string(1,chr); }
+		
+		template <typename Fundamental, typename = typename std::enable_if<std::is_fundamental<Fundamental>::value,bool>::type>
+		inline std::string to_string(const Fundamental& fundamental) { return std::to_string(fundamental); }
+	}
+	
 	// To know if a given container is a set or not
-#define type__(_cont_) typeid(_cont_) == typeid(cont)
-#define is_(_cont_) type__(_cont_<int>) || type__(_cont_<double>) || type__(_cont_<bool>) || type__(_cont_<float>) || type__(_cont_<std::string>) || type__(_cont_<char>)
+	#define setType(_cont_) typeid(_cont_) == typeid(cont)
+	#define is_(_cont_) setType(_cont_<int>) || setType(_cont_<double>) || setType(_cont_<bool>) || setType(_cont_<float>) || setType(_cont_<std::string>) || setType(_cont_<char>)
 	
 	template <typename Container>
 	bool isSet(const Container& cont) {
 		return (is_(std::set) || is_(std::multiset) || is_(std::unordered_set) || is_(std::unordered_multiset));
-	}
-	
-	/* to_string functions */
-	
-	// Stub function (don't use externally) (useful when trying to pass a std::string to the 'to_string' function, to avoid problems)
-	std::string to_string(const std::string& str) {
-		return str;
-	}
-	
-	// Convert char to std::string
-	std::string to_string(const char& chr) {
-		return std::string(1,chr);
 	}
 	
 	// Return a single or double quoted std::string IF the data is a std::string or a char
@@ -78,13 +64,13 @@ namespace evt {
 	std::string quotedString(const Type& data) {
 		
 		if (typeid(data) == typeid(std::string)) {
-			return ("\"" + evt::to_string(data) + "\"");
+			return ("\"" + evt::internalPrintEVT::to_string(data) + "\"");
 		}
 		else if (typeid(data) == typeid(char)) {
-			return ("\'" + evt::to_string(data) + "\'");
+			return ("\'" + evt::internalPrintEVT::to_string(data) + "\'");
 		}
 		else {
-			return std::to_string(data);
+			return evt::internalPrintEVT::to_string(data);
 		}
 	}
 	
@@ -138,11 +124,11 @@ namespace evt {
 	}
 	
 	// Return a std::string given any map type
-#define to_stringMAP(_map_) \
-template <typename KeyType, typename ValueType> \
-std::string to_string(const _map_<KeyType,ValueType>& map) { \
-return to_stringMAP(map); \
-}
+	#define to_stringMAP(_map_) \
+	template <typename KeyType, typename ValueType> \
+		std::string to_string(const _map_<KeyType,ValueType>& map) { \
+		return to_stringMAP(map); \
+	}
 	
 	to_stringMAP(std::map);
 	to_stringMAP(std::multimap);
@@ -321,7 +307,7 @@ return os << to_string(cont); \
 	
 	// Print Error
 	
-	bool errorDisplayed = false;
+	static bool errorDisplayed = false;
 	
 	template <typename Type>
 	void printError(const Type& message) {
@@ -353,7 +339,7 @@ return os << to_string(cont); \
 	}
 }
 
-#undef type__
+#undef setType
 #undef is_
 #undef ostreamOperator
 #undef ostreamOperatorMap

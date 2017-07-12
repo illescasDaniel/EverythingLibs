@@ -115,18 +115,6 @@ namespace evt {
 			return s;
 		}
 		
-		std::string operator "" _upper(char const * str, [[maybe_unused]] std::size_t size) {
-			std::string output = str;
-			std::transform(output.begin(), output.end(), output.begin(), ::toupper);
-			return output;
-		}
-		
-		std::string operator "" _lower(char const * str, [[maybe_unused]] std::size_t size) {
-			std::string output = str;
-			std::transform(output.begin(), output.end(), output.begin(), ::tolower);
-			return output;
-		}
-		
 		std::string toUpper(std::string str) {
 			std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 			return str;
@@ -135,6 +123,14 @@ namespace evt {
 		std::string toLower(std::string str) {
 			std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 			return str;
+		}
+		
+		std::string operator "" _upper(char const * str, [[maybe_unused]] std::size_t size) {
+			return toUpper(str);
+		}
+		
+		std::string operator "" _lower(char const * str, [[maybe_unused]] std::size_t size) {
+			return toLower(str);
 		}
 		
 		Array<std::string> toUpperContainer(const Array<std::string>& strings) {

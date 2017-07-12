@@ -41,7 +41,7 @@
 
 namespace evt {
 	
-	namespace internalPrintEVT {
+	namespace internalArrayPrintEVT {
 		
 		// Extra functions for the "toString()" method
 		inline std::string to_string(const std::string& str) { return str; }
@@ -84,7 +84,7 @@ namespace evt {
 				
 				#if (__cplusplus >= 201400) && use_make_unique
 					values = std::make_unique<Type[]>(newSize);
-				#elif cplusplus11 || !use_make_unique
+				#elif (__cplusplus >= 201100) || !use_make_unique
 					values = Pointer { new Type[newSize] };
 				#endif
 				
@@ -576,11 +576,11 @@ namespace evt {
 			for (const auto& value: *this) {
 				output += [&] {
 					if (typeid(value) == typeid(std::string)) {
-						return ("\"" + evt::internalPrintEVT::to_string(value) + "\"");
+						return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
 					} else if (typeid(value) == typeid(char)) {
-						return ("\'" + evt::internalPrintEVT::to_string(value) + "\'");
+						return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
 					}
-					return evt::internalPrintEVT::to_string(value);
+					return evt::internalArrayPrintEVT::to_string(value);
 				}();
 				
 				if (position+1 < count_) {
