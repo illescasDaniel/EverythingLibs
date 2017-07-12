@@ -41,11 +41,12 @@ int main(int argc, char* argv[]) {
 	
 		string name2 = "  Daniel2  ";
 		String name3 = name2;
-		constexpr String testName {"YEP"};
-		static_assert(testName == "YEP"_sv, "Not equal strings");
+		constexpr String testName = "YEP"_sv;
+		// static_assert(testName == "YEP"_sv, "Not equal strings"); [in gcc operator== is not constexpr]
+		cout << testName << endl;
 	
 		cout << name3.find_first_not_of(" ") << endl;
-		cout << name3.count() - name3.find_last_of(" ") << endl;
+		cout << name3.count() - name3.findLastOf(" ") << endl;
 	
 		name3.trim(String::TrimMode::start);
 		cout << name3 << endl;
