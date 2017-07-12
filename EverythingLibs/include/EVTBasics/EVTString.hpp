@@ -47,6 +47,7 @@ namespace evt {
 		constexpr void remove_prefix(std::size_t n) { return super::remove_prefix(n); }
 		constexpr void remove_suffix(std::size_t n) { return super::remove_suffix(n); }
 		static constexpr std::size_t npos = super::npos;
+		constexpr StringView substr(std::size_t pos = 0, std::size_t count = super::npos ) const { return super::substr(pos, count); }
 		
 	public:
 		
@@ -68,6 +69,7 @@ namespace evt {
 		constexpr std::size_t findFirstNotOf(const StringView& str, std::size_t position = 0) const noexcept { return this->find_first_not_of(str, position); }
 		constexpr std::size_t findLastOf(const StringView& str, std::size_t position = StringView::nullPosition) const noexcept { return this->find_last_of(str, position); }
 		constexpr std::size_t findLastNotOf(const StringView& str, std::size_t position = StringView::nullPosition) const noexcept { return this->find_last_not_of(str, position); }
+		constexpr StringView subString(std::size_t position = 0, std::size_t count = StringView::nullPosition ) const { return this->substr(position, count); }
 		
 		static constexpr std::size_t nullPosition = super::npos;
 		

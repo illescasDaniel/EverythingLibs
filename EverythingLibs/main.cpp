@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 		// static_assert(testName == "YEP"_sv, "Not equal strings"); [in gcc operator== is not constexpr]
 		cout << testName << endl;
 	
-		cout << name3.find_first_not_of(" ") << endl;
+		cout << name3.findFirstNotOf(" ") << endl;
 		cout << name3.count() - name3.findLastOf(" ") << endl;
 	
 		name3.trim(String::TrimMode::start);
