@@ -89,6 +89,9 @@ int main(int argc, char* argv[]) {
 	Array<string> copyNames = names;
 	print(copyNames);
 	
+	Array<double> numbersD {1.2, 5.6, 8};
+	print(numbersD);
+	
 	print("Names: ", names);
 	
 	Optional<Array<string>> optionalNames(Array<string>{"daniel", "test"});

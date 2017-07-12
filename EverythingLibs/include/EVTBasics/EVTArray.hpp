@@ -33,6 +33,7 @@
 #include <typeinfo>
 #include <memory>
 #include <random>
+#include "EVTObject.hpp"
 
 #if (__cplusplus >= 201406)
 	#include <experimental/optional>
@@ -46,8 +47,10 @@ namespace evt {
 		inline std::string to_string(const std::string& str) { return str; }
 		inline std::string to_string(const char chr) { return std::string(1,chr); }
 		
-		template <typename Others>
-		inline std::string to_string(const Others& other) { return other.toString(); }
+		template <typename Fundamental, typename = typename std::enable_if<std::is_fundamental<Fundamental>::value,bool>::type>
+		inline std::string to_string(const Fundamental& fundamental) { return std::to_string(fundamental); }
+		
+		inline std::string to_string(const EVTObject& evtObject) { return evtObject.toString(); }
 		/* Place your custom "to_string()" function/s here for other classes. Use templates if you want. */
 	}
 	
