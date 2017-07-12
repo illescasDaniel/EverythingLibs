@@ -23,6 +23,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		650674271F169FAA00EB800E /* EVTString.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTString.hpp; sourceTree = "<group>"; };
 		651176EA1F1599E900AE43E6 /* EVTObject.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTObject.hpp; sourceTree = "<group>"; };
 		651176EC1F159A8E00AE43E6 /* Car.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Car.hpp; sourceTree = "<group>"; };
 		6558658B1F14F397002FC352 /* EVTFile.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTFile.hpp; sourceTree = "<group>"; };
@@ -87,6 +88,7 @@
 				65CDA9481F0FF18200D1C0C9 /* EVTPointer.hpp */,
 				65CDA94B1F0FFD8F00D1C0C9 /* EVTPrint.hpp */,
 				65CDA9491F0FF33B00D1C0C9 /* EVTReadOnly.hpp */,
+				650674271F169FAA00EB800E /* EVTString.hpp */,
 			);
 			path = EVTBasics;
 			sourceTree = "<group>";

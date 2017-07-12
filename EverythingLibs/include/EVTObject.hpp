@@ -12,6 +12,7 @@
 #include <ostream>
 
 namespace evt {
+	
 	class EVTObject {
 	public:
 		

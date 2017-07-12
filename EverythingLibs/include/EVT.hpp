@@ -26,12 +26,18 @@
 
 // Basic libraries (the other libraries should work without this, but just in case...)
 #include <type_traits>
+#include <initializer_list>
+#include <stdexcept>
+#include <functional>
 #include <memory>
 #include <cstdint>
 #include <string>
 #include <cstdlib>
 #include <algorithm>
 #include <random>
+
+#include <utility>
+#include <typeinfo>
 
 // Own Libraries
 #include "EVTUtils.hpp"

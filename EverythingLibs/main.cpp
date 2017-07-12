@@ -35,6 +35,30 @@ namespace evt {
 
 int main(int argc, char* argv[]) {
 	
+	boolalpha(cout);
+	
+	#if (cplusplusVersion >= cplusplus1z)
+	
+		string name2 = "  Daniel2  ";
+		String name3 = name2;
+		constexpr String testName {"YEP"};
+		static_assert(testName == "YEP"_sv, "Not equal strings");
+	
+		cout << name3.find_first_not_of(" ") << endl;
+		cout << name3.count() - name3.find_last_of(" ") << endl;
+	
+		name3.trim(String::TrimMode::start);
+		cout << name3 << endl;
+		cout << name3.trimmed() << endl;
+		cout << name3.trimmed() << endl;
+	
+		cout << name3.contains("ani") << endl;
+	
+		cout << sizeof(name2) << endl;
+		cout << sizeof(name3) << endl;
+	
+	#endif
+	
 	ThinPointer<int> ptest(100);
 	ThinPointer<int> ptest2(400);
 	ptest = ptest2;
