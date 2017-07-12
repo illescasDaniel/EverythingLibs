@@ -23,6 +23,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		651176EA1F1599E900AE43E6 /* EVTObject.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTObject.hpp; sourceTree = "<group>"; };
+		651176EC1F159A8E00AE43E6 /* Car.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Car.hpp; sourceTree = "<group>"; };
 		6558658B1F14F397002FC352 /* EVTFile.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTFile.hpp; sourceTree = "<group>"; };
 		6558658C1F151859002FC352 /* EVTInt128.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTInt128.hpp; sourceTree = "<group>"; };
 		6558658E1F15247A002FC352 /* EVTNumber.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTNumber.hpp; sourceTree = "<group>"; };
@@ -31,6 +33,7 @@
 		655865921F152A7A002FC352 /* EVTAny.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTAny.hpp; sourceTree = "<group>"; };
 		655865961F1538FB002FC352 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		655865971F153912002FC352 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		65A82BA61F157D2B00F748F8 /* EverythingLibs.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = EverythingLibs.profdata; sourceTree = "<group>"; };
 		65CDA93A1F0FE2DA00D1C0C9 /* EverythingLibs */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EverythingLibs; sourceTree = BUILT_PRODUCTS_DIR; };
 		65CDA93D1F0FE2DA00D1C0C9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		65CDA9441F0FE32400D1C0C9 /* EVT.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVT.hpp; sourceTree = "<group>"; };
@@ -54,6 +57,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		651176EB1F159A7F00AE43E6 /* classExamples */ = {
+			isa = PBXGroup;
+			children = (
+				651176EC1F159A8E00AE43E6 /* Car.hpp */,
+			);
+			path = classExamples;
+			sourceTree = "<group>";
+		};
 		6558658D1F1523A7002FC352 /* EVTNumbers */ = {
 			isa = PBXGroup;
 			children = (
@@ -78,6 +89,14 @@
 			path = EVTBasics;
 			sourceTree = "<group>";
 		};
+		65A82BA51F157D2B00F748F8 /* OptimizationProfiles */ = {
+			isa = PBXGroup;
+			children = (
+				65A82BA61F157D2B00F748F8 /* EverythingLibs.profdata */,
+			);
+			path = OptimizationProfiles;
+			sourceTree = "<group>";
+		};
 		65CDA9311F0FE2DA00D1C0C9 = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +104,7 @@
 				655865961F1538FB002FC352 /* README.md */,
 				655865971F153912002FC352 /* LICENSE */,
 				65CDA93B1F0FE2DA00D1C0C9 /* Products */,
+				65A82BA51F157D2B00F748F8 /* OptimizationProfiles */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,6 +119,7 @@
 		65CDA93C1F0FE2DA00D1C0C9 /* EverythingLibs */ = {
 			isa = PBXGroup;
 			children = (
+				651176EB1F159A7F00AE43E6 /* classExamples */,
 				65CDA9451F0FE36000D1C0C9 /* include */,
 				65CDA93D1F0FE2DA00D1C0C9 /* main.cpp */,
 			);
@@ -113,6 +134,7 @@
 				65CDA94D1F10195B00D1C0C9 /* EVTUtils.hpp */,
 				655865901F1525C8002FC352 /* EVTBasics.hpp */,
 				655865911F152617002FC352 /* EVTNumbers.hpp */,
+				651176EA1F1599E900AE43E6 /* EVTObject.hpp */,
 				65CDA9441F0FE32400D1C0C9 /* EVT.hpp */,
 			);
 			path = include;
@@ -187,7 +209,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -230,6 +252,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -240,7 +263,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -276,6 +299,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -283,7 +307,8 @@
 		65CDA9421F0FE2DA00D1C0C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				DEVELOPMENT_TEAM = PRK6268SLD;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -292,7 +317,8 @@
 		65CDA9431F0FE2DA00D1C0C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				DEVELOPMENT_TEAM = PRK6268SLD;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

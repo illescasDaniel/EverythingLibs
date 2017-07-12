@@ -48,7 +48,7 @@ namespace evt {
 		std::fstream fileStream;
 		std::ios_base::openmode inputOutputMode;
 		std::string fileName;
-		Mode mode = Mode::both;
+		Mode mode {Mode::both};
 		
 		void open(const std::ios_base::openmode inputOutputMode) {
 			

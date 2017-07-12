@@ -64,7 +64,7 @@ namespace evt {
 	class Pointer<Type[]> {
 		
 		std::unique_ptr<Type[]> value_ptr;
-		std::size_t capacity_ = 1;
+		std::size_t capacity_ {1};
 		
 	public:
 		

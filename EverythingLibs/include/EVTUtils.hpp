@@ -38,9 +38,10 @@ namespace evt {
 	namespace utils {
 		
 		#define cplusplusVersion __cplusplus
-		#define cplusplus1z 201406
-		#define cplusplus14 201402
-		#define cplusplus11 201100
+		#define cplusplus1z 201406L
+		#define cplusplus14 201402L
+		#define cplusplus11 201103L
+		#define cplusplus98 199711L
 		
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
 		static inline bool isOdd(const Type number) {
@@ -50,6 +51,29 @@ namespace evt {
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
 		static inline bool isEven(const Type number) {
 			return (number & 1) == 0;
+		}
+		
+		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
+		bool isPrime(Type number) {
+			
+			if (number <= 1) {
+				return false;
+			} else if (number <= 3) {
+				return true;
+			} else if (number % 2 == 0 or number % 3 == 0) {
+				return false;
+			}
+			
+			Type currentNumber {5};
+			
+			while (currentNumber * currentNumber <= number) {
+				if (number % currentNumber == 0 or number % (currentNumber + 2) == 0) {
+					return false;
+				}
+				currentNumber += 6;
+			}
+			
+			return true;
 		}
 		
 		uint64_t randomNumber(uint64_t upperLimit = std::mt19937_64::max()) {
@@ -129,7 +153,7 @@ namespace evt {
 			return readContent;
 		}
 		
-		std::string quoted(std::string str) {
+		std::string quoted(const std::string& str) {
 			return "\"" + str + "\"";
 		}
 		

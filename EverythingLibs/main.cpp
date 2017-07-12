@@ -8,24 +8,42 @@
 
 #include <iostream>
 #include "EVT.hpp"
+#include "Car.hpp"
 
 using namespace std;
 using namespace evt;
 using namespace evt::utils;
 using namespace evt::numbers;
 
-class Human {
-public:
-	
-	int age = 10;
-	ReadOnly<string, Human> name = "Daniel";
-	
-	Human(){
-		name = "test";
-	}
-};
+namespace evt {
+	class Human: public EVTObject {
+	public:
+		
+		int age = 10;
+		ReadOnly<string, Human> name = "Daniel";
+		
+		Human() {
+			name = "test";
+		}
+		
+		// Necessary for the "Array" class to extract a string from this object
+		string toString() const {
+			return "Age: " + std::to_string(age) + "\nName: " + string(name);
+		}
+	};
+}
 
 int main(int argc, char* argv[]) {
+	
+	Car toyotaCelica;
+	toyotaCelica.model = "Toyota Celica";
+	// NOPE -> toyotaCelica.wheels = 10;
+	toyotaCelica.owner = "Daniel";
+	print(toyotaCelica.wheels);
+	print(toyotaCelica.toString());
+	
+	Car nissanGT("Nissan GT");
+	print(nissanGT);
 	
 	Pointer<int[]> numbers001 {1,2,3,4,5,6};
 	Pointer<int[]> numbers002 (numbers001.capacity() + 1);
@@ -41,12 +59,19 @@ int main(int argc, char* argv[]) {
 	
 	Arguments args(argc, argv);
 	print(args.size());
+	print(args);
+	
+	Array<Human> humansTest;
+	humansTest.append(Human());
+	print(Human());
+	print(humansTest);
 	
 	int a = 400;
 	xAssert(a > 80, "bad");
 	
 	Human daniel;
 	cout << daniel.name << endl;
+	print(daniel);
 	
 	// NOPE -> daniel.name = "Test";
 	
@@ -153,6 +178,8 @@ int main(int argc, char* argv[]) {
 	guard(something.as<int>() == 80) else {
 		return 1;
 	}
+	
+	cout << isPrime(8078756) << endl;
 	
 	const char* testChar = "hello!!";
 	cout << quoted(testChar) << endl;

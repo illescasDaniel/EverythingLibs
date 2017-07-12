@@ -67,7 +67,7 @@ namespace evt {
 		}
 		
 		Optional& operator=(const Optional& other) {
-			if (this->isNull()) {
+			if (this->isNull() and other.value_ != nullptr) {
 				this->value_ = new Type{other.value()};
 			}
 			else {

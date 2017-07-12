@@ -30,6 +30,7 @@ Libraries:
 	cplusplus1z (macro)
 	cplusplus14 (macro)
 	cplusplus11 (macro)
+	cplusplus98 (macro)
 
 	static inline bool isOdd(const Type number)
 	static inline bool isEven(const Type number)
@@ -53,7 +54,7 @@ Libraries:
 
 	Type readLine()
 
-	std::string quoted(std::string str)
+	std::string quoted(const std::string& str)
 
 	float benchmark(const Function& function, size_t iterations = 1)
 	```

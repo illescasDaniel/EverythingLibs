@@ -32,16 +32,13 @@ namespace evt {
 	class Arguments {
 		
 		std::unique_ptr<std::string[]> args;
-		int size_;
+		int size_ {};
 		
 	public:
 		
-		Arguments() {}
-		Arguments(const int& argc, char* argv[], bool loadFirstArg = false){ load(argc, argv, loadFirstArg); }
-		
-		void load(const int& argc, char* argv[], bool loadFirstArg = false) {
+		Arguments(const int& argc, char* argv[], bool loadFirstArg = false) {
 			this->size_ = loadFirstArg ? argc : argc-1;
-			args = std::unique_ptr<std::string[]>(new std::string[size_]);
+			this->args = std::unique_ptr<std::string[]>(new std::string[size_]);
 			
 			for (int i = 0; i < size_; ++i) {
 				args[i] = argv[loadFirstArg ? i : i+1];
@@ -49,7 +46,7 @@ namespace evt {
 		}
 		
 		std::string& operator[](const size_t& pos) const {
-			if (pos < size_) { throw std::out_of_range("Index out of range"); }
+			if (pos > size_) { throw std::out_of_range("Index out of range"); }
 			return args[pos];
 		}
 		
@@ -57,13 +54,12 @@ namespace evt {
 			return size_;
 		}
 		
-		
-		friend std::string to_string(const Arguments& arguments) {
+		std::string toString() const {
 			
 			std::string output = "[";
 			
-			for (std::size_t i = 0; i < arguments.size(); ++i) {
-				output += arguments[i] + ((i+1 < arguments.size()) ? (std::string(", ")) : (std::string("")));
+			for (std::size_t i = 0; i < this->size(); ++i) {
+				output += (*this)[i] + ((i+1 < this->size()) ? (std::string(", ")) : (std::string("")));
 			}
 			
 			output += "]";
@@ -72,7 +68,7 @@ namespace evt {
 		}
 		
 		friend std::ostream& operator<<(std::ostream& os, const Arguments& arguments) {
-			return os << to_string(arguments);
+			return os << arguments.toString();
 		}
 	};
 }

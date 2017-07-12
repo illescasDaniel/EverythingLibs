@@ -47,7 +47,7 @@ namespace evt {
 		inline std::string to_string(const char chr) { return std::string(1,chr); }
 		
 		template <typename Others>
-		inline std::string to_string(const Others other) { return std::to_string(other); }
+		inline std::string to_string(const Others& other) { return other.toString(); }
 		/* Place your custom "to_string()" function/s here for other classes. Use templates if you want. */
 	}
 	
