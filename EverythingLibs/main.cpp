@@ -95,9 +95,14 @@ int main(int argc, char* argv[]) {
 	Array<string> names {"daniel", "john", "mary"};
 	Array<string> copyNames = names;
 	print(copyNames);
+	//print(copyNames.sorted());
 	
-	Array<double> numbersD {1.2, 5.6, 8};
+	Array<double> numbersD {1.2, 8.6, 8};
 	print(numbersD);
+	print(numbersD.sorted());
+	
+	Array<int> numbersDD {4,2,4};
+	print(numbersDD.sorted([](int& a, int& b){ return a >= b; }));
 	
 	print("Names: ", names);
 	

@@ -33,6 +33,7 @@
 #include <typeinfo>
 #include <memory>
 #include <random>
+#include <functional>
 #include "../EVTObject.hpp"
 
 #if (__cplusplus >= 201406)
@@ -843,11 +844,11 @@ namespace evt {
 		
 		// MARK: Sort
 		
-		void sort(std::function<bool(Type&,Type&)> compareFunction = std::less_equal<Type>()) {
+		void sort(const std::function<bool(Type&,Type&)>& compareFunction = std::less_equal<Type>()) {
 			std::sort(&values[0], &values[count_], compareFunction);
 		}
 		
-		Array sorted(std::function<bool(Type&,Type&)> compareFunction = std::less_equal<Type>()) const {
+		Array sorted(const std::function<bool(Type&,Type&)>& compareFunction = std::less_equal<Type>()) const {
 			
 			if (this->isEmpty()) {
 				return *this;
