@@ -57,7 +57,7 @@ namespace evt {
 						d -= 1;
 						*d = '-';
 					}
-					std::size_t len = std::end(buffer) - d;
+					long len = std::end(buffer) - d;
 					if (dest.rdbuf()->sputn(d, len) != len) {
 						dest.setstate(std::ios_base::badbit);
 					}

@@ -33,7 +33,7 @@
 #include <typeinfo>
 #include <memory>
 #include <random>
-#include "EVTObject.hpp"
+#include "../EVTObject.hpp"
 
 #if (__cplusplus >= 201406)
 	#include <experimental/optional>
@@ -180,7 +180,7 @@ namespace evt {
 		}
 		
 		template <typename Container>
-		Array& removeElementsFromContainer(const Container& newElements, bool onlyFirstAppearance = false) {
+		Array& removeElementsFromContainer(const Container& newElements, bool onlyFirstOcurrence = false) {
 			
 			sizeType elementsFound = 0;
 			sizeType countOfContainer = std::distance(std::begin(newElements), std::end(newElements));
@@ -210,7 +210,7 @@ namespace evt {
 						this->removeAt(elementsPosition[0]);
 					}
 				}
-			} while((elementsFound == newElements.size()) && !onlyFirstAppearance);
+			} while((elementsFound == newElements.size()) && !onlyFirstOcurrence);
 			
 			return *this;
 		}
@@ -521,12 +521,12 @@ namespace evt {
 		}
 		
 		template <typename Container>
-		Array& removeElements(const Container& newElements, bool onlyFirstAppearance = false) {
-			return removeElementsFromContainer(newElements);
+		Array& removeElements(const Container& newElements, bool onlyFirstOcurrence = false) {
+			return removeElementsFromContainer(newElements, onlyFirstOcurrence);
 		}
 		
-		Array& removeElements(InitializerList newElements, bool onlyFirstAppearance = false) {
-			return removeElementsFromContainer(newElements);
+		Array& removeElements(InitializerList newElements, bool onlyFirstOcurrence = false) {
+			return removeElementsFromContainer(newElements, onlyFirstOcurrence);
 		}
 		
 		template <typename Container>

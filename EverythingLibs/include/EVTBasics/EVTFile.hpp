@@ -173,49 +173,50 @@ namespace evt {
 			return s;
 		}
 		
-		#if (__cplusplus >= 201406)
+#if (__cplusplus >= 201406)
 		
-			std::experimental::optional<std::string> safeRead() {
-				
-				if (mode == Mode::binary) { incompatibleMode(); return std::string{}; }
-				
-				std::string readContent;
-				open(std::ios::in);
-				fileStream >> readContent;
-				
-				if (fileStream.eof() && readContent.empty()) {
-					return std::experimental::nullopt;
-				}
-				
-				return readContent;
+		std::experimental::optional<std::string> safeRead() {
+			
+			if (mode == Mode::binary) { incompatibleMode(); return std::string{}; }
+			
+			std::string readContent;
+			open(std::ios::in);
+			fileStream >> readContent;
+			
+			if ((fileStream.eof() && readContent.empty()) || fileStream.fail()) {
+				return std::experimental::nullopt;
 			}
+			
+			return readContent;
+		}
 		
-			std::experimental::optional<std::string> safeGetline() {
-				
-				if (mode == Mode::binary) { incompatibleMode(); return std::string{}; }
-				
-				std::string s;
-				
-				open(std::ios::in);
-				std::getline(fileStream, s);
-				
-				if (fileStream.eof() && s.empty()) {
-					return std::experimental::nullopt;
-				}
-				
-				return s;
+		std::experimental::optional<std::string> safeGetline() {
+			
+			if (mode == Mode::binary) { incompatibleMode(); return std::string{}; }
+			
+			std::string s;
+			
+			open(std::ios::in);
+			std::getline(fileStream, s);
+			
+			if ((fileStream.eof() && s.empty()) || fileStream.fail()) {
+				return std::experimental::nullopt;
 			}
+			
+			return s;
+		}
 		
-		#endif
+#endif
 		
 		std::string toString() {
 			
 			this->open(std::ios::in);
 			
+			std::string line;
 			std::string outputContent;
 			
-			while(!fileStream.eof()) {
-				outputContent += this->getline() + '\n';
+			while(std::getline(fileStream, line)) {
+				outputContent += line + '\n';
 			}
 			
 			return outputContent;

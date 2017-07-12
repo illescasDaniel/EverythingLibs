@@ -7,8 +7,8 @@
 //
 
 #include <iostream>
-#include "EVT.hpp"
-#include "Car.hpp"
+#include "include/EVT.hpp"
+#include "classExamples/Car.hpp"
 
 using namespace std;
 using namespace evt;

@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "EVTArray.hpp"
+#include "EVTBasics/EVTArray.hpp"
 #include <type_traits>
 #include <random>
 #include <string>
@@ -32,6 +32,7 @@
 #include <functional>
 #include <cctype>
 #include <chrono>
+#include <iostream>
 
 namespace evt {
 	

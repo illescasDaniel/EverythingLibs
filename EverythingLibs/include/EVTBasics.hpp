@@ -27,11 +27,11 @@
 
 // namespace: evt
 
-#include "EVTAny.hpp"
-#include "EVTArguments.hpp"
-#include "EVTArray.hpp"
-#include "EVTFile.hpp"
-#include "EVTOptional.hpp"
-#include "EVTPointer.hpp"
-#include "EVTPrint.hpp" // Might be a little 'heavy' to import, you can comment this out this library if you don't really need it
-#include "EVTReadOnly.hpp"
+#include "EVTBasics/EVTAny.hpp"
+#include "EVTBasics/EVTArguments.hpp"
+#include "EVTBasics/EVTArray.hpp"
+#include "EVTBasics/EVTFile.hpp"
+#include "EVTBasics/EVTOptional.hpp"
+#include "EVTBasics/EVTPointer.hpp"
+#include "EVTBasics/EVTPrint.hpp" // Might be a little 'heavy' to import, you can comment this out this library if you don't really need it
+#include "EVTBasics/EVTReadOnly.hpp"

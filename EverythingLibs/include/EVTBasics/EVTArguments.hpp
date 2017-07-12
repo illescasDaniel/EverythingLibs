@@ -32,7 +32,7 @@ namespace evt {
 	class Arguments {
 		
 		std::unique_ptr<std::string[]> args;
-		int size_ {};
+		std::size_t size_ {};
 		
 	public:
 		
@@ -40,7 +40,7 @@ namespace evt {
 			this->size_ = loadFirstArg ? argc : argc-1;
 			this->args = std::unique_ptr<std::string[]>(new std::string[size_]);
 			
-			for (int i = 0; i < size_; ++i) {
+			for (std::size_t i = 0; i < size_; ++i) {
 				args[i] = argv[loadFirstArg ? i : i+1];
 			}
 		}
@@ -50,7 +50,7 @@ namespace evt {
 			return args[pos];
 		}
 		
-		int size() const {
+		std::size_t size() const {
 			return size_;
 		}
 		
