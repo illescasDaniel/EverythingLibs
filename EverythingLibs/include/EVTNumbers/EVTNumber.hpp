@@ -31,45 +31,36 @@ namespace evt {
 	
 	namespace numbers {
 		
+		#define templateType template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value || std::is_same<Type, Int128>::value || std::is_same<Type, UInt128>::value>::type>
+		
 		class Number {
 			
 			std::shared_ptr<void*> value_ { nullptr };
 			
 		public:
-			
-			template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
+			templateType
 			Number(const Type& value) {
 				this->value_ = std::make_shared<void*>(new Type{value});
 			}
 			
-			template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
+			templateType
 			Type& as() const {
 				return *static_cast<Type*>(*this->value_);
 			}
 			
-			template <typename Type, typename = typename std::enable_if<std::is_same<Type, Int128>::value,bool>::type>
-			Int128& as() const {
-				return *static_cast<Type*>(*this->value_);
-			}
-			
-			template <typename Type, typename = typename std::enable_if<std::is_same<Type, UInt128>::value,bool>::type>
-			UInt128& as() const {
-				return *static_cast<Type*>(*this->value_);
-			}
-			
-			template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
+			templateType
 			inline operator Type() const {
 				return this->as<Type>();
 			}
 			
-			template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
+			templateType
 			Type& operator=(const Type& newValue) {
 				value_ = std::make_shared<void*>(new Type{newValue});
 				return *reinterpret_cast<Type*>(*value_);
 			}
 			
 			#define arithmeticOperation(name, operation) \
-			template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type> \
+			templateType \
 			Type name(const Number& otherNumber) { \
 				return this->as<Type>() operation otherNumber.as<Type>(); \
 			}
@@ -80,5 +71,7 @@ namespace evt {
 			arithmeticOperation(divide, /);
 			arithmeticOperation(modulus, %);
 		};
+		
+		#undef templateType
 	}
 }
