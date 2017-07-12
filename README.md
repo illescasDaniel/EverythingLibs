@@ -1,5 +1,6 @@
 # Everything Libraries
 
+[![Build Status](https://travis-ci.org/illescasDaniel/EverythingLibs.svg?branch=master)](https://travis-ci.org/illescasDaniel/EverythingLibs)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/illescasDaniel/EverythingLibs/blob/master/LICENSE)
 
 A few libraries that will make the programmer's life easier 😉.
