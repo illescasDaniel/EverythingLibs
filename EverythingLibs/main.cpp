@@ -27,7 +27,7 @@ namespace evt {
 		}
 		
 		// Necessary for the "Array" class to extract a string from this object
-		string toString() const {
+		string toString() const override {
 			return "Age: " + std::to_string(age) + "\nName: " + string(name);
 		}
 	};

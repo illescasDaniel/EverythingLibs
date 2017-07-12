@@ -29,8 +29,7 @@ public:
 		}
 	}
 	
-	// @Override
-	std::string toString() const {
+	std::string toString() const override {
 		std::string finalOwner = (this->owner).orEmpty().empty() ? "" : "\nOwner: " + this->owner.value();
 		return "Model: " + model + "\nWheels: " + std::to_string(wheels) + finalOwner;
 	}

@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include <string>
+#include <ostream>
+
 namespace evt {
 	class EVTObject {
 	public:
