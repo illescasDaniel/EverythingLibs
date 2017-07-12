@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "EVTInt128.hpp"
 #include <memory>
 
 namespace evt {
@@ -43,6 +44,16 @@ namespace evt {
 			
 			template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
 			Type& as() const {
+				return *static_cast<Type*>(*this->value_);
+			}
+			
+			template <typename Type, typename = typename std::enable_if<std::is_same<Type, Int128>::value,bool>::type>
+			Int128& as() const {
+				return *static_cast<Type*>(*this->value_);
+			}
+			
+			template <typename Type, typename = typename std::enable_if<std::is_same<Type, UInt128>::value,bool>::type>
+			UInt128& as() const {
 				return *static_cast<Type*>(*this->value_);
 			}
 			

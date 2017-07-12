@@ -33,9 +33,54 @@
 namespace evt {
 	
 	template <typename Type>
+	class ThinPointer {
+		
+		Type* value_ptr {nullptr};
+		
+		void freePointer() {
+			if (value_ptr != nullptr) {
+				delete value_ptr;
+				value_ptr = nullptr;
+			}
+		}
+		
+	public:
+		
+		ThinPointer(){ }
+		
+		ThinPointer(const Type& value) {
+			value_ptr = new Type{value};
+		}
+		
+		inline Type& operator*() const {
+			if (value_ptr == nullptr) { throw std::bad_alloc(); }
+			return *value_ptr;
+		}
+		
+		inline operator Type() const {
+			if (value_ptr == nullptr) { throw std::bad_alloc(); }
+			return *value_ptr;
+		}
+		
+		void operator=(ThinPointer& otherPtr) {
+			this->freePointer();
+			value_ptr = new Type{*otherPtr};
+			otherPtr.freePointer();
+		}
+		
+		inline bool isNull() const {
+			return value_ptr == nullptr;
+		}
+		
+		~ThinPointer() {
+			this->freePointer();
+		}
+	};
+	
+	template <typename Type>
 	class Pointer {
 		
-		std::unique_ptr<Type> value_ptr;
+		std::unique_ptr<Type> value_ptr {nullptr};
 		
 	public:
 		
@@ -47,12 +92,18 @@ namespace evt {
 			value_ptr = std::unique_ptr<Type>(new Type{value});
 		}
 		
-		Type& operator*() {
+		inline Type& operator*() const {
+			if (value_ptr == nullptr) { throw std::bad_alloc(); }
 			return *value_ptr;
 		}
 		
 		inline operator Type() const {
+			if (value_ptr == nullptr) { throw std::bad_alloc(); }
 			return *value_ptr;
+		}
+		
+		inline bool isNull() const {
+			return value_ptr == nullptr;
 		}
 		
 		void operator=(Pointer& otherPtr) {
@@ -63,7 +114,7 @@ namespace evt {
 	template <typename Type>
 	class Pointer<Type[]> {
 		
-		std::unique_ptr<Type[]> value_ptr;
+		std::unique_ptr<Type[]> value_ptr {nullptr};
 		std::size_t capacity_ {1};
 		
 	public:
@@ -149,6 +200,10 @@ namespace evt {
 		
 		void copyValuesFrom(const std::initializer_list<Type> container) {
 			std::copy(std::begin(container), std::end(container), this->begin());
+		}
+		
+		inline bool isNull() const {
+			return value_ptr == nullptr;
 		}
 	};
 }

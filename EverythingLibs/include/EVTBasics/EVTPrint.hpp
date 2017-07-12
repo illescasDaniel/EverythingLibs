@@ -51,12 +51,12 @@ namespace evt {
 	}
 	
 	// To know if a given container is a set or not
-	#define setType(_cont_) typeid(_cont_) == typeid(cont)
-	#define is_(_cont_) setType(_cont_<int>) || setType(_cont_<double>) || setType(_cont_<bool>) || setType(_cont_<float>) || setType(_cont_<std::string>) || setType(_cont_<char>)
+#define setType(_cont_) typeid(_cont_) == typeid(cont)
+#define isS(_cont_) setType(_cont_<int>) || setType(_cont_<double>) || setType(_cont_<bool>) || setType(_cont_<float>) || setType(_cont_<std::string>) || setType(_cont_<char>)
 	
 	template <typename Container>
 	bool isSet(const Container& cont) {
-		return (is_(std::set) || is_(std::multiset) || is_(std::unordered_set) || is_(std::unordered_multiset));
+		return (isS(std::set) || isS(std::multiset) || isS(std::unordered_set) || isS(std::unordered_multiset));
 	}
 	
 	// Return a single or double quoted std::string IF the data is a std::string or a char
@@ -124,11 +124,11 @@ namespace evt {
 	}
 	
 	// Return a std::string given any map type
-	#define to_stringMAP(_map_) \
-	template <typename KeyType, typename ValueType> \
-		std::string to_string(const _map_<KeyType,ValueType>& map) { \
-		return to_stringMAP(map); \
-	}
+#define to_stringMAP(_map_) \
+template <typename KeyType, typename ValueType> \
+std::string to_string(const _map_<KeyType,ValueType>& map) { \
+return to_stringMAP(map); \
+}
 	
 	to_stringMAP(std::map);
 	to_stringMAP(std::multimap);
@@ -340,8 +340,7 @@ return os << to_string(cont); \
 }
 
 #undef setType
-#undef is_
+#undef isS
 #undef ostreamOperator
 #undef ostreamOperatorMap
 #undef to_stringMAP
-

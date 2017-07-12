@@ -35,6 +35,13 @@ namespace evt {
 
 int main(int argc, char* argv[]) {
 	
+	ThinPointer<int> ptest(100);
+	ThinPointer<int> ptest2(400);
+	ptest = ptest2;
+	if (!ptest.isNull()) {
+		cout << *ptest << endl;
+	}
+	
 	Car toyotaCelica;
 	toyotaCelica.model = "Toyota Celica";
 	// NOPE -> toyotaCelica.wheels = 10;
@@ -153,10 +160,10 @@ int main(int argc, char* argv[]) {
 	
 	print(to_string(pNumbers));
 	
-	Int128 bigNumber = 234567876543256;
+	Int128 bigNumber = 234567876543256343;
 	cout << (bigNumber + 1) << endl;
 	cout << (2 * bigNumber) << endl;
-	
+ 
 	Number test (8745.54);
 	cout << test.multiply<double>(10.0) << endl;
 	
@@ -168,6 +175,15 @@ int main(int argc, char* argv[]) {
 	
 	test = -100;
 	cout << test.as<int>() << endl;
+	
+	test = Int128(3465789543789654378);
+	cout << test.as<Int128>() << endl;
+	
+	UInt128 reallyBigNumber = 0;
+	reallyBigNumber -= 2;
+	
+	test = reallyBigNumber;
+	cout << test.as<UInt128>() << endl;
 	
 	Any something ("hello");
 	cout << something.as<string>() << endl;
@@ -187,6 +203,6 @@ int main(int argc, char* argv[]) {
 	const char* testChar = "hello!!";
 	cout << quoted(testChar) << endl;
 	
-	int number2 = readLine<int>();
-	print(number2);
+	//int number2 = readLine<int>();
+	//print(number2);*/
 }
