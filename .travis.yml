@@ -3,14 +3,14 @@ dist: trusty
 language: cpp
 compiler: g++
 
-install: export CXX="g++-6"
+install: export CXX="g++-7"
 
 addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - g++-6
+    - g++-7
 
 notifications:
  email:
