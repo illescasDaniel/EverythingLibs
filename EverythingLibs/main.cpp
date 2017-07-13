@@ -107,8 +107,10 @@ int main(int argc, char* argv[]) {
 	
 	// NOPE -> daniel.name = "Test";
 	
-	cout << randomNumber(100) << endl;
-	cout << randomDistributedNumber(90, 200) << endl;
+	cout << "Random: " << randomIntegralNumber(-90, -10) << endl;
+	int randomIntNumber = randomIntegralNumber<int>(0,100);
+	cout << randomIntNumber << endl;
+	cout << randomRealNumber(-10.3, 10.86) << endl;
 	
 	int numbers[3] {1,2,8};
 	cout << arrayLengthOf(numbers) << endl;

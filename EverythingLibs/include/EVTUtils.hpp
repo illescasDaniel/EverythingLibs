@@ -33,6 +33,7 @@
 #include <cctype>
 #include <chrono>
 #include <iostream>
+#include <limits>
 
 namespace evt {
 	
@@ -77,15 +78,28 @@ namespace evt {
 			return true;
 		}
 		
-		uint64_t randomNumber(uint64_t upperLimit = std::mt19937_64::max()) {
-			return std::mt19937_64{ std::random_device{}() }() % upperLimit;
-		}
-		
-		uint64_t randomDistributedNumber(uint64_t lowerBound = std::mt19937_64::min(), uint64_t upperBound = std::mt19937_64::max()) {
+		template <typename IntegralType = uint64_t, typename = typename std::enable_if<std::is_integral<IntegralType>::value,bool>::type>
+		IntegralType randomIntegralNumber(IntegralType lowerBound = std::numeric_limits<IntegralType>::denorm_min(),
+										  IntegralType upperBound = std::numeric_limits<IntegralType>::max()) {
 			
 			std::random_device rd;
-			std::mt19937 rng(rd());
-			std::uniform_int_distribution<uint64_t> randomValue(lowerBound, upperBound);
+			std::mt19937_64 rng(rd());
+			
+			if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
+			std::uniform_int_distribution<IntegralType> randomValue(lowerBound, upperBound);
+			
+			return randomValue(rng);
+		}
+		
+		template <typename FloatingPointType = double, typename = typename std::enable_if<std::is_floating_point<FloatingPointType>::value,bool>::type>
+		FloatingPointType randomRealNumber(FloatingPointType lowerBound = std::numeric_limits<FloatingPointType>::denorm_min(),
+										   FloatingPointType upperBound = std::numeric_limits<FloatingPointType>::max()) {
+			
+			std::random_device rd;
+			std::mt19937_64 rng(rd());
+			
+			if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
+			std::uniform_real_distribution<FloatingPointType> randomValue(lowerBound, upperBound);
 			
 			return randomValue(rng);
 		}

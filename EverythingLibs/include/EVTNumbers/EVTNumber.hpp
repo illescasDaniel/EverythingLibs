@@ -73,5 +73,6 @@ namespace evt {
 		};
 		
 		#undef templateType
+		#undef arithmeticOperation
 	}
 }
