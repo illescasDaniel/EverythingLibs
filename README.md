@@ -37,8 +37,8 @@ Libraries:
 	static inline bool isOdd(const Type number)
 	static inline bool isEven(const Type number)
 
-	uint64_t randomNumber(uint64_t upperLimit = std::mt19937_64::max())
-	uint64_t randomDistributedNumber(uint64_t lowerBound = std::mt19937_64::min(), uint64_t upperBound = std::mt19937_64::max())
+	IntegralType randomIntegralNumber(IntegralType lowerBound = ..., IntegralType upperBound = ...)
+	FloatingPointType randomRealNumber(FloatingPointType lowerBound = ..., FloatingPointType upperBound = ...)
 
 	size_t arrayLengthOf(const Array& array)
 
