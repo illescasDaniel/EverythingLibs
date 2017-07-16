@@ -620,6 +620,37 @@ namespace evt {
 			return this->operator==(elements);
 		}
 		
+		CONSTEXPR Array filter(const std::function<bool(const Type&)>& filterFunction) const {
+			Array filteredArray;
+			for (const auto& element: *this) {
+				if (filterFunction(element)) {
+					filteredArray.append(element);
+				}
+			}
+			return filteredArray;
+		}
+		
+		CONSTEXPR Optional<Type> first(const std::function<bool(const Type&)>& filterFunction) const {
+			for (const auto& element: *this) {
+				if (filterFunction(element)) {
+					return element;
+				}
+			}
+			return nullptr;
+		}
+		
+		CONSTEXPR Optional<Type> last(const std::function<bool(const Type&)>& filterFunction) const {
+			
+			Optional<Type> optElement;
+			
+			for (const auto& element: *this) {
+				if (filterFunction(element)) {
+					optElement = element;
+				}
+			}
+			return optElement;
+		}
+		
 		CONSTEXPR Optional<Type> at(const SizeType index) const {
 			if (index >= count_) {
 				return nullptr;
@@ -856,22 +887,22 @@ namespace evt {
 		
 		CONSTEXPR Type& first() {
 			checkIfEmpty();
-			return *(&values[0]);
+			return values[0];
 		}
 		
 		CONSTEXPR Type& last() {
 			checkIfEmpty();
-			return *(&values[count_]-1);
+			return values[count_-1];
 		}
 		
 		CONSTEXPR const Type& first() const {
 			checkIfEmpty();
-			return *(&values[0]);
+			return values[0];
 		}
 		
 		CONSTEXPR const Type& last() const {
 			checkIfEmpty();
-			return *(&values[count_]-1);
+			return values[count_-1];
 		}
 	};
 }

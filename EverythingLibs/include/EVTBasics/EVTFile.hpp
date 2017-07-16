@@ -56,7 +56,7 @@ namespace evt {
 		std::string fileName;
 		Mode mode {Mode::both};
 		
-		CONSTEXPR void open(const std::ios_base::openmode inputOutputMode) {
+		void open(const std::ios_base::openmode inputOutputMode) {
 			
 			if (this->inputOutputMode != inputOutputMode) {
 				
@@ -70,7 +70,7 @@ namespace evt {
 			}
 		}
 		
-		CONSTEXPR void close() {
+		void close() {
 			if (fileStream.is_open()) {
 				fileStream.close();
 			}
@@ -136,7 +136,7 @@ namespace evt {
 			return readTextChar.get();
 		}
 		
-		CONSTEXPR void seekPosition(std::size_t offsetPosition, std::ios_base::seekdir position = std::ios::beg) {
+		void seekPosition(std::size_t offsetPosition, std::ios_base::seekdir position = std::ios::beg) {
 			
 			if (mode == Mode::normal) { incompatibleMode(); return; }
 			
@@ -241,17 +241,17 @@ namespace evt {
 		
 		/* OTHER */
 		
-		CONSTEXPR void seekInputPosition(std::size_t offsetPosition, std::ios_base::seekdir position = std::ios::beg) {
+		void seekInputPosition(std::size_t offsetPosition, std::ios_base::seekdir position = std::ios::beg) {
 			fileStream.seekg(offsetPosition, position);
 		}
 		
-		CONSTEXPR void open(const std::string& fileName, const Mode mode = Mode::both) {
+		void open(const std::string& fileName, const Mode mode = Mode::both) {
 			this->fileName = fileName;
 			this->mode = mode;
 			this->close();
 		}
 		
-		CONSTEXPR bool endOfFile() const {
+		bool endOfFile() const {
 			return fileStream.eof();
 		}
 		

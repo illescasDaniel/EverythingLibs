@@ -83,6 +83,24 @@ int main(int argc, char* argv[]) {
 		print("Found!!");
 	}
 	
+	print(numbersArr.filter([](const int& number){
+		return number >= 3;
+	}));
+	
+	print(numbersArr.first([](const int& number) {
+		return number % 2 == 0;
+	}));
+	
+	if (const auto firstOdd = numbersArr.first([](const int& n) { return n % 2 == 1; })) { // Optional
+		print(firstOdd);
+	}
+	
+	if (const auto lastEven = numbersArr.last([](const int& n) { return n % 2 == 0; })) {
+		print(lastEven);
+	}
+	
+	print(numbersArr.first(), numbersArr.last());
+	
 	Array<Stuff> stuff;
 	stuff.append(Stuff(10, 20));
 	print(stuff);

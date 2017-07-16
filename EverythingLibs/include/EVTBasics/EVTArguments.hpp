@@ -51,12 +51,12 @@ namespace evt {
 			}
 		}
 		
-		CONSTEXPR std::string& operator[](const size_t& pos) const {
+		std::string& operator[](const size_t& pos) const {
 			if (pos >= size_) { throw std::out_of_range("Index out of range"); }
 			return args[pos];
 		}
 		
-		CONSTEXPR std::size_t size() const {
+		std::size_t size() const {
 			return size_;
 		}
 		

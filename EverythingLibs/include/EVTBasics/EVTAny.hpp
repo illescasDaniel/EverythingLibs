@@ -41,14 +41,14 @@ namespace evt {
 		
 	public:
 		
-		CONSTEXPR Any() {}
+		Any() {}
 		
 		template<typename Type>
-		CONSTEXPR Any(const Type& value) {
+		Any(const Type& value) {
 			this->value_ = std::make_shared<void*>(new Type{value});
 		}
 		
-		CONSTEXPR Any(const char* value) {
+		Any(const char* value) {
 			this->value_ = std::make_shared<void*>(new std::string{value});
 		}
 		
