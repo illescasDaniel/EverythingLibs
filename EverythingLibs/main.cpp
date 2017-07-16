@@ -312,6 +312,9 @@ int main(int argc, char* argv[]) {
 	const char* testChar = "hello!!";
 	cout << quoted(testChar) << endl;
 	
+	File text("sample.txt");
+	text.write("blablabla");
+	
 	//int number2 = readLine<int>();
 	//print(number2);
 }
