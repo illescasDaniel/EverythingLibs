@@ -27,6 +27,12 @@
 #include <string>
 #include <stdexcept>
 
+#if (__cplusplus > 201103L)
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
+
 namespace evt {
 	
 	class Arguments {
@@ -36,7 +42,7 @@ namespace evt {
 		
 	public:
 		
-		Arguments(const int& argc, char* argv[], bool loadFirstArg = false) {
+		CONSTEXPR Arguments(const int& argc, char* argv[], bool loadFirstArg = false) {
 			this->size_ = loadFirstArg ? argc : argc-1;
 			this->args = std::unique_ptr<std::string[]>(new std::string[size_]);
 			
@@ -45,12 +51,12 @@ namespace evt {
 			}
 		}
 		
-		std::string& operator[](const size_t& pos) const {
-			if (pos > size_) { throw std::out_of_range("Index out of range"); }
+		CONSTEXPR std::string& operator[](const size_t& pos) const {
+			if (pos >= size_) { throw std::out_of_range("Index out of range"); }
 			return args[pos];
 		}
 		
-		std::size_t size() const {
+		CONSTEXPR std::size_t size() const {
 			return size_;
 		}
 		

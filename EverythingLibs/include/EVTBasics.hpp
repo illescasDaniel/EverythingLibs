@@ -29,7 +29,7 @@
 
 #include "EVTBasics/EVTAny.hpp"
 #include "EVTBasics/EVTArguments.hpp"
-#include "EVTBasics/EVTArray.hpp"
+#include "EVTBasics/EVTArray.hpp" // ~C++17 Recommended
 #include "EVTBasics/EVTFile.hpp"
 #include "EVTBasics/EVTOptional.hpp"
 #include "EVTBasics/EVTPointer.hpp"

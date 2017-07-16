@@ -31,6 +31,12 @@
 	#include <experimental/optional>
 #endif
 
+#if (__cplusplus > 201103L)
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
+
 namespace evt {
 	
 	class File {
@@ -50,7 +56,7 @@ namespace evt {
 		std::string fileName;
 		Mode mode {Mode::both};
 		
-		void open(const std::ios_base::openmode inputOutputMode) {
+		CONSTEXPR void open(const std::ios_base::openmode inputOutputMode) {
 			
 			if (this->inputOutputMode != inputOutputMode) {
 				
@@ -64,7 +70,7 @@ namespace evt {
 			}
 		}
 		
-		void close() {
+		CONSTEXPR void close() {
 			if (fileStream.is_open()) {
 				fileStream.close();
 			}
@@ -87,7 +93,7 @@ namespace evt {
 		/* BINARY */
 		
 		template <typename Type, typename = typename std::enable_if<std::is_same<Type, std::string>::value>::type>
-		void writeInBinary(const Type& text) {
+		CONSTEXPR void writeInBinary(const Type& text) {
 			
 			if (mode == Mode::normal) { incompatibleMode(); return; }
 			
@@ -97,7 +103,7 @@ namespace evt {
 		}
 		
 		template <typename Type, typename = typename std::enable_if<!std::is_same<Type, std::string>::value>::type>
-		void writeInBinary(Type contentToWrite) {
+		CONSTEXPR void writeInBinary(Type contentToWrite) {
 			
 			if (mode == Mode::normal) { incompatibleMode(); return; }
 			
@@ -107,7 +113,7 @@ namespace evt {
 		}
 		
 		template <typename Type, typename = typename std::enable_if<!std::is_same<Type, std::string>::value>::type>
-		Type readFromBinary() {
+		CONSTEXPR Type readFromBinary() {
 			
 			if (mode == Mode::normal) { incompatibleMode(); return Type{}; }
 			
@@ -130,7 +136,7 @@ namespace evt {
 			return readTextChar.get();
 		}
 		
-		void seekPosition(std::size_t offsetPosition, std::ios_base::seekdir position = std::ios::beg) {
+		CONSTEXPR void seekPosition(std::size_t offsetPosition, std::ios_base::seekdir position = std::ios::beg) {
 			
 			if (mode == Mode::normal) { incompatibleMode(); return; }
 			
@@ -141,7 +147,7 @@ namespace evt {
 		/* TEXT */
 		
 		template <typename Type>
-		void write(const Type& contentToWrite) {
+		CONSTEXPR void write(const Type& contentToWrite) {
 			
 			if (mode == Mode::binary) { incompatibleMode(); return; }
 			
@@ -235,17 +241,17 @@ namespace evt {
 		
 		/* OTHER */
 		
-		void seekInputPosition(std::size_t offsetPosition, std::ios_base::seekdir position = std::ios::beg) {
+		CONSTEXPR void seekInputPosition(std::size_t offsetPosition, std::ios_base::seekdir position = std::ios::beg) {
 			fileStream.seekg(offsetPosition, position);
 		}
 		
-		void open(const std::string& fileName, const Mode mode = Mode::both) {
+		CONSTEXPR void open(const std::string& fileName, const Mode mode = Mode::both) {
 			this->fileName = fileName;
 			this->mode = mode;
 			this->close();
 		}
 		
-		bool endOfFile() const {
+		CONSTEXPR bool endOfFile() const {
 			return fileStream.eof();
 		}
 		

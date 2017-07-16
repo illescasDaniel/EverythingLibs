@@ -26,6 +26,12 @@
 
 #include <ostream>
 
+#if (__cplusplus > 201103L)
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
+
 namespace evt {
 	
 	/// Class to manage read only attributes
@@ -37,20 +43,20 @@ namespace evt {
 		// Friend classes (important)
 		friend FriendClass;
 		
-		inline ReadOnly() {}
+		CONSTEXPR ReadOnly() {}
 		
 		template <typename anyType>
-		inline ReadOnly(const anyType& newValue) {
+		CONSTEXPR ReadOnly(const anyType& newValue) {
 			value = newValue;
 		}
 		
-		inline friend std::ostream & operator<<(std::ostream& os, const ReadOnly& variable) {
+		CONSTEXPR friend std::ostream & operator<<(std::ostream& os, const ReadOnly& variable) {
 			return os << variable.value;
 		}
 		
 	public:
 		
-		inline operator Type() const {
+		CONSTEXPR operator Type() const {
 			return value;
 		}
 	};

@@ -25,6 +25,13 @@
 #pragma once
 
 #include <memory>
+#include <stdexcept>
+
+#if (__cplusplus > 201103L)
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
 
 namespace evt {
 	
@@ -34,22 +41,25 @@ namespace evt {
 		
 	public:
 		
+		CONSTEXPR Any() {}
+		
 		template<typename Type>
-		Any(const Type& value) {
+		CONSTEXPR Any(const Type& value) {
 			this->value_ = std::make_shared<void*>(new Type{value});
 		}
 		
-		Any(const char* value) {
+		CONSTEXPR Any(const char* value) {
 			this->value_ = std::make_shared<void*>(new std::string{value});
 		}
 		
 		template<typename Type>
-		Type& as() const {
+		CONSTEXPR Type& as() const {
+			if (value_ == nullptr) { throw std::bad_alloc(); }
 			return *static_cast<Type*>(*this->value_);
 		}
 		
 		template <typename Type>
-		inline operator Type() const {
+		CONSTEXPR operator Type() const {
 			return this->as<Type>();
 		}
 		
@@ -59,7 +69,7 @@ namespace evt {
 		}
 		
 		template<typename Type>
-		Type& operator=(const Type& newValue) {
+		CONSTEXPR Type& operator=(const Type& newValue) {
 			value_ = std::make_shared<void*>(new Type{newValue});
 			return *reinterpret_cast<Type*>(*value_);
 		}

@@ -27,6 +27,12 @@
 #include <cstddef>
 #include <ostream>
 
+#if (__cplusplus > 201103L)
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
+
 namespace evt {
 	
 	template <typename Type>
@@ -37,9 +43,9 @@ namespace evt {
 		
 	public:
 		
-		Optional(const std::nullptr_t& value = nullptr) { this->value_ = value; }
+		CONSTEXPR Optional(const std::nullptr_t& value = nullptr) { this->value_ = value; }
 		
-		Optional(const Type& value) {
+		CONSTEXPR Optional(const Type& value) {
 			this->value_ = new Type{value};
 		}
 		
@@ -50,23 +56,23 @@ namespace evt {
 			}
 		}
 		
-		inline Type valueOr(const Type& other) const {
+		CONSTEXPR Type valueOr(const Type& other) const {
 			return (this->isNotNull()) ? this->value() : other;
 		}
 		
-		inline Type orEmpty() const {
+		CONSTEXPR Type orEmpty() const {
 			return (this->isNotNull()) ? this->value() : Type{};
 		}
 		
-		inline bool isNull() const {
+		CONSTEXPR bool isNull() const {
 			return value_ == nullptr;
 		}
 		
-		inline bool isNotNull() const {
+		CONSTEXPR bool isNotNull() const {
 			return value_ != nullptr;
 		}
 		
-		Optional& operator=(const Optional& other) {
+		CONSTEXPR Optional& operator=(const Optional& other) {
 			if (this->isNull() and other.value_ != nullptr) {
 				this->value_ = new Type{other.value()};
 			}
@@ -76,7 +82,7 @@ namespace evt {
 			return *this;
 		}
 		
-		Optional& operator=(const Type& value) {
+		CONSTEXPR Optional& operator=(const Type& value) {
 			if (this->isNull()) {
 				this->value_ = new Type{value};
 			}
@@ -86,31 +92,31 @@ namespace evt {
 			return *this;
 		}
 		
-		inline bool operator==(const Optional& other) const {
+		CONSTEXPR bool operator==(const Optional& other) const {
 			return value_ == other.value_;
 		}
 		
-		inline bool operator!=(const Optional& other) const {
+		CONSTEXPR bool operator!=(const Optional& other) const {
 			return value_ != other.value_;
 		}
 		
-		inline Type& operator*() const {
+		CONSTEXPR Type& operator*() const {
 			return *value_;
 		}
 		
-		inline Type& value() const {
+		CONSTEXPR Type& value() const {
 			return *value_;
 		}
 		
-		inline operator bool() const {
+		CONSTEXPR operator bool() const {
 			return this->isNotNull();
 		}
 		
-		inline operator Type() const {
+		CONSTEXPR operator Type() const {
 			return this->orEmpty();
 		}
 		
-		friend std::ostream& operator<<(std::ostream& os, const Optional& optionalValue) {
+		CONSTEXPR friend std::ostream& operator<<(std::ostream& os, const Optional& optionalValue) {
 			return os << optionalValue.orEmpty();
 		}
 	};

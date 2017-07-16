@@ -24,7 +24,7 @@
 
 #pragma once
 
-// Basic libraries (the other libraries should work without this, but just in case...)
+// Basic libraries (the other libraries should work without re-including this, but just in case...)
 #include <type_traits>
 #include <initializer_list>
 #include <stdexcept>

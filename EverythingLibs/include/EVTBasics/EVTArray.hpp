@@ -24,9 +24,6 @@
 
 #pragma once
 
-// make_unique is "safer" and only for c++14 and above, unique_ptr is faster and available since c++11; you decide
-#define use_make_unique false
-
 #include <initializer_list>
 #include <algorithm>
 #include <stdexcept>
@@ -34,10 +31,14 @@
 #include <memory>
 #include <random>
 #include <functional>
+#include "EVTOptional.hpp"
+#include "EVTPointer.hpp"
 #include "../EVTObject.hpp"
 
-#if (__cplusplus >= 201406)
-	#include <experimental/optional>
+#if (__cplusplus > 201103L)
+	#define CONSTEXPR constexpr
+#else
+	#define CONSTEXPR
 #endif
 
 namespace evt {
@@ -48,106 +49,89 @@ namespace evt {
 		inline std::string to_string(const std::string& str) { return str; }
 		inline std::string to_string(const char chr) { return std::string(1,chr); }
 		
-		template <typename Fundamental, typename = typename std::enable_if<std::is_fundamental<Fundamental>::value,bool>::type>
-		inline std::string to_string(const Fundamental& fundamental) { return std::to_string(fundamental); }
+		template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value,bool>::type>
+		inline std::string to_string(const Arithmetic& arithmeticValue) {
+			
+			if (std::is_same<Arithmetic, bool>::value) {
+				return arithmeticValue ? "true" : "false";
+			}
+			
+			return std::to_string(arithmeticValue);
+		}
 		
 		inline std::string to_string(const EVTObject& evtObject) { return evtObject.toString(); }
-		/* Place your custom "to_string()" function/s here for other classes. Use templates if you want. */
+		/* Place your custom "to_string()" function/s here for other classes, or just inherit from EVTObject. */
 	}
 	
 	// MARK: - Array Class
-	
 	template <typename Type, std::size_t initialCapacity = 2>
-	class Array {
+	class Array: public EVTObject {
 		
 		// Types and macros
-		typedef std::size_t sizeType;
-		typedef std::unique_ptr<Type[]> Pointer;
+		typedef std::size_t SizeType;
+		typedef evt::Pointer<Type[]> Pointer;
 		typedef std::initializer_list<Type> InitializerList;
-		#define initialCapacity_ ((initialCapacity > 2) ? initialCapacity : 2)
 		
 		// MARK: - Attributes
 		
-		Pointer values { new Type[initialCapacity_] };
-		sizeType count_ { 0 };
-		sizeType capacity_ { initialCapacity_ };
+		Pointer values = {Pointer((initialCapacity > 2) ? initialCapacity : 2)};
+		SizeType count_ {0};
 		
 		// MARK: - Private Functions
 		
-		inline double sizeOfArrayInMB(const double currentCapacity) const {
+		CONSTEXPR double sizeOfArrayInMB(const double currentCapacity) const {
 			return (sizeof(Type)*(currentCapacity)) / 1000000;
 		}
 		
 		/// Assigns new memory, also updates the new capacity.
-		inline void assignMemoryAndCapacityForSize(sizeType newSize, bool forceResize = false) {
-			
-			if (forceResize or capacity_ < newSize) {
-				
-				#if (__cplusplus >= 201400) && use_make_unique
-					values = std::make_unique<Type[]>(newSize);
-				#elif (__cplusplus >= 201100) || !use_make_unique
-					values = Pointer { new Type[newSize] };
-				#endif
-				
-				capacity_ = newSize;
+		CONSTEXPR void assignMemoryAndCapacityForSize(SizeType newSize, bool forceResize = false) {
+			if (forceResize or values.capacity() < newSize) {
+				values = Pointer(newSize);
 			}
 		}
 		
-		inline Pointer newArrayOfSize(const sizeType newSize) const {
-			
-			#if (__cplusplus >= 201400) && use_make_unique
-				Pointer newValues { std::make_unique<Type[]>(newSize) };
-			#elif (__cplusplus >= 201100) || !use_make_unique
-				Pointer newValues { new Type[newSize] };
-			#endif
-			
-			return newValues;
-		}
-		
 		/// Resizes the array to a given size
-		inline void resizeValuesToSize(const sizeType newSize, bool move = 0) {
+		CONSTEXPR void resizeValuesToSize(const SizeType newSize, bool move = 0) {
 			
-			Pointer newValues = newArrayOfSize(newSize);
+			Pointer newValues (newSize);
 			
-			move ? std::move(&values[0], &values[count_], &newValues[0]) : std::copy(&values[0], &values[count_], &newValues[0]);
-			values = std::move(newValues);
-			
-			capacity_ = newSize;
+			move ? newValues.moveValuesFrom(values) : newValues.copyValuesFrom(values);
+			values = newValues;
 		}
 		
 		/// Replaces the content of the array with other elements
 		template <typename Container>
-		void assignNewElements(const Container& elements) {
+		CONSTEXPR void assignNewElements(const Container& elements) {
 			count_ = std::distance(std::begin(elements), std::end(elements));
 			assignMemoryAndCapacityForSize(count_);
-			std::copy(std::begin(elements), std::end(elements), &values[0]);
+			values.copyValuesFrom(elements);
 		}
 		
 		template <typename Container>
-		void assignNewElementsMOVE(Container&& elements) {
+		CONSTEXPR void assignNewElementsMOVE(Container&& elements) {
 			count_ = std::distance(std::begin(elements), std::end(elements));
 			assignMemoryAndCapacityForSize(count_);
-			std::move(std::begin(elements), std::end(elements), &values[0]);
+			values.moveValuesFrom(elements);
 		}
 		
 		template <typename Container>
 		Array& appendNewElements(const Container& newElements) {
 			
-			sizeType countOfContainer = std::distance(std::begin(newElements), std::end(newElements));
+			SizeType countOfContainer = std::distance(std::begin(newElements), std::end(newElements));
 			
-			if (capacity_ >= (count_ + countOfContainer)) {
-				std::copy(std::begin(newElements), std::end(newElements), &values[count_]);
+			if (values.capacity() >= (count_ + countOfContainer)) {
+				values.copyValuesFrom(newElements, count_);
 			}
 			else if (countOfContainer > 0) {
 				
-				capacity_ = countOfContainer + count_;
+				SizeType newCapacity = countOfContainer + count_;
 				
-				auto newValues = newArrayOfSize(capacity_);
+				Pointer newValues (newCapacity);
 				
 				std::copy(&values[0], &values[count_], &newValues[0]);
-				std::copy(std::begin(newElements), std::end(newElements), &newValues[count_]);
+				newValues.copyValuesFrom(newElements, count_);
 				
-				values = std::move(newValues);
+				values = newValues;
 			}
 			
 			count_ += countOfContainer;
@@ -158,21 +142,21 @@ namespace evt {
 		template <typename Container>
 		Array& appendNewElementsMOVE(Container&& newElements) {
 			
-			sizeType countOfContainer = std::distance(std::begin(newElements), std::end(newElements));
+			SizeType countOfContainer = std::distance(std::begin(newElements), std::end(newElements));
 			
-			if (capacity_ >= (count_ + countOfContainer)) {
-				std::move(std::begin(newElements), std::end(newElements), &values[count_]);
+			if (values.capacity() >= (count_ + countOfContainer)) {
+				values.moveValuesFrom(newElements, count_);
 			}
 			else if (countOfContainer > 0) {
 				
-				capacity_ = countOfContainer + count_;
+				SizeType newCapacity = countOfContainer + count_;
 				
-				auto newValues = newArrayOfSize(capacity_);
+				Pointer newValues (newCapacity);
 				
 				std::move(&values[0], &values[count_], &newValues[0]);
-				std::move(std::begin(newElements), std::end(newElements), &newValues[count_]);
+				newValues.moveValuesFrom(newElements, count_);
 				
-				values = std::move(newValues);
+				values = newValues;
 			}
 			
 			count_ += countOfContainer;
@@ -183,9 +167,9 @@ namespace evt {
 		template <typename Container>
 		Array& removeElementsFromContainer(const Container& newElements, bool onlyFirstOcurrence = false) {
 			
-			sizeType elementsFound = 0;
-			sizeType countOfContainer = std::distance(std::begin(newElements), std::end(newElements));
-			std::unique_ptr<sizeType[]> elementsPosition(new sizeType[countOfContainer]);
+			SizeType elementsFound = 0;
+			SizeType countOfContainer = std::distance(std::begin(newElements), std::end(newElements));
+			std::unique_ptr<SizeType[]> elementsPosition(new SizeType[countOfContainer]);
 			
 			auto newElement = std::begin(newElements);
 			
@@ -193,7 +177,7 @@ namespace evt {
 				elementsFound = 0;
 				newElement = std::begin(newElements);
 				
-				for (sizeType index = 0; index < count_; ++index) {
+				for (SizeType index = 0; index < count_; ++index) {
 					
 					if (values[index] == *newElement) {
 						elementsPosition[elementsFound] = index;
@@ -207,7 +191,7 @@ namespace evt {
 				}
 				
 				if (elementsFound == newElements.size()) {
-					for (sizeType i = 0; i < newElements.size(); ++i) {
+					for (SizeType i = 0; i < newElements.size(); ++i) {
 						this->removeAt(elementsPosition[0]);
 					}
 				}
@@ -216,13 +200,13 @@ namespace evt {
 			return *this;
 		}
 		
-		inline void checkIfEmpty() const {
+		CONSTEXPR void checkIfEmpty() const {
 			if (count_ == 0) {
 				throw std::length_error("Array is empty (lenght == 0)");
 			}
 		}
 		
-		inline void checkIfOutOfRange(const sizeType index) const {
+		CONSTEXPR void checkIfOutOfRange(const SizeType index) const {
 			if (index >= count_) {
 				throw std::out_of_range("Index out of range");
 			}
@@ -232,28 +216,32 @@ namespace evt {
 		
 		// MARK: Constructors
 		
-		Array() { }
-		Array(InitializerList elements) { assignNewElements(elements); }
-		Array(const Array& otherArray) { (*this) = otherArray; }
-		Array(Array&& otherArray) { (*this) = otherArray; }
+		CONSTEXPR Array() { }
+		CONSTEXPR Array(InitializerList elements) { assignNewElements(elements); }
+		CONSTEXPR Array(const Array& otherArray) { (*this) = otherArray; }
+		CONSTEXPR Array(Array&& otherArray) { (*this) = otherArray; }
 		
 		template<typename Container>
-		Array(const Container& elements) { assignNewElements(elements); }
+		CONSTEXPR Array(const Container& elements) { assignNewElements(elements); }
 		
 		template <typename Container, typename = typename std::enable_if<!std::is_same<Container, Type>::type>>
-		Array(Container&& elements) { assignNewElementsMOVE(elements); }
+		CONSTEXPR Array(Container&& elements) { assignNewElementsMOVE(elements); }
+		
+		virtual ~Array() {
+			values.~Pointer();
+		}
 		
 		// MARK: Capacity
 		
-		inline sizeType size() const  { return count_; }
-		inline sizeType count() const { return count_; }
-		inline sizeType capacity() const { return capacity_; }
+		CONSTEXPR SizeType size() const  { return count_; }
+		CONSTEXPR SizeType count() const { return count_; }
+		CONSTEXPR SizeType capacity() const { return values.capacity(); }
 		
-		inline bool isEmpty() const { return (count_ == 0); }
+		CONSTEXPR bool isEmpty() const { return (count_ == 0); }
 		
 		// MARK: Manage elements
 		
-		void insertAt(const Type* position, const Type& newElement) {
+		CONSTEXPR void insertAt(const Type* position, const Type& newElement) {
 			
 			if (position == &values[count_]) {
 				this->append(newElement);
@@ -269,7 +257,7 @@ namespace evt {
 			}
 		}
 		
-		void insertAt(const Type* position, Type&& newElement) {
+		CONSTEXPR void insertAt(const Type* position, Type&& newElement) {
 			
 			if (position == &values[count_]) {
 				this->append(newElement);
@@ -285,7 +273,7 @@ namespace evt {
 			}
 		}
 		
-		void insert(const Type& newElement, const sizeType index) {
+		CONSTEXPR void insert(const Type& newElement, const SizeType index) {
 			
 			if (index != 0) {
 				checkIfOutOfRange(index);
@@ -295,16 +283,16 @@ namespace evt {
 				return;
 			}
 			
-			if (capacity_ == count_) {
+			if (values.capacity() == count_) {
 				
-				capacity_ = (sizeOfArrayInMB(capacity_) < 500) ? (capacity_ << 2) : (capacity_ << 1);
+				SizeType newCapacity = (sizeOfArrayInMB(values.capacity()) < 500) ? (values.capacity() << 2) : (values.capacity() << 1);
 				
-				auto newValues = newArrayOfSize(capacity_);
+				Pointer newValues (newCapacity);
 				
 				std::copy(&values[0], &values[index], &newValues[0]);
-				std::copy(&values[index], &values[count_], &newValues[index+1]);
+				newValues.copyValuesFrom(values, index+1);
 				
-				values = std::move(newValues);
+				values = newValues;
 			}
 			else {
 				std::copy(&values[index], &values[count_], &values[index + 1]);
@@ -314,7 +302,7 @@ namespace evt {
 			count_ += 1;
 		}
 		
-		void insert(Type&& newElement, const sizeType index) {
+		CONSTEXPR void insert(Type&& newElement, const SizeType index) {
 			
 			if (index != 0) {
 				checkIfOutOfRange(index);
@@ -324,31 +312,31 @@ namespace evt {
 				return;
 			}
 			
-			if (capacity_ == count_) {
+			if (values.capacity() == count_) {
 				
-				capacity_ = (sizeOfArrayInMB(capacity_) < 500) ? (capacity_ << 2) : (capacity_ << 1);
+				SizeType newCapacity = (sizeOfArrayInMB(values.capacity()) < 500) ? (values.capacity() << 2) : (values.capacity() << 1);
 				
-				auto newValues = newArrayOfSize(capacity_);
+				Pointer newValues (newCapacity);
 				
 				std::move(&values[0], &values[index], &newValues[0]);
-				std::move(&values[index], &values[count_], &newValues[index+1]);
+				newValues.moveValuesFrom(values, index+1);
 				
-				values = std::move(newValues);
+				values = newValues;
 			}
 			else {
 				std::move(&values[index], &values[count_], &values[index + 1]);
 			}
 			
-			values[index] = std::move(newElement);
+			values[index] = newElement;
 			count_ += 1;
 		}
 		
 		/// Replaces the contents with copies of those in the range
-		void assignRange(sizeType first, sizeType last) {
+		CONSTEXPR void assignRange(SizeType first, SizeType last) {
 			
 			if (first > last) {
 				checkIfOutOfRange(first);
-				sizeType auxFirst = last;
+				SizeType auxFirst = last;
 				last = first;
 				first = auxFirst;
 			}
@@ -356,7 +344,7 @@ namespace evt {
 			
 			std::copy(&values[first], &values[last+1], &values[0]);
 			
-			sizeType newCount = last-first + 1;
+			SizeType newCount = last-first + 1;
 			
 			if (newCount < (count_ / 4.0)) {
 				resize(newCount);
@@ -365,35 +353,35 @@ namespace evt {
 			}
 		}
 		
-		void append(const Type& newElement) {
+		CONSTEXPR void append(const Type& newElement) {
 			
-			if (capacity_ == count_) {
-				resizeValuesToSize((sizeOfArrayInMB(capacity_) < 500) ? (capacity_ << 2) : (capacity_ << 1));
+			if (values.capacity() == count_) {
+				resizeValuesToSize((sizeOfArrayInMB(values.capacity()) < 500) ? (values.capacity() << 2) : (values.capacity() << 1));
 			}
 			values[count_] = newElement;
 			count_ += 1;
 		}
 		
-		void append(Type&& newElement) {
+		CONSTEXPR void append(Type&& newElement) {
 			
-			if (capacity_ == count_) {
-				resizeValuesToSize((sizeOfArrayInMB(capacity_) < 500) ? (capacity_ << 2) : (capacity_ << 1), 1);
+			if (values.capacity() == count_) {
+				resizeValuesToSize((sizeOfArrayInMB(values.capacity()) < 500) ? (values.capacity() << 2) : (values.capacity() << 1), 1);
 			}
-			values[count_] = std::move(newElement);
+			values[count_] = newElement;
 			count_ += 1;
 		}
 		
-		inline void append(InitializerList newElements) { appendNewElements(newElements); }
-		inline void appendElements(InitializerList newElements) { appendNewElements(newElements); }
+		CONSTEXPR void append(InitializerList newElements) { appendNewElements(newElements); }
+		CONSTEXPR void appendElements(InitializerList newElements) { appendNewElements(newElements); }
 		
 		template<typename Container>
-		inline void appendElements(const Container& newElements) { appendNewElements(newElements); }
+		CONSTEXPR void appendElements(const Container& newElements) { appendNewElements(newElements); }
 		
 		template<typename Container>
-		inline void appendElements(Container&& newElements) { appendNewElementsMOVE(newElements); }
+		CONSTEXPR void appendElements(Container&& newElements) { appendNewElementsMOVE(newElements); }
 		
 		/// Only reserves new memory if the new size if bigger than the array capacity
-		void reserve(const sizeType newSize) {
+		CONSTEXPR void reserve(const SizeType newSize) {
 			
 			if (newSize == 0 && count_ > 0) {
 				removeAll();
@@ -403,13 +391,13 @@ namespace evt {
 			if (newSize < count_) {
 				count_ = newSize;
 			}
-			if (newSize > capacity_) {
+			if (newSize > values.capacity()) {
 				resizeValuesToSize(newSize);
 			}
 		}
 		
 		/// Only reserves new memory if the new size if smaller than the array count
-		void resize(const sizeType newSize) {
+		CONSTEXPR void resize(const SizeType newSize) {
 			
 			if (newSize == 0 && count_ > 0) {
 				removeAll();
@@ -423,9 +411,9 @@ namespace evt {
 		}
 		
 		/// Requests the removal of unused capacity. The new capacity will be the number of elements (count)
-		bool shrink() {
+		CONSTEXPR bool shrink() {
 			
-			if (capacity_ > count_) {
+			if (values.capacity() > count_) {
 				resizeValuesToSize(count_);
 				return true;
 			}
@@ -433,12 +421,12 @@ namespace evt {
 		}
 		
 		/// Removes all elements in array, count will be 0, capacity won't be affected
-		inline void clear() {
+		CONSTEXPR  void clear() {
 			removeAll(true);
 		}
 		
 		/// Removes all elements in array, capacity will be 1 if desired
-		void removeAll(const bool keepCapacity = false) {
+		CONSTEXPR void removeAll(const bool keepCapacity = false) {
 			
 			if (!keepCapacity) {
 				assignMemoryAndCapacityForSize(2, true);
@@ -446,7 +434,7 @@ namespace evt {
 			count_ = 0;
 		}
 		
-		inline void removeAt(const sizeType index, const bool shrinkIfEmpty = true) {
+		CONSTEXPR void removeAt(const SizeType index, const bool shrinkIfEmpty = true) {
 			
 			if (index == count_ - 1) {
 				removeLast();
@@ -462,7 +450,7 @@ namespace evt {
 			
 			std::copy(&values[index + 1], &values[count_], &values[index]);
 			
-			if (count_ - 1 < (capacity_ / 4.0)) {
+			if (count_ - 1 < (values.capacity() / 4.0)) {
 				resize(count_ - 1);
 			}
 			else {
@@ -470,7 +458,7 @@ namespace evt {
 			}
 		}
 		
-		void removeLast(const bool shrinkIfEmpty = true) {
+		CONSTEXPR void removeLast(const bool shrinkIfEmpty = true) {
 			
 			if (count_ == 2 && shrinkIfEmpty) {
 				shrink();
@@ -478,7 +466,7 @@ namespace evt {
 			
 			checkIfEmpty();
 			
-			if (count_ - 1 < (capacity_ / 4.0)) {
+			if (count_ - 1 < (values.capacity() / 4.0)) {
 				resize(count_ - 1);
 			}
 			else {
@@ -486,58 +474,55 @@ namespace evt {
 			}
 		}
 		
-		inline void removeFirst(const bool shrinkIfEmpty = true) {
+		CONSTEXPR void removeFirst(const bool shrinkIfEmpty = true) {
 			removeAt(0, shrinkIfEmpty);
 		}
 		
-		void removeSubrange(const sizeType startPosition, const sizeType endPosition, bool lessEqual = true) {
-			for (sizeType i = startPosition; lessEqual ? (i <= endPosition) : (i < endPosition); ++i) {
+		CONSTEXPR void removeSubrange(const SizeType startPosition, const SizeType endPosition, bool lessEqual = true) {
+			for (SizeType i = startPosition; lessEqual ? (i <= endPosition) : (i < endPosition); ++i) {
 				this->removeAt(startPosition);
 			}
 		}
 		
-		void removeSubrange(std::initializer_list<int> position, bool lessEqual = true) {
+		CONSTEXPR void removeSubrange(std::initializer_list<int> position, bool lessEqual = true) {
 			
-			sizeType startPosition = *std::begin(position);
-			sizeType endPosition = *(std::end(position)-1);
+			SizeType startPosition = *std::begin(position);
+			SizeType endPosition = *(std::end(position)-1);
 			
-			for (sizeType i = startPosition; lessEqual ? (i <= endPosition) : (i < endPosition); ++i) {
+			for (SizeType i = startPosition; lessEqual ? (i <= endPosition) : (i < endPosition); ++i) {
 				this->removeAt(startPosition);
 			}
 		}
 		
-		void swap(Array& otherArray) {
+		CONSTEXPR void swap(Array& otherArray) {
 			
-			Pointer auxValues = std::move(this->values);
-			sizeType auxCount = this->count_;
-			sizeType auxCapacity = this->capacity_;
+			Pointer auxValues = this->values;
+			SizeType auxCount = this->count_;
 			
-			this->values = std::move(otherArray.values);
+			this->values = otherArray.values;
 			this->count_ = otherArray.count_;
-			this->capacity_ = otherArray.capacity_;
 			
-			otherArray.values = std::move(auxValues);
+			otherArray.values = auxValues;
 			otherArray.count_ = auxCount;
-			otherArray.capacity_ = auxCapacity;
 		}
 		
 		template <typename Container>
-		Array& removeElements(const Container& newElements, bool onlyFirstOcurrence = false) {
+		CONSTEXPR Array& removeElements(const Container& newElements, bool onlyFirstOcurrence = false) {
 			return removeElementsFromContainer(newElements, onlyFirstOcurrence);
 		}
 		
-		Array& removeElements(InitializerList newElements, bool onlyFirstOcurrence = false) {
+		CONSTEXPR Array& removeElements(InitializerList newElements, bool onlyFirstOcurrence = false) {
 			return removeElementsFromContainer(newElements, onlyFirstOcurrence);
 		}
 		
 		template <typename Container>
-		void swap(Container& container) {
+		CONSTEXPR void swap(Container& container) {
 			Array otherArray(container);
 			swap(otherArray);
 			container = Array::to<Container>(otherArray);
 		}
 		
-		inline bool contains(const Type& element) const {
+		CONSTEXPR bool contains(const Type& element) const {
 			for (const auto& elm: (*this)) {
 				if (element == elm) { return true; }
 			}
@@ -545,15 +530,15 @@ namespace evt {
 		}
 		
 		/// Returns the index of the first ocurrence of the element. Last position if the element isn't found
-		sizeType find(const Type& element) const {
+		CONSTEXPR SizeType find(const Type& element) const {
 			return (std::find(&values[0], &values[count_], element) - &values[0]);
 		}
 		
-		/// Returns an Array with all the ocurrences of the element
-		Array<sizeType> findAll(const Type& element) const {
+		/// Returns an Array of positions with all the ocurrences of the element
+		Array<SizeType> findAll(const Type& element) const {
 			
-			Array<sizeType> positions;
-			sizeType position = 0;
+			Array<SizeType> positions;
+			SizeType position = 0;
 			
 			for (const auto& value: (*this)) {
 				if (element == value) {
@@ -565,23 +550,38 @@ namespace evt {
 			return positions;
 		}
 		
-		std::string toString() const {
+		std::string toString() const override {
 			
 			if (this->isEmpty()) {
 				return "[]";
 			}
 			
 			std::string output = "[";
-			sizeType position = 0;
+			SizeType position = 0;
 			
-			for (const auto& value: *this) {
+			for (const Type& value: *this) {
 				output += [&] {
-					if (typeid(value) == typeid(std::string)) {
-						return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
-					} else if (typeid(value) == typeid(char)) {
-						return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
-					}
-					return evt::internalArrayPrintEVT::to_string(value);
+					
+					#if (__cplusplus >= 201406L)
+					
+						if CONSTEXPR (std::is_same<Type, std::string>::value) {
+							return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
+						} else if CONSTEXPR  (std::is_same<Type, char>::value) {
+							return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
+						} else if CONSTEXPR (std::is_arithmetic<Type>::value || std::is_same<Type, EVTObject>::value || std::is_base_of<EVTObject, Type>::value) {
+							return evt::internalArrayPrintEVT::to_string(value);
+						}
+						return std::string("Object");
+					
+					#else
+						if (typeid(value) == typeid(std::string)) {
+							return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
+						} else if (typeid(value) == typeid(char)) {
+							return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
+						}
+						return evt::internalArrayPrintEVT::to_string(value);
+					
+					#endif
 				}();
 				
 				if (position+1 < count_) {
@@ -596,125 +596,112 @@ namespace evt {
 			return output;
 		}
 		
-		/// Returns an ostream that contains the array elements
-		friend std::ostream& operator<<(std::ostream& os, const evt::Array<Type,initialCapacity>& arr) {
-			return os << arr.toString();
-		}
-		
 		/// Converts Array to other types
 		template <typename Container>
-		static Container to(const Array& elements) {
+		CONSTEXPR static Container to(const Array& elements) {
 			Container cont(elements.count());
 			std::copy(std::begin(elements), std::end(elements), std::begin(cont));
 			return cont;
 		}
 		
 		template <typename Container>
-		static Container to(Array&& elements) {
+		CONSTEXPR static Container to(Array&& elements) {
 			Container cont(elements.count());
 			std::move(std::begin(elements), std::end(elements), std::begin(cont));
 			return cont;
 		}
 		
 		template <typename Container>
-		bool equal(const Container& elements) const {
+		CONSTEXPR bool equal(const Container& elements) const {
 			return (*this == elements);
 		}
 		
-		bool equal(InitializerList elements) const {
+		CONSTEXPR bool equal(InitializerList elements) const {
 			return this->operator==(elements);
 		}
 		
-		#if (__cplusplus >= 201406)
-				
-			inline std::experimental::optional<Type> at(const sizeType index) const {
-				if (index >= count_) {
-					return std::experimental::nullopt;
-				} else {
-					return values[index];
-				}
+		CONSTEXPR Optional<Type> at(const SizeType index) const {
+			if (index >= count_) {
+				return nullptr;
+			} else {
+				return values[index];
 			}
-		#endif
+		}
 		
 		// MARK: Operators overload
 		
-		/// Returns the pointer of the array
-		inline Type* operator*() const {
-			return values.get();
-		}
-		
-		inline Type& operator[](const sizeType index) {
+		CONSTEXPR Type& operator[](const SizeType index) {
 			checkIfOutOfRange(index);
 			return values[index];
 		}
 		
-		inline const Type& operator[](const sizeType index) const {
+		CONSTEXPR const Type& operator[](const SizeType index) const {
 			checkIfOutOfRange(index);
 			return values[index];
 		}
 		
 		/// Removes a subrange of elements
 		template <typename Container>
-		inline Array& operator-=(const Container& newElements) {
+		CONSTEXPR Array& operator-=(const Container& newElements) {
 			return removeElements(newElements);
 		}
 		
-		inline Array& operator-=(InitializerList newElements) {
+		CONSTEXPR Array& operator-=(InitializerList newElements) {
 			return removeElements(newElements);
 		}
 		
 		/// Returns a subrange of elements
 		template <typename Container>
-		inline Array operator-(const Container& newElements) const {
+		CONSTEXPR Array operator-(const Container& newElements) const {
 			Array otherArray(*this);
 			otherArray -= newElements;
 			return otherArray;
 		}
 		
 		template <typename Container>
-		inline Array operator+(const Container& newElements) const {
+		CONSTEXPR Array operator+(const Container& newElements) const {
 			Array otherArray(*this);
 			otherArray += newElements;
 			return otherArray;
 		}
 		
 		template <typename Container>
-		inline Array& operator+=(const Container& newElements) {
+		CONSTEXPR Array& operator+=(const Container& newElements) {
 			return appendNewElements(newElements);
 		}
 		
 		template <typename Container>
-		inline Array& operator+=(Container&& newElements) {
+		CONSTEXPR Array& operator+=(Container&& newElements) {
 			return appendNewElementsMOVE(newElements);
 		}
 		
-		inline Array& operator+=(InitializerList newElements) {
+		CONSTEXPR Array& operator+=(InitializerList newElements) {
 			return appendNewElements(newElements);
 		}
 		
 		template <typename Container>
-		inline bool operator==(const Container& elements) const {
-			sizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
+		CONSTEXPR bool operator==(const Container& elements) const {
+			SizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
 			if (count_ != countOfContainer) { return false; }
 			return std::equal(&values[0], &values[count_], std::begin(elements));
 		}
 		
 		template <typename Container>
-		inline bool operator!=(const Container& elements) const {
+		CONSTEXPR bool operator!=(const Container& elements) const {
 			return !( (*this) == elements );
 		}
 		
 		/// Returns true if the contents of the array are lexicographically less than the contents of the container
 		template <typename Container>
-		inline bool operator<(const Container& elements) {
+		CONSTEXPR bool operator<(const Container& elements) {
 			
-			sizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
-			sizeType smallerSize = (count_ < countOfContainer) ? count_ : countOfContainer;
+			SizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
+			SizeType smallerSize = (count_ < countOfContainer) ? count_ : countOfContainer;
 			
 			auto arrayElement = std::begin(*this);
 			auto containerElement = std::begin(elements);
 			
-			for (sizeType i = 0; i < smallerSize; ++i, ++arrayElement, ++containerElement) {
+			for (SizeType i = 0; i < smallerSize; ++i, ++arrayElement, ++containerElement) {
 				if (*arrayElement != *containerElement) {
 					return *arrayElement < *containerElement;
 				}
@@ -724,15 +711,15 @@ namespace evt {
 		}
 		
 		template <typename Container>
-		inline bool operator<=(const Container& elements) {
+		CONSTEXPR bool operator<=(const Container& elements) {
 			
-			sizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
-			sizeType smallerSize = (count_ < countOfContainer) ? count_ : countOfContainer;
+			SizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
+			SizeType smallerSize = (count_ < countOfContainer) ? count_ : countOfContainer;
 			
 			auto arrayElement = std::begin(*this);
 			auto containerElement = std::begin(elements);
 			
-			for (sizeType i = 0; i < smallerSize; ++i, ++arrayElement, ++containerElement) {
+			for (SizeType i = 0; i < smallerSize; ++i, ++arrayElement, ++containerElement) {
 				if (*arrayElement != *containerElement) {
 					return *arrayElement < *containerElement;
 				}
@@ -743,15 +730,15 @@ namespace evt {
 		
 		/// Returns true if the contents of the array are lexicographically greater than the contents of the container
 		template <typename Container>
-		inline bool operator>(const Container& elements) {
+		CONSTEXPR bool operator>(const Container& elements) {
 			
-			sizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
-			sizeType smallerSize = (count_ < countOfContainer) ? count_ : countOfContainer;
+			SizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
+			SizeType smallerSize = (count_ < countOfContainer) ? count_ : countOfContainer;
 			
 			auto arrayElement = std::begin(*this);
 			auto containerElement = std::begin(elements);
 			
-			for (sizeType i = 0; i < smallerSize; ++i, ++arrayElement, ++containerElement) {
+			for (SizeType i = 0; i < smallerSize; ++i, ++arrayElement, ++containerElement) {
 				if (*arrayElement != *containerElement) {
 					return *arrayElement > *containerElement;
 				}
@@ -761,15 +748,15 @@ namespace evt {
 		}
 		
 		template <typename Container>
-		inline bool operator>=(const Container& elements) {
+		CONSTEXPR bool operator>=(const Container& elements) {
 			
-			sizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
-			sizeType smallerSize = (count_ < countOfContainer) ? count_ : countOfContainer;
+			SizeType countOfContainer = std::distance(std::begin(elements), std::end(elements));
+			SizeType smallerSize = (count_ < countOfContainer) ? count_ : countOfContainer;
 			
 			auto arrayElement = std::begin(*this);
 			auto containerElement = std::begin(elements);
 			
-			for (sizeType i = 0; i < smallerSize; ++i, ++arrayElement, ++containerElement) {
+			for (SizeType i = 0; i < smallerSize; ++i, ++arrayElement, ++containerElement) {
 				if (*arrayElement != *containerElement) {
 					return *arrayElement > *containerElement;
 				}
@@ -783,33 +770,31 @@ namespace evt {
 			if (this != &otherArray) {
 				count_ = otherArray.count_;
 				
-				assignMemoryAndCapacityForSize(otherArray.capacity_);
-				std::copy(otherArray.begin(), otherArray.end(), &values[0]);
+				assignMemoryAndCapacityForSize(otherArray.capacity());
+				values.copyValuesFrom(otherArray);
 			}
 			
 			return *this;
 		}
 		
-		Array& operator=(Array&& otherArray) {
+		CONSTEXPR Array& operator=(Array&& otherArray) {
 			
 			if (this != &otherArray) {
 				count_ = otherArray.count_;
 				
-				assignMemoryAndCapacityForSize(otherArray.capacity_);
-				std::move(otherArray.begin(), otherArray.end(), &values[0]);
+				assignMemoryAndCapacityForSize(otherArray.capacity());
+				values.moveValuesFrom(otherArray);
 			}
 			
 			return *this;
 		}
 		
-		void moveFrom(Array&& otherArray) {
+		CONSTEXPR void moveFrom(Array&& otherArray) {
 			
 			if (this != &otherArray) {
-				values = std::move(otherArray.values);
-				capacity_ = otherArray.capacity_;
+				values = otherArray.values;
 				count_ = otherArray.count_;
 				
-				otherArray.capacity_ = 0;
 				otherArray.count_ = 0;
 			}
 		}
@@ -817,7 +802,6 @@ namespace evt {
 		// MARK: Shuffle
 		
 		void shuffle() {
-			
 			if (this->isEmpty()) { return; }
 			
 			#ifdef __APPLE__
@@ -830,7 +814,7 @@ namespace evt {
 			std::shuffle(&values[0], &values[count_], rng);
 		}
 		
-		Array shuffled() const {
+		CONSTEXPR Array shuffled() const {
 			
 			if (this->isEmpty()) {
 				return *this;
@@ -844,11 +828,11 @@ namespace evt {
 		
 		// MARK: Sort
 		
-		void sort(const std::function<bool(Type&,Type&)>& compareFunction = std::less_equal<Type>()) {
+		CONSTEXPR void sort(const std::function<bool(Type&,Type&)>& compareFunction = std::less_equal<Type>()) {
 			std::sort(&values[0], &values[count_], compareFunction);
 		}
 		
-		Array sorted(const std::function<bool(Type&,Type&)>& compareFunction = std::less_equal<Type>()) const {
+		CONSTEXPR Array sorted(const std::function<bool(Type&,Type&)>& compareFunction = std::less_equal<Type>()) const {
 			
 			if (this->isEmpty()) {
 				return *this;
@@ -862,37 +846,32 @@ namespace evt {
 		
 		// MARK: Positions
 		
-		inline Type* begin() const {
-			return &values[0];
+		CONSTEXPR Type* begin() const {
+			return values.begin();
 		}
 		
-		inline Type* end() const {
+		CONSTEXPR Type* end() const {
 			return &values[count_];
 		}
 		
-		inline Type& first() {
+		CONSTEXPR Type& first() {
 			checkIfEmpty();
 			return *(&values[0]);
 		}
 		
-		inline Type& last() {
+		CONSTEXPR Type& last() {
 			checkIfEmpty();
 			return *(&values[count_]-1);
 		}
 		
-		inline const Type& first() const {
+		CONSTEXPR const Type& first() const {
 			checkIfEmpty();
 			return *(&values[0]);
 		}
 		
-		inline const Type& last() const {
+		CONSTEXPR const Type& last() const {
 			checkIfEmpty();
 			return *(&values[count_]-1);
 		}
 	};
 }
-
-#undef use_make_unique
-#undef initialCapacity_
-
-

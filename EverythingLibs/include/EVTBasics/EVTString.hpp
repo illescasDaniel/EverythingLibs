@@ -25,6 +25,7 @@
 #pragma once
 
 #include <string_view>
+#include "../EVTObject.hpp"
 
 namespace evt {
 	
@@ -32,9 +33,10 @@ namespace evt {
 			std::is_same<CharType, char>::value ||
 			std::is_same<CharType, wchar_t>::value ||
 			std::is_same<CharType, char16_t>::value ||
-			std::is_same<CharType, char32_t>::value>::type>
+			std::is_same<CharType, char32_t>::value>::type,
+	typename Traits = std::char_traits<CharType>>
 	
-	class StringView: public std::basic_string_view<CharType> {
+	class StringView: public std::basic_string_view<CharType>, public EVTObject {
 		
 		typedef std::basic_string_view<CharType> super;
 		
@@ -113,6 +115,16 @@ namespace evt {
 		
 		constexpr std::size_t reverseFind(const StringView& str, std::size_t position = StringView::nullPosition) {
 			return this->find(str, position);
+		}
+		
+		std::string toString() const override {
+			
+			const CharType* str = this->data();
+			std::string outputStr;
+			for (std::size_t i = 0; i < this->size(); i++) {
+				outputStr += str[i];
+			}
+			return outputStr;
 		}
 	};
 	

@@ -31,46 +31,60 @@
 #include <algorithm>
 #include <utility>
 
+#if (__cplusplus > 201103L)
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
+
 namespace evt {
 	
 	template <typename Type>
 	class ThinPointer {
 		
-		Type* value_ptr {nullptr};
+		Type* valuePtr {nullptr};
 		
-		void freePointer() {
-			if (value_ptr != nullptr) {
-				delete value_ptr;
-				value_ptr = nullptr;
+		CONSTEXPR void freePointer() {
+			if (valuePtr != nullptr) {
+				delete valuePtr;
+				valuePtr = nullptr;
 			}
 		}
 		
 	public:
 		
-		ThinPointer(){ }
+		CONSTEXPR ThinPointer(){ }
 		
-		ThinPointer(const Type& value) {
-			value_ptr = new Type{value};
+		CONSTEXPR ThinPointer(const Type& value) {
+			valuePtr = new Type{value};
 		}
 		
-		inline Type& operator*() const {
-			if (value_ptr == nullptr) { throw std::bad_alloc(); }
-			return *value_ptr;
+		CONSTEXPR ThinPointer(ThinPointer& otherPtr) {
+			this->operator=(otherPtr);
 		}
 		
-		inline operator Type() const {
-			if (value_ptr == nullptr) { throw std::bad_alloc(); }
-			return *value_ptr;
+		CONSTEXPR Type& operator*() const {
+			if (valuePtr == nullptr) { throw std::bad_alloc(); }
+			return *valuePtr;
 		}
 		
-		void operator=(ThinPointer& otherPtr) {
+		CONSTEXPR operator Type() const {
+			if (valuePtr == nullptr) { throw std::bad_alloc(); }
+			return *valuePtr;
+		}
+		
+		CONSTEXPR void operator=(ThinPointer& otherPtr) {
 			this->freePointer();
-			value_ptr = new Type{*otherPtr};
+			valuePtr = new Type{*otherPtr};
 			otherPtr.freePointer();
 		}
 		
-		inline bool isNull() const {
-			return value_ptr == nullptr;
+		CONSTEXPR bool isNull() const {
+			return valuePtr == nullptr;
+		}
+		
+		CONSTEXPR bool isNotNull() const {
+			return valuePtr != nullptr;
 		}
 		
 		~ThinPointer() {
@@ -81,130 +95,156 @@ namespace evt {
 	template <typename Type>
 	class Pointer {
 		
-		std::unique_ptr<Type> value_ptr {nullptr};
+		std::unique_ptr<Type> valuePtr {nullptr};
 		
 	public:
 		
-		Pointer() {
-			value_ptr = std::unique_ptr<Type>(new Type{});
+		CONSTEXPR Pointer() {
+			valuePtr = std::unique_ptr<Type>(new Type{});
 		}
 		
-		Pointer(const Type& value) {
-			value_ptr = std::unique_ptr<Type>(new Type{value});
+		CONSTEXPR Pointer(const Type& value) {
+			valuePtr = std::unique_ptr<Type>(new Type{value});
 		}
 		
-		inline Type& operator*() const {
-			if (value_ptr == nullptr) { throw std::bad_alloc(); }
-			return *value_ptr;
+		CONSTEXPR Pointer(Pointer& otherPtr) {
+			this->operator=(otherPtr);
 		}
 		
-		inline operator Type() const {
-			if (value_ptr == nullptr) { throw std::bad_alloc(); }
-			return *value_ptr;
+		CONSTEXPR Type& operator*() const {
+			if (valuePtr == nullptr) { throw std::bad_alloc(); }
+			return *valuePtr;
 		}
 		
-		inline bool isNull() const {
-			return value_ptr == nullptr;
+		CONSTEXPR operator Type() const {
+			if (valuePtr == nullptr) { throw std::bad_alloc(); }
+			return *valuePtr;
 		}
 		
-		void operator=(Pointer& otherPtr) {
-			value_ptr = std::move(otherPtr.value_ptr);
+		CONSTEXPR bool isNull() const {
+			return valuePtr == nullptr;
+		}
+		
+		CONSTEXPR bool isNotNull() const {
+			return valuePtr != nullptr;
+		}
+		
+		CONSTEXPR Pointer& operator=(Pointer& otherPtr) {
+			valuePtr = std::move(otherPtr.valuePtr);
+			return *this;
 		}
 	};
 	
 	template <typename Type>
 	class Pointer<Type[]> {
 		
-		std::unique_ptr<Type[]> value_ptr {nullptr};
+		std::unique_ptr<Type[]> valuePtr {nullptr};
 		std::size_t capacity_ {1};
 		
 	public:
 		
-		Pointer() {
-			this->value_ptr = std::unique_ptr<Type[]>(new Type[capacity_]);
+		CONSTEXPR Pointer() {
+			this->valuePtr = std::unique_ptr<Type[]>(new Type[capacity_]{});
 		}
 		
-		explicit Pointer(const std::size_t newCapacity) {
-			this->capacity_ = newCapacity;
-			this->value_ptr = std::unique_ptr<Type[]>(new Type[capacity_]);
+		CONSTEXPR Pointer(const std::size_t capacity) {
+			this->capacity_ = capacity;
+			this->valuePtr = std::unique_ptr<Type[]>(new Type[capacity_]{});
 		}
 		
-		Pointer(std::initializer_list<Type> values) {
+		CONSTEXPR Pointer(std::initializer_list<Type> values) {
 			
 			this->capacity_ = values.size();
-			this->value_ptr = std::unique_ptr<Type[]>(new Type[capacity_]);
+			this->valuePtr = std::unique_ptr<Type[]>(new Type[capacity_]{});
 			
 			size_t index = 0;
 			for (const auto& value: values) {
-				value_ptr[index] = value;
+				valuePtr[index] = value;
 				index++;
 			}
 		}
 		
-		inline Type& operator[](const std::size_t index) {
-			
-			if (index >= capacity_) { throw std::out_of_range("Index out of range"); }
-			if (value_ptr == nullptr) { throw std::bad_alloc(); }
-			
-			return value_ptr[index];
+		CONSTEXPR Pointer(Pointer<Type[]>& otherPtr) {
+			this->operator=(otherPtr);
 		}
 		
-		inline const Type& operator[](const std::size_t index) const {
-			
-			if (index >= capacity_) { throw std::out_of_range("Index out of range"); }
-			if (value_ptr == nullptr) { throw std::bad_alloc(); }
-			
-			return value_ptr[index];
+		CONSTEXPR Pointer(Pointer<Type[]>&& otherPtr) {
+			this->operator=(otherPtr);
 		}
 		
-		inline std::size_t capacity() const {
+		CONSTEXPR Type& operator[](const std::size_t index) const {
+			if (valuePtr == nullptr) { throw std::bad_alloc(); }
+			return valuePtr[index];
+		}
+		
+		CONSTEXPR Type& at(const std::size_t index) const {
+			
+			if (index >= capacity_) { throw std::out_of_range("Index out of range"); }
+			if (valuePtr == nullptr) { throw std::bad_alloc(); }
+			
+			return valuePtr[index];
+		}
+		
+		CONSTEXPR std::size_t capacity() const {
 			return capacity_;
 		}
 		
-		inline Type* begin() const {
-			return &value_ptr[0];
+		CONSTEXPR Type* begin() const {
+			return &valuePtr[0];
 		}
 		
-		inline Type* end() const {
-			return &value_ptr[capacity_];
+		CONSTEXPR Type* end() const {
+			return &valuePtr[capacity_];
 		}
 		
-		void operator=(Pointer<Type[]>& otherPtr) {
+		CONSTEXPR Pointer& operator=(Pointer<Type[]>& otherPtr) {
 			
 			this->capacity_ = otherPtr.capacity();
-			this->value_ptr = std::move(otherPtr.value_ptr);
+			this->valuePtr = std::move(otherPtr.valuePtr);
 			
 			otherPtr.capacity_ = 0;
+			
+			return *this;
 		}
 		
-		void operator=(Pointer<Type[]>&& otherPtr) {
+		CONSTEXPR Pointer& operator=(Pointer<Type[]>&& otherPtr) {
 			
 			this->capacity_ = otherPtr.capacity();
-			this->value_ptr = std::move(otherPtr.value_ptr);
+			this->valuePtr = std::move(otherPtr.valuePtr);
 			
 			otherPtr.capacity_ = 0;
+			
+			return *this;
+		}
+		
+		CONSTEXPR bool operator==(Pointer<Type[]>& otherPtr) {
+			return std::equal(&valuePtr[0], &valuePtr[capacity_], otherPtr.begin());
 		}
 		
 		template <typename Container>
-		void moveValuesFrom(Container&& container) {
-			std::move(std::begin(container), std::end(container), this->begin());
+		CONSTEXPR void moveValuesFrom(Container&& container, std::size_t position = 0) {
+			std::move(std::begin(container), std::end(container), &(this->at(position)));
 		}
 		
-		void moveValuesFrom(std::initializer_list<Type>&& container) {
-			std::move(std::begin(container), std::end(container), this->begin());
+		CONSTEXPR void moveValuesFrom(std::initializer_list<Type>&& container, std::size_t position = 0) {
+			std::move(std::begin(container), std::end(container), &(this->at(position)));
 		}
 		
 		template <typename Container>
-		void copyValuesFrom(const Container& container) {
-			std::copy(std::begin(container), std::end(container), this->begin());
+		CONSTEXPR void copyValuesFrom(const Container& container, std::size_t position = 0) {
+			std::copy(std::begin(container), std::end(container), &(this->at(position)));
 		}
 		
-		void copyValuesFrom(const std::initializer_list<Type> container) {
-			std::copy(std::begin(container), std::end(container), this->begin());
+		CONSTEXPR void copyValuesFrom(const std::initializer_list<Type> container, std::size_t position = 0) {
+			std::copy(std::begin(container), std::end(container), &(this->at(position)));
 		}
 		
-		inline bool isNull() const {
-			return value_ptr == nullptr;
+		CONSTEXPR bool isNull() const {
+			return valuePtr == nullptr;
+		}
+		
+		CONSTEXPR bool isNotNull() const {
+			return valuePtr != nullptr;
 		}
 	};
 }

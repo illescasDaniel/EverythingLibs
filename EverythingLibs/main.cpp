@@ -33,9 +33,61 @@ namespace evt {
 	};
 }
 
+class Stuff: public EVTObject {
+public:
+	int a = 10, b = 90;
+	
+	Stuff() {}
+	Stuff(int a, int b): a(a), b(b) {}
+	
+	string toString() const override {
+		return "Things: " + to_string(a) + " " + to_string(b);
+	}
+};
+
+class Test: public Stuff {
+public:
+	int c = 103, d = 89;
+	
+	typedef Stuff super;
+	Test() {}
+	
+	string toString() const override {
+		return super::toString() + " and " + to_string(c) + " " + to_string(d);
+	}
+};
+
 int main(int argc, char* argv[]) {
 	
-	boolalpha(cout);
+	Pointer<int> aP(10);
+	Pointer<int> bP(aP);
+	
+	if (bP.isNotNull()) {
+		print(bP);
+	}
+	
+	#if (cplusplusVersion >= cplusplus1z)
+	
+		Array<Any> things {"hola", 10, 5.1};
+		print(things[0].as<string>());
+		print(things[1].as<int>());
+		print(things[2].as<double>());
+	
+		if (auto thing = things.at(3); thing.isNotNull()) { // Optional
+			print(thing.value().as<int>());
+		}
+	#endif
+
+	Array<int> numbersArr {1,2,3,4,5};
+	if (numbersArr.find(3) != numbersArr.count()) {
+		print("Found!!");
+	}
+	
+	Array<Stuff> stuff;
+	stuff.append(Stuff(10, 20));
+	print(stuff);
+	
+	print(Test());
 	
 	#if (cplusplusVersion >= cplusplus1z)
 	
@@ -91,7 +143,7 @@ int main(int argc, char* argv[]) {
 	
 	Arguments args(argc, argv);
 	print(args.size());
-	print(args);
+	print("Arguments:", args);
 	
 	Array<Human> humansTest;
 	humansTest.append(Human());
@@ -125,6 +177,8 @@ int main(int argc, char* argv[]) {
 	//print(copyNames.sorted());
 	
 	Array<double> numbersD {1.2, 8.6, 8};
+	//numbersD.removeElements({8.6, 8});
+	print(numbersD.capacity());
 	print(numbersD);
 	print(numbersD.sorted());
 	
@@ -139,6 +193,7 @@ int main(int argc, char* argv[]) {
 	print("Uppercased names:", toUpperContainer(names));
 	
 	string otherNames[] = {"aCa", "pOp"};
+
 	print("Uppercased names:", toUpperContainer(otherNames));
 	print("Uppercased names:", toUpperContainer({"aa", "bb"}));
 	
@@ -179,9 +234,13 @@ int main(int argc, char* argv[]) {
 	
 	print(pNumbers.capacity());
 	
+	PrintSettings::terminator = " ";
+	print("Numbers:");
 	for (const auto& number: pNumbers) {
-		print("Number:", number);
+		print(number);
 	}
+	PrintSettings::terminator = PrintSettings::defaultTerminator;
+	
 	Pointer<int[]> pNumbers2({1,2,3,4});
 	cout << pNumbers2[2] << endl;
 	
@@ -236,5 +295,5 @@ int main(int argc, char* argv[]) {
 	cout << quoted(testChar) << endl;
 	
 	//int number2 = readLine<int>();
-	//print(number2);*/
+	//print(number2);
 }

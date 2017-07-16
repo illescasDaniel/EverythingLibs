@@ -36,25 +36,24 @@
 #include <limits>
 
 namespace evt {
-	
 	namespace utils {
-		
+			
 		#define cplusplusVersion __cplusplus
 		#define cplusplus1z 201406L
 		#define cplusplus14 201402L
 		#define cplusplus11 201103L
 		#define cplusplus98 199711L
-		
+			
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
 		static inline bool isOdd(const Type number) {
 			return (number & 1) == 1;
 		}
-		
+			
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
 		static inline bool isEven(const Type number) {
 			return (number & 1) == 0;
 		}
-		
+			
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
 		bool isPrime(Type number) {
 			
@@ -77,7 +76,7 @@ namespace evt {
 			
 			return true;
 		}
-		
+			
 		template <typename IntegralType = uint64_t, typename = typename std::enable_if<std::is_integral<IntegralType>::value,bool>::type>
 		IntegralType randomIntegralNumber(IntegralType lowerBound = std::numeric_limits<IntegralType>::denorm_min(),
 										  IntegralType upperBound = std::numeric_limits<IntegralType>::max()) {
@@ -90,7 +89,7 @@ namespace evt {
 			
 			return randomValue(rng);
 		}
-		
+			
 		template <typename FloatingPointType = double, typename = typename std::enable_if<std::is_floating_point<FloatingPointType>::value,bool>::type>
 		FloatingPointType randomRealNumber(FloatingPointType lowerBound = std::numeric_limits<FloatingPointType>::denorm_min(),
 										   FloatingPointType upperBound = std::numeric_limits<FloatingPointType>::max()) {
@@ -103,71 +102,83 @@ namespace evt {
 			
 			return randomValue(rng);
 		}
-		
+			
+		std::mt19937_64 randomGenerator() {
+			
+			#ifdef __APPLE__
+				std::mt19937_64 rng(arc4random());
+			#else
+				std::random_device rd;
+				std::mt19937_64 rng(rd());
+			#endif
+			
+			return rng;
+		}
+			
 		template <typename Array, typename = typename std::enable_if<std::is_array<Array>::value,bool>::type>
 		size_t arrayLengthOf(const Array& array) {
 			return std::end(array) - std::begin(array);
 		}
-		
+			
 		// TRIM: https://stackoverflow.com/a/217605/6303785
-		
+			
 		inline void leftTrim(std::string &s) {
 			s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
 		}
-		
+			
 		inline void rightTrim(std::string &s) {
 			s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 		}
-		
+			
 		inline void trim(std::string &s) {
 			leftTrim(s);
 			rightTrim(s);
 		}
-		
+			
 		inline std::string trimmed(std::string s) {
 			trim(s);
 			return s;
 		}
-		
+			
 		std::string toUpper(std::string str) {
 			std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 			return str;
 		}
-		
+			
 		std::string toLower(std::string str) {
 			std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 			return str;
 		}
-		
+			
 		std::string operator "" _upper(char const * str, [[maybe_unused]] std::size_t size) {
 			return toUpper(str);
 		}
-		
+			
 		std::string operator "" _lower(char const * str, [[maybe_unused]] std::size_t size) {
 			return toLower(str);
 		}
-		
+			
 		Array<std::string> toUpperContainer(const Array<std::string>& strings) {
 			std::for_each(strings.begin(), strings.end(), [](std::string& str){ str = toUpper(str); });
 			return strings;
 		}
-		
+		 
 		Array<std::string> toLowerContainer(const Array<std::string>& strings) {
 			std::for_each(strings.begin(), strings.end(), [](std::string& str){ str = toLower(str); });
 			return strings;
 		}
-		
+			
 		template <typename Type = std::string>
 		Type readLine() {
 			Type readContent{};
 			std::cin >> readContent;
 			return readContent;
 		}
-		
+			
 		std::string quoted(const std::string& str) {
 			return "\"" + str + "\"";
 		}
-		
+			
 		template <typename Function>
 		float benchmark(const Function& function, size_t iterations = 1) {
 			

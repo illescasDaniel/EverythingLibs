@@ -156,6 +156,7 @@
 				65CDA9361F0FE2DA00D1C0C9 /* Sources */,
 				65CDA9371F0FE2DA00D1C0C9 /* Frameworks */,
 				65CDA9381F0FE2DA00D1C0C9 /* CopyFiles */,
+				655E26F21F1B90D800CFB528 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -196,6 +197,22 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		655E26F21F1B90D800CFB528 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TAGS=\"TODO:|FIXME:\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.cpp\" -or -name \"*.hpp\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		65CDA9361F0FE2DA00D1C0C9 /* Sources */ = {

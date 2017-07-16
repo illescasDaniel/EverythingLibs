@@ -12,7 +12,8 @@ Libraries:
 
 	- [Any](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTAny.hpp) `// Manage any type of data`
 	- [Arguments](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTArguments.hpp) `// Makes easier to use the program arguments by using an array`
-	- [Array](https://github.com/illescasDaniel/Array.hpp)  `// An array implementation that is faster and prettier that std::vector`
+	- [Array](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTArray.hpp)
+	  [Array (without EVT dependencies)](https://github.com/illescasDaniel/Array.hpp)  `// An array implementation that is faster and prettier that std::vector`
 	- [File](https://github.com/illescasDaniel/File) `// Read & write files in text or binary mode easily`
 	- [Optional](https://github.com/illescasDaniel/Optional) `// Manage optional values that can be null or the internal type`
 	- [Pointer](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTPointer.hpp) `// Easier and powerful way to use pointers in C++`
