@@ -145,7 +145,7 @@ namespace evt {
 		
 	public:
 		
-		CONSTEXPR ThinPointer() { }
+		CONSTEXPR ThinPointer() {}
 		
 		CONSTEXPR ThinPointer(const std::size_t capacity) {
 			assignMemoryForCapacity(capacity);
@@ -170,7 +170,7 @@ namespace evt {
 			copyPointerValuesFrom(otherPtr);
 		}
 		
-		ThinPointer<Type[]>& operator=(const ThinPointer<Type[]>& otherPtr) {
+		CONSTEXPR ThinPointer<Type[]>& operator=(const ThinPointer<Type[]>& otherPtr) {
 			copyPointerValuesFrom(otherPtr);
 			return *this;
 		}
