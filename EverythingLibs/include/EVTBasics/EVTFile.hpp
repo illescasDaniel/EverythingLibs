@@ -76,7 +76,7 @@ namespace evt {
 			}
 		}
 		
-		void incompatibleMode() {
+		void incompatibleMode() noexcept {
 			std::cerr << "Error: Incompatible Mode" << std::endl;
 		}
 		
@@ -85,7 +85,7 @@ namespace evt {
 		// Only for binary files
 		bool writeAtEnd = true;
 		
-		File(const std::string& fileName, const Mode mode = Mode::both) {
+		File(const std::string& fileName, const Mode mode = Mode::both) noexcept {
 			this->fileName = fileName;
 			this->mode = mode;
 		}
@@ -255,7 +255,7 @@ namespace evt {
 			return fileStream.eof();
 		}
 		
-		std::string getFileName() const {
+		std::string getFileName() const noexcept {
 			return fileName;
 		}
 		

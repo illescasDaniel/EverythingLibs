@@ -43,7 +43,7 @@ namespace evt {
 		
 	public:
 		
-		CONSTEXPR Optional(const std::nullptr_t& value = nullptr) { this->value_ = value; }
+		CONSTEXPR Optional(const std::nullptr_t& value = nullptr) noexcept { this->value_ = value; }
 		
 		CONSTEXPR Optional(const Type& value) {
 			this->value_ = new Type{value};
@@ -56,19 +56,19 @@ namespace evt {
 			}
 		}
 		
-		CONSTEXPR Type valueOr(const Type& other) const {
+		CONSTEXPR Type valueOr(const Type& other) const noexcept {
 			return (this->isNotNull()) ? this->value() : other;
 		}
 		
-		CONSTEXPR Type orEmpty() const {
+		CONSTEXPR Type orEmpty() const noexcept {
 			return (this->isNotNull()) ? this->value() : Type{};
 		}
 		
-		CONSTEXPR bool isNull() const {
+		CONSTEXPR bool isNull() const noexcept {
 			return value_ == nullptr;
 		}
 		
-		CONSTEXPR bool isNotNull() const {
+		CONSTEXPR bool isNotNull() const noexcept {
 			return value_ != nullptr;
 		}
 		
@@ -92,31 +92,31 @@ namespace evt {
 			return *this;
 		}
 		
-		CONSTEXPR bool operator==(const Optional& other) const {
+		CONSTEXPR bool operator==(const Optional& other) const noexcept {
 			return value_ == other.value_;
 		}
 		
-		CONSTEXPR bool operator!=(const Optional& other) const {
+		CONSTEXPR bool operator!=(const Optional& other) const noexcept {
 			return value_ != other.value_;
 		}
 		
-		CONSTEXPR Type& operator*() const {
+		CONSTEXPR Type& operator*() const noexcept {
 			return *value_;
 		}
 		
-		CONSTEXPR Type& value() const {
+		CONSTEXPR Type& value() const noexcept {
 			return *value_;
 		}
 		
-		CONSTEXPR operator bool() const {
+		CONSTEXPR operator bool() const noexcept {
 			return this->isNotNull();
 		}
 		
-		CONSTEXPR operator Type() const {
+		CONSTEXPR operator Type() const noexcept {
 			return this->orEmpty();
 		}
 		
-		CONSTEXPR friend std::ostream& operator<<(std::ostream& os, const Optional& optionalValue) {
+		CONSTEXPR friend std::ostream& operator<<(std::ostream& os, const Optional& optionalValue) noexcept {
 			return os << optionalValue.orEmpty();
 		}
 	};

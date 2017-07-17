@@ -33,8 +33,10 @@
 #include "EVTBasics/EVTFile.hpp"
 #include "EVTBasics/EVTOptional.hpp"
 #include "EVTBasics/EVTPointer.hpp"
+#include "EVTBasics/EVTThinPointer.hpp"
 #include "EVTBasics/EVTPrint.hpp" // Might be a little 'heavy' to import, you can comment this out this library if you don't really need it
 #include "EVTBasics/EVTReadOnly.hpp"
+#include "EVTBasics/EVTLazy.hpp"
 
 #if (__cplusplus >= 201406L) // ~C++17 Libraries
 	#include "EVTBasics/EVTString.hpp"

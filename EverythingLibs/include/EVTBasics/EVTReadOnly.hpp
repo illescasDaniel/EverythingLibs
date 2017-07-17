@@ -43,20 +43,20 @@ namespace evt {
 		// Friend classes (important)
 		friend FriendClass;
 		
-		CONSTEXPR ReadOnly() {}
+		CONSTEXPR ReadOnly() noexcept {}
 		
 		template <typename anyType>
-		CONSTEXPR ReadOnly(const anyType& newValue) {
+		CONSTEXPR ReadOnly(const anyType& newValue) noexcept {
 			value = newValue;
 		}
 		
-		CONSTEXPR friend std::ostream & operator<<(std::ostream& os, const ReadOnly& variable) {
+		CONSTEXPR friend std::ostream & operator<<(std::ostream& os, const ReadOnly& variable) noexcept {
 			return os << variable.value;
 		}
 		
 	public:
 		
-		CONSTEXPR operator Type() const {
+		CONSTEXPR operator Type() const noexcept {
 			return value;
 		}
 	};

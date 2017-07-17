@@ -44,11 +44,3 @@
 #include "EVTBasics.hpp"
 #include "EVTNumbers.hpp"
 #include "EVTObject.hpp"
-
-// - MACROS
-
-#define xAssert(_condition, _message) if (bool(_condition) == false) { \
-std::cerr << "- Assertion failed: " << (#_condition)<< "\n- Error: " << (_message) << std::endl; exit(1); }
-
-// guard statement
-#define guard(_condition) if (bool(_condition)){}

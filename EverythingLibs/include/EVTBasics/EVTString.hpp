@@ -45,7 +45,6 @@ namespace evt {
 		constexpr std::size_t max_size() const noexcept { return super::max_size(); }
 		constexpr const CharType& front() const { return super::front(); }
 		constexpr const CharType& back() const { return super::back(); }
-		constexpr const CharType& at(std::size_t pos) const { return super::at(pos); };
 		constexpr void remove_prefix(std::size_t n) { return super::remove_prefix(n); }
 		constexpr void remove_suffix(std::size_t n) { return super::remove_suffix(n); }
 		static constexpr std::size_t npos = super::npos;

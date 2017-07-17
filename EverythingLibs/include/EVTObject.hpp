@@ -19,7 +19,7 @@ namespace evt {
 		virtual std::string toString() const = 0;
 		
 		// Implemented in order to print a value easily using the "print" function
-		friend std::ostream& operator<<(std::ostream& os, const EVTObject& object) {
+		friend std::ostream& operator<<(std::ostream& os, const EVTObject& object) noexcept {
 			return os << object.toString();
 		}
 	};

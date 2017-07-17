@@ -35,27 +35,45 @@
 #include <iostream>
 #include <limits>
 
+#if (__cplusplus > 201103L)
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
+
 namespace evt {
 	namespace utils {
-			
+		
+		// Some MACROS
+		
 		#define cplusplusVersion __cplusplus
 		#define cplusplus1z 201406L
 		#define cplusplus14 201402L
 		#define cplusplus11 201103L
 		#define cplusplus98 199711L
+		
+		#define xAssert(_condition, _message) if (bool(_condition) == false) { \
+		std::cerr << "- Assertion failed: " << (#_condition)<< "\n- Error: " << (_message) << std::endl; exit(1); }
+		
+		#define guard(_condition) if (bool(_condition)){}
+		
+		#define var auto
+		#define let const auto
+		
+		// Useful functions
 			
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
-		static inline bool isOdd(const Type number) {
+		CONSTEXPR bool isOdd(const Type number) {
 			return (number & 1) == 1;
 		}
 			
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
-		static inline bool isEven(const Type number) {
+		CONSTEXPR bool isEven(const Type number) {
 			return (number & 1) == 0;
 		}
 			
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
-		bool isPrime(Type number) {
+		CONSTEXPR bool isPrime(Type number) {
 			
 			if (number <= 1) {
 				return false;
@@ -116,26 +134,26 @@ namespace evt {
 		}
 			
 		template <typename Array, typename = typename std::enable_if<std::is_array<Array>::value,bool>::type>
-		size_t arrayLengthOf(const Array& array) {
+		CONSTEXPR size_t arrayLengthOf(const Array& array) {
 			return std::end(array) - std::begin(array);
 		}
 			
 		// TRIM: https://stackoverflow.com/a/217605/6303785
 			
-		inline void leftTrim(std::string &s) {
+		CONSTEXPR void leftTrim(std::string &s) {
 			s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
 		}
 			
-		inline void rightTrim(std::string &s) {
+		CONSTEXPR void rightTrim(std::string &s) {
 			s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 		}
 			
-		inline void trim(std::string &s) {
+		CONSTEXPR void trim(std::string &s) {
 			leftTrim(s);
 			rightTrim(s);
 		}
 			
-		inline std::string trimmed(std::string s) {
+		std::string trimmed(std::string s) {
 			trim(s);
 			return s;
 		}
@@ -169,7 +187,7 @@ namespace evt {
 		}
 			
 		template <typename Type = std::string>
-		Type readLine() {
+		CONSTEXPR Type readLine() {
 			Type readContent{};
 			std::cin >> readContent;
 			return readContent;
@@ -178,22 +196,29 @@ namespace evt {
 		std::string quoted(const std::string& str) {
 			return "\"" + str + "\"";
 		}
-			
+		
 		template <typename Function>
-		float benchmark(const Function& function, size_t iterations = 1) {
+		CONSTEXPR float benchmark(const Function& functionToBenchmark, std::size_t iterations = 1) {
 			
 			float averageTime = 0.0;
 			
 			for (size_t i = 0; i < iterations; ++i) {
 				
 				auto start = std::chrono::high_resolution_clock::now();
-				function();
+				functionToBenchmark();
 				auto end = std::chrono::high_resolution_clock::now();
 				
 				averageTime += float(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()) / float(1000000000);
 			}
 			
 			return averageTime / float(iterations);
+		}
+		
+		template <typename Function>
+		CONSTEXPR void repeat(std::size_t timesToRepeat, const Function& functionToRepeat) {
+			for (std::size_t i = 0; i < timesToRepeat; i++) {
+				functionToRepeat(i);
+			}
 		}
 	}
 }

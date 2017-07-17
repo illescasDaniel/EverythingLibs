@@ -24,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		650674271F169FAA00EB800E /* EVTString.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTString.hpp; sourceTree = "<group>"; };
+		6507CBF41F1CD41200A4EE27 /* EVTLazy.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTLazy.hpp; sourceTree = "<group>"; };
 		651176EA1F1599E900AE43E6 /* EVTObject.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTObject.hpp; sourceTree = "<group>"; };
 		651176EC1F159A8E00AE43E6 /* Car.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Car.hpp; sourceTree = "<group>"; };
 		6558658B1F14F397002FC352 /* EVTFile.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTFile.hpp; sourceTree = "<group>"; };
@@ -47,6 +48,7 @@
 		65CDA94B1F0FFD8F00D1C0C9 /* EVTPrint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTPrint.hpp; sourceTree = "<group>"; };
 		65CDA94C1F10108A00D1C0C9 /* EVTOptional.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTOptional.hpp; sourceTree = "<group>"; };
 		65CDA94D1F10195B00D1C0C9 /* EVTUtils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTUtils.hpp; sourceTree = "<group>"; };
+		65E267A01F1D122700CEDC3A /* EVTThinPointer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTThinPointer.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,12 +62,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		651176EB1F159A7F00AE43E6 /* classExamples */ = {
+		651176EB1F159A7F00AE43E6 /* fullClassExample */ = {
 			isa = PBXGroup;
 			children = (
 				651176EC1F159A8E00AE43E6 /* Car.hpp */,
 			);
-			path = classExamples;
+			path = fullClassExample;
 			sourceTree = "<group>";
 		};
 		6558658D1F1523A7002FC352 /* EVTNumbers */ = {
@@ -85,10 +87,12 @@
 				65CDA94A1F0FFD1B00D1C0C9 /* EVTArray.hpp */,
 				6558658B1F14F397002FC352 /* EVTFile.hpp */,
 				65CDA94C1F10108A00D1C0C9 /* EVTOptional.hpp */,
+				65E267A01F1D122700CEDC3A /* EVTThinPointer.hpp */,
 				65CDA9481F0FF18200D1C0C9 /* EVTPointer.hpp */,
 				65CDA94B1F0FFD8F00D1C0C9 /* EVTPrint.hpp */,
 				65CDA9491F0FF33B00D1C0C9 /* EVTReadOnly.hpp */,
 				650674271F169FAA00EB800E /* EVTString.hpp */,
+				6507CBF41F1CD41200A4EE27 /* EVTLazy.hpp */,
 			);
 			path = EVTBasics;
 			sourceTree = "<group>";
@@ -124,7 +128,7 @@
 		65CDA93C1F0FE2DA00D1C0C9 /* EverythingLibs */ = {
 			isa = PBXGroup;
 			children = (
-				651176EB1F159A7F00AE43E6 /* classExamples */,
+				651176EB1F159A7F00AE43E6 /* fullClassExample */,
 				65CDA9451F0FE36000D1C0C9 /* include */,
 				65CDA93D1F0FE2DA00D1C0C9 /* main.cpp */,
 				659725FA1F16446800B483E8 /* Makefile */,
@@ -232,7 +236,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -291,7 +295,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -340,7 +344,7 @@
 		65CDA9421F0FE2DA00D1C0C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				DEVELOPMENT_TEAM = PRK6268SLD;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -350,7 +354,7 @@
 		65CDA9431F0FE2DA00D1C0C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				DEVELOPMENT_TEAM = PRK6268SLD;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -32,7 +32,7 @@
 #include <random>
 #include <functional>
 #include "EVTOptional.hpp"
-#include "EVTPointer.hpp"
+#include "EVTThinPointer.hpp"
 #include "../EVTObject.hpp"
 
 #if (__cplusplus > 201103L)
@@ -46,7 +46,7 @@ namespace evt {
 	namespace internalArrayPrintEVT {
 		
 		// Extra functions for the "toString()" method
-		inline std::string to_string(const std::string& str) { return str; }
+		inline std::string to_string(const std::string& str) noexcept { return str; }
 		inline std::string to_string(const char chr) { return std::string(1,chr); }
 		
 		template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value,bool>::type>
@@ -69,7 +69,7 @@ namespace evt {
 		
 		// Types and macros
 		typedef std::size_t SizeType;
-		typedef evt::Pointer<Type[]> Pointer;
+		typedef evt::ThinPointer<Type[]> Pointer;
 		typedef std::initializer_list<Type> InitializerList;
 		
 		// MARK: - Attributes
@@ -79,14 +79,14 @@ namespace evt {
 		
 		// MARK: - Private Functions
 		
-		CONSTEXPR double sizeOfArrayInMB(const double currentCapacity) const {
+		CONSTEXPR double sizeOfArrayInMB(const double currentCapacity) const noexcept {
 			return (sizeof(Type)*(currentCapacity)) / 1000000;
 		}
 		
 		/// Assigns new memory, also updates the new capacity.
 		CONSTEXPR void assignMemoryAndCapacityForSize(SizeType newSize, bool forceResize = false) {
 			if (forceResize or values.capacity() < newSize) {
-				values = Pointer(newSize);
+				values = std::move(Pointer(newSize));
 			}
 		}
 		
@@ -566,7 +566,7 @@ namespace evt {
 					
 						if CONSTEXPR (std::is_same<Type, std::string>::value) {
 							return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
-						} else if CONSTEXPR  (std::is_same<Type, char>::value) {
+						} else if CONSTEXPR (std::is_same<Type, char>::value) {
 							return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
 						} else if CONSTEXPR (std::is_arithmetic<Type>::value || std::is_same<Type, EVTObject>::value || std::is_base_of<EVTObject, Type>::value) {
 							return evt::internalArrayPrintEVT::to_string(value);

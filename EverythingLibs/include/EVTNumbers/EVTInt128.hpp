@@ -26,6 +26,12 @@
 
 #include <ostream>
 
+#if (__cplusplus > 201103L)
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
+
 namespace evt {
 	
 	namespace numbers {
@@ -34,11 +40,11 @@ namespace evt {
 			__int128_t value_ {0};
 		public:
 			
-			Int128() { }
-			Int128(const __int128_t value_) {
+			CONSTEXPR Int128() noexcept { }
+			CONSTEXPR Int128(const __int128_t value_) noexcept {
 				this->value_ = value_;
 			}
-			Int128(const Int128& number) {
+			CONSTEXPR Int128(const Int128& number) noexcept {
 				this->value_ = number.value_;
 			}
 			
@@ -66,28 +72,28 @@ namespace evt {
 				return dest;
 			}
 			
-			template <typename Type>
-			inline operator Type() const {
+			template <typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type>
+			CONSTEXPR operator ArithmeticType() const noexcept {
 				return value_;
 			}
 			
 			#define internalOperator(operation) \
 			template <typename Type> \
-			Int128 operator operation (Type otherNumber) const { \
+			CONSTEXPR Int128 operator operation (Type otherNumber) const noexcept { \
 				Int128 newNumber(this->value_ operation otherNumber); \
 				return newNumber; \
 			}
 			
 			#define externalOperator(operation) \
 			template <typename Type> \
-			friend Int128 operator operation (Type number, Int128 otherNumber) { \
+			CONSTEXPR friend Int128 operator operation (Type number, Int128 otherNumber) noexcept { \
 				Int128 newNumber(otherNumber operation number); \
 				return newNumber; \
 			}
 			
 			#define assignmentOperator(operation) \
 			template <typename Type> \
-			Int128& operator operation (Type otherNumber) { \
+			CONSTEXPR Int128& operator operation (Type otherNumber) noexcept { \
 				this->value_ operation otherNumber; \
 				return *this; \
 			}
@@ -105,11 +111,11 @@ namespace evt {
 			__uint128_t value_ {0};
 		public:
 			
-			UInt128() { }
-			UInt128(const __uint128_t value_) {
+			CONSTEXPR UInt128() { }
+			CONSTEXPR UInt128(const __uint128_t value_) noexcept {
 				this->value_ = value_;
 			}
-			UInt128(const UInt128& number) {
+			CONSTEXPR UInt128(const UInt128& number) noexcept {
 				this->value_ = number.value_;
 			}
 			
@@ -134,27 +140,27 @@ namespace evt {
 			}
 			
 			template <typename Type>
-			inline operator Type() const {
+			CONSTEXPR operator Type() const {
 				return value_;
 			}
 			
 			#define internalOperator(operation) \
 			template <typename Type> \
-			UInt128 operator operation (Type otherNumber) const { \
+			CONSTEXPR UInt128 operator operation (Type otherNumber) const noexcept { \
 			UInt128 newNumber(this->value_ operation otherNumber); \
 			return newNumber; \
 			}
 			
 			#define externalOperator(operation) \
 			template <typename Type> \
-			friend UInt128 operator operation (Type number, Int128 otherNumber) { \
+			CONSTEXPR friend UInt128 operator operation (Type number, Int128 otherNumber) noexcept { \
 			UInt128 newNumber(otherNumber operation number); \
 			return newNumber; \
 			}
 			
 			#define assignmentOperator(operation) \
 			template <typename Type> \
-			UInt128& operator operation (Type otherNumber) { \
+			CONSTEXPR UInt128& operator operation (Type otherNumber) noexcept { \
 			this->value_ operation otherNumber; \
 			return *this; \
 			}

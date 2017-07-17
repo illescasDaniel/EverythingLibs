@@ -40,22 +40,54 @@
 namespace evt {
 	
 	template <typename Type>
-	class Pointer {
+	class ThinPointer {
 		
-		std::unique_ptr<Type> valuePtr {new Type{}};
+		Type* valuePtr {new Type{}};
+		
+		CONSTEXPR void freePointer() {
+			if (valuePtr != nullptr) {
+				delete valuePtr;
+				valuePtr = nullptr;
+			}
+		}
+		
+		CONSTEXPR void copyAssignFrom(const ThinPointer& otherPtr) {
+			if (this != &otherPtr && otherPtr.isNotNull()) {
+				this->freePointer();
+				valuePtr = new Type{*otherPtr.valuePtr};
+			}
+		}
 		
 	public:
 		
-		CONSTEXPR Pointer() noexcept {
-			valuePtr = std::unique_ptr<Type>(new Type{});
+		CONSTEXPR ThinPointer(){ }
+		
+		CONSTEXPR ThinPointer(const Type& value) {
+			valuePtr = new Type{value};
 		}
 		
-		CONSTEXPR Pointer(const Type& value) noexcept {
-			valuePtr = std::unique_ptr<Type>(new Type{value});
+		CONSTEXPR ThinPointer(ThinPointer& otherPtr) {
+			copyAssignFrom(otherPtr);
 		}
 		
-		CONSTEXPR Pointer(Pointer& otherPtr) noexcept {
+		CONSTEXPR ThinPointer(ThinPointer&& otherPtr) {
 			this->operator=(otherPtr);
+		}
+		
+		CONSTEXPR ThinPointer operator=(const ThinPointer& otherPtr) {
+			copyAssignFrom(otherPtr);
+			return *this;
+		}
+		
+		CONSTEXPR ThinPointer operator=(ThinPointer&& otherPtr) {
+			
+			if (this != &otherPtr && otherPtr.isNotNull()) {
+				this->freePointer();
+				valuePtr = new Type{*otherPtr.valuePtr};
+				otherPtr.freePointer();
+			}
+			
+			return *this;
 		}
 		
 		CONSTEXPR Type& operator*() const {
@@ -68,41 +100,60 @@ namespace evt {
 			return *valuePtr;
 		}
 		
-		CONSTEXPR bool isNull() const noexcept {
+		CONSTEXPR bool isNull() const {
 			return valuePtr == nullptr;
 		}
 		
-		CONSTEXPR bool isNotNull() const noexcept {
+		CONSTEXPR bool isNotNull() const {
 			return valuePtr != nullptr;
 		}
 		
-		CONSTEXPR Pointer& operator=(Pointer& otherPtr) noexcept {
-			valuePtr = std::move(otherPtr.valuePtr);
-			return *this;
+		~ThinPointer() {
+			this->freePointer();
 		}
 	};
 	
+	
 	template <typename Type>
-	class Pointer<Type[]> {
+	class ThinPointer<Type[]> {
 		
-		std::size_t capacity_ {1};
-		std::unique_ptr<Type[]> valuePtr {new Type[capacity_]{}};
+		std::size_t capacity_ {0};
+		Type* valuePtr {new Type[capacity_]{}};
+		
+		void freePointer() {
+			if (valuePtr != nullptr) {
+				delete[] valuePtr;
+				valuePtr = nullptr;
+			}
+		}
+		
+	private:
+		CONSTEXPR void assignMemoryForCapacity(std::size_t capacity) {
+			if (capacity > 0) {
+				this->freePointer();
+				this->capacity_ = capacity;
+				this->valuePtr = new Type[capacity_]{};
+			}
+		}
+		
+		CONSTEXPR void copyPointerValuesFrom(const ThinPointer<Type[]>& otherPtr) {
+			if (otherPtr.capacity() != 0 && this != &otherPtr) {
+				assignMemoryForCapacity(otherPtr.capacity_);
+				std::copy(std::begin(otherPtr), std::end(otherPtr), &valuePtr[0]);
+			}
+		}
 		
 	public:
 		
-		CONSTEXPR Pointer() noexcept {
-			this->valuePtr = std::unique_ptr<Type[]>(new Type[capacity_]{});
+		CONSTEXPR ThinPointer() { }
+		
+		CONSTEXPR ThinPointer(const std::size_t capacity) {
+			assignMemoryForCapacity(capacity);
 		}
 		
-		CONSTEXPR Pointer(const std::size_t capacity) noexcept {
-			this->capacity_ = capacity;
-			this->valuePtr = std::unique_ptr<Type[]>(new Type[capacity_]{});
-		}
-		
-		CONSTEXPR Pointer(std::initializer_list<Type> values) noexcept {
+		CONSTEXPR ThinPointer(std::initializer_list<Type> values) {
 			
-			this->capacity_ = values.size();
-			this->valuePtr = std::unique_ptr<Type[]>(new Type[capacity_]{});
+			assignMemoryForCapacity(values.size());
 			
 			size_t index = 0;
 			for (const auto& value: values) {
@@ -111,12 +162,28 @@ namespace evt {
 			}
 		}
 		
-		CONSTEXPR Pointer(Pointer<Type[]>& otherPtr) noexcept {
+		CONSTEXPR ThinPointer(ThinPointer<Type[]>&& otherPtr) {
 			this->operator=(otherPtr);
 		}
 		
-		CONSTEXPR Pointer(Pointer<Type[]>&& otherPtr) noexcept {
-			this->operator=(otherPtr);
+		CONSTEXPR ThinPointer(const ThinPointer<Type[]>& otherPtr) {
+			copyPointerValuesFrom(otherPtr);
+		}
+		
+		ThinPointer<Type[]>& operator=(const ThinPointer<Type[]>& otherPtr) {
+			copyPointerValuesFrom(otherPtr);
+			return *this;
+		}
+		
+		CONSTEXPR ThinPointer<Type[]>& operator=(ThinPointer<Type[]>&& otherPtr)  {
+			
+			if (otherPtr.capacity() != 0 && this != &otherPtr) {
+				assignMemoryForCapacity(otherPtr.capacity_);
+				std::move(std::begin(otherPtr), std::end(otherPtr), &valuePtr[0]);
+				otherPtr.freePointer();
+			}
+			
+			return *this;
 		}
 		
 		CONSTEXPR Type& operator[](const std::size_t index) const {
@@ -126,8 +193,8 @@ namespace evt {
 		
 		CONSTEXPR Type& at(const std::size_t index) const {
 			
-			if (index >= capacity_) { throw std::out_of_range("Index out of range"); }
 			if (valuePtr == nullptr) { throw std::bad_alloc(); }
+			if (index >= capacity_) { throw std::out_of_range("Index out of range"); }
 			
 			return valuePtr[index];
 		}
@@ -136,35 +203,21 @@ namespace evt {
 			return capacity_;
 		}
 		
+		CONSTEXPR std::size_t size() const noexcept {
+			return capacity_;
+		}
+		
 		CONSTEXPR Type* begin() const noexcept {
+			if (valuePtr == nullptr) { throw std::bad_alloc(); }
 			return &valuePtr[0];
 		}
 		
-		CONSTEXPR Type* end() const noexcept {
+		CONSTEXPR Type* end() const {
+			if (valuePtr == nullptr) { throw std::bad_alloc(); }
 			return &valuePtr[capacity_];
 		}
 		
-		CONSTEXPR Pointer& operator=(Pointer<Type[]>& otherPtr) noexcept {
-			
-			this->capacity_ = otherPtr.capacity();
-			this->valuePtr = std::move(otherPtr.valuePtr);
-			
-			otherPtr.capacity_ = 0;
-			
-			return *this;
-		}
-		
-		CONSTEXPR Pointer& operator=(Pointer<Type[]>&& otherPtr) noexcept {
-			
-			this->capacity_ = otherPtr.capacity();
-			this->valuePtr = std::move(otherPtr.valuePtr);
-			
-			otherPtr.capacity_ = 0;
-			
-			return *this;
-		}
-		
-		CONSTEXPR bool operator==(Pointer<Type[]>& otherPtr) {
+		CONSTEXPR bool operator==(ThinPointer<Type[]>& otherPtr) {
 			return std::equal(&valuePtr[0], &valuePtr[capacity_], otherPtr.begin());
 		}
 		
@@ -177,6 +230,10 @@ namespace evt {
 			std::move(std::begin(container), std::end(container), &(this->at(position)));
 		}
 		
+		CONSTEXPR void moveValuesFrom(ThinPointer<Type[]>&& container, std::size_t position = 0) {
+			std::move(container.begin(), container.end(), &(this->at(position)));
+		}
+		
 		template <typename Container>
 		CONSTEXPR void copyValuesFrom(const Container& container, std::size_t position = 0) {
 			std::copy(std::begin(container), std::end(container), &(this->at(position)));
@@ -186,12 +243,20 @@ namespace evt {
 			std::copy(std::begin(container), std::end(container), &(this->at(position)));
 		}
 		
+		CONSTEXPR void copyValuesFrom(const ThinPointer<Type[]>& container, std::size_t position = 0) {
+			std::copy(container.begin(), container.end(), &(this->at(position)));
+		}
+		
 		CONSTEXPR bool isNull() const noexcept {
 			return valuePtr == nullptr;
 		}
 		
 		CONSTEXPR bool isNotNull() const noexcept {
 			return valuePtr != nullptr;
+		}
+		
+		~ThinPointer() {
+			freePointer();
 		}
 	};
 }

@@ -8,7 +8,8 @@
 
 #include <iostream>
 #include "include/EVT.hpp"
-#include "classExamples/Car.hpp"
+#include "fullClassExample/Car.hpp"
+#include <thread>
 
 using namespace std;
 using namespace evt;
@@ -57,7 +58,53 @@ public:
 	}
 };
 
+class LazyThings {
+public:
+	
+	size_t iterations = 1;
+	size_t iterations2 = [&]{ return iterations*2; }(); // Non-lazy initialization
+	
+	Lazy<float> lazyBenchmark { Lazy<float>([&]{ // lazy initialization
+		return benchmark([&]{
+			Array<int> numbers;
+			
+			for (int i = 0; i < 30000000; ++i) {
+				numbers.append(i);
+			}
+		}, iterations);
+	})};
+	
+	LazyThings(size_t iterations_ = 1): iterations(iterations_) {}
+};
+
 int main(int argc, char* argv[]) {
+
+	ThinPointer<int> number0001(10);
+	ThinPointer<int> number0002(100);
+	
+	number0001 = std::move(number0002);
+	
+	print("This:", number0001);
+	
+	if (number0002.isNotNull()) {
+		print(number0002);
+	}
+	
+	ThinPointer<Stuff[]> stuffs(3);
+	stuffs[0] = Stuff(1, 2);
+	print(stuffs[0]);
+	
+	LazyThings once;
+	LazyThings twice(10);
+	LazyThings third(4);
+	
+	twice = third; // Updates the iterations done in "lazyBenchmark"
+	print(twice.iterations, twice.iterations2);
+	twice.iterations = 9876; // DOESN'T update iterations2
+	print(twice.iterations, twice.iterations2);
+	
+	float time{};
+	thread threadWithLazyVariable ([&]{ time = twice.lazyBenchmark; });
 	
 	Pointer<int> aP(10);
 	Pointer<int> bP(aP);
@@ -65,7 +112,7 @@ int main(int argc, char* argv[]) {
 	if (bP.isNotNull()) {
 		print(bP);
 	}
-	
+	 
 	#if (cplusplusVersion >= cplusplus1z)
 	
 		Array<Any> things {"hola", 10, 5.1};
@@ -77,7 +124,7 @@ int main(int argc, char* argv[]) {
 			print(thing.value().as<int>());
 		}
 	#endif
-
+	 
 	Array<int> numbersArr {1,2,3,4,5};
 	if (numbersArr.find(3) != numbersArr.count()) {
 		print("Found!!");
@@ -314,6 +361,9 @@ int main(int argc, char* argv[]) {
 	
 	File text("sample.txt");
 	text.write("blablabla");
+	
+	threadWithLazyVariable.join();
+	print(time);
 	
 	//int number2 = readLine<int>();
 	//print(number2);
