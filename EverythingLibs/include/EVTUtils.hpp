@@ -140,15 +140,15 @@ namespace evt {
 			
 		// TRIM: https://stackoverflow.com/a/217605/6303785
 			
-		CONSTEXPR void leftTrim(std::string &s) {
+		void leftTrim(std::string &s) {
 			s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
 		}
 			
-		CONSTEXPR void rightTrim(std::string &s) {
+		void rightTrim(std::string &s) {
 			s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 		}
 			
-		CONSTEXPR void trim(std::string &s) {
+		void trim(std::string &s) {
 			leftTrim(s);
 			rightTrim(s);
 		}

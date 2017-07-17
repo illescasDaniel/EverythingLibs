@@ -207,7 +207,7 @@ namespace evt {
 			return capacity_;
 		}
 		
-		CONSTEXPR Type* begin() const noexcept {
+		CONSTEXPR Type* begin() const {
 			if (valuePtr == nullptr) { throw std::bad_alloc(); }
 			return &valuePtr[0];
 		}
