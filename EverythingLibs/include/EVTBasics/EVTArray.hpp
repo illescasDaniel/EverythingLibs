@@ -523,7 +523,7 @@ namespace evt {
 		}
 		
 		CONSTEXPR bool contains(const Type& element) const {
-			for (const auto& elm: (*this)) {
+			for (const Type& elm: (*this)) {
 				if (element == elm) { return true; }
 			}
 			return false;
@@ -532,6 +532,10 @@ namespace evt {
 		/// Returns the index of the first ocurrence of the element. Last position if the element isn't found
 		CONSTEXPR SizeType find(const Type& element) const {
 			return (std::find(&values[0], &values[count_], element) - &values[0]);
+		}
+		
+		CONSTEXPR SizeType findIf(const std::function<bool(const Type&)>& findFunction) const {
+			return (std::find_if(&values[0], &values[count_], findFunction) - &values[0]);
 		}
 		
 		/// Returns an Array of positions with all the ocurrences of the element
@@ -649,6 +653,14 @@ namespace evt {
 				}
 			}
 			return optElement;
+		}
+		
+		CONSTEXPR SizeType countOf(const std::function<bool(const Type&)>& countOfFunction) const {
+			return std::count_if(this->begin(), this->end(), countOfFunction);
+		}
+		
+		CONSTEXPR SizeType countOf(const Type& value) const {
+			return std::count(this->begin(), this->end(), value);
 		}
 		
 		CONSTEXPR Optional<Type> at(const SizeType index) const {

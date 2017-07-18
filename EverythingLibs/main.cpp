@@ -67,10 +67,7 @@ public:
 	Lazy<float> lazyBenchmark { Lazy<float>([&]{ // lazy initialization
 		return benchmark([&]{
 			Array<int> numbers;
-			
-			for (int i = 0; i < 30000000; ++i) {
-				numbers.append(i);
-			}
+			repeat(30000000, [&](const size_t& i){ numbers.append(int(i)); });
 		}, iterations);
 	})};
 	
@@ -78,6 +75,11 @@ public:
 };
 
 int main(int argc, char* argv[]) {
+	
+	Array<string> someStrings {"daniel", "test", "daniel", "john", "null", "macOS"};
+	print(someStrings.countOf("Daniel"_lower));
+	print(someStrings.countOf([](const string& str){ return str.length() > 4; }));
+	print(someStrings.findIf([](const string& str){ return str == "test"; }));
 
 	ThinPointer<int> number0001(10);
 	ThinPointer<int> number0002(100);

@@ -24,7 +24,7 @@
 
 #pragma once
 
-// Basic libraries (the other libraries should work without re-including this, but just in case...)
+// Basic libraries (the other libraries should work without re-including this, but just in case you need them anyway)
 #include <type_traits>
 #include <initializer_list>
 #include <stdexcept>
@@ -35,7 +35,6 @@
 #include <cstdlib>
 #include <algorithm>
 #include <random>
-
 #include <utility>
 #include <typeinfo>
 
