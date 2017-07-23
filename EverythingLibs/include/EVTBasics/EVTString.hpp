@@ -50,8 +50,7 @@ namespace evt {
 		static constexpr std::size_t npos = super::npos;
 		constexpr StringView substr(std::size_t pos = 0, std::size_t count = super::npos ) const { return super::substr(pos, count); }
 		
-	public:
-		
+	public:	
 		constexpr StringView() noexcept : super() {}
 		constexpr StringView(const std::basic_string_view<CharType>& other) noexcept : super(other) {}
 		constexpr StringView(const std::string& other) noexcept : super(other) {}

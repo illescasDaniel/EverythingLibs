@@ -80,11 +80,12 @@ int main(int argc, char* argv[]) {
 	print(someStrings.countOf("Daniel"_lower));
 	print(someStrings.countOf([](const string& str){ return str.length() > 4; }));
 	print(someStrings.findIf([](const string& str){ return str == "test"; }));
-
+	 
 	ThinPointer<int> number0001(10);
 	ThinPointer<int> number0002(100);
 	
-	number0001 = std::move(number0002);
+	number0001 = std::move(number0002); // Uses move operations, deletes the pointer & content of "number0002"
+	// number0001 = number0002; // Copies the content of the pointer, doesn't destroy the original ("number0002")
 	
 	print("This:", number0001);
 	

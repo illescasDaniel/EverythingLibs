@@ -71,7 +71,7 @@ namespace evt {
 		}
 		
 		CONSTEXPR ThinPointer(ThinPointer&& otherPtr) {
-			this->operator=(otherPtr);
+			this->operator=(std::move(otherPtr));
 		}
 		
 		CONSTEXPR ThinPointer operator=(const ThinPointer& otherPtr) {
