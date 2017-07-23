@@ -159,7 +159,12 @@ int main(int argc, char* argv[]) {
 	#if (cplusplusVersion >= cplusplus1z)
 	
 		string name2 = "  Daniel2  ";
-		String name3 = name2;
+	
+		String name3 = "hola, daniel";
+	
+		print("HEYYY:", name3);
+		print(name3 * 4);
+	
 		constexpr String testName = "YEP"_sv;
 		// static_assert(testName == "YEP"_sv, "Not equal strings"); [in gcc operator== is not constexpr]
 		cout << testName << endl;
@@ -167,7 +172,7 @@ int main(int argc, char* argv[]) {
 		cout << name3.findFirstNotOf(" ") << endl;
 		cout << name3.count() - name3.findLastOf(" ") << endl;
 	
-		name3.trim(String::TrimMode::start);
+		name3.trim(String::TrimMode::trimStart);
 		cout << name3 << endl;
 		cout << name3.trimmed() << endl;
 		cout << name3.trimmed() << endl;
@@ -177,6 +182,7 @@ int main(int argc, char* argv[]) {
 		cout << sizeof(name2) << endl;
 		cout << sizeof(name3) << endl;
 	
+		//print("Hi\n"_sv * 3);
 	#endif
 	
 	ThinPointer<int> ptest(100);

@@ -72,26 +72,31 @@ namespace evt {
 		constexpr std::size_t findLastNotOf(const StringView& str, std::size_t position = StringView::nullPosition) const noexcept { return this->find_last_not_of(str, position); }
 		constexpr StringView subString(std::size_t position = 0, std::size_t count = StringView::nullPosition ) const { return this->substr(position, count); }
 		
+		// Don't try to assign it to another StringView, for whatever reason it doesn't seem to 'work' fine
+		constexpr StringView operator+(const StringView& otherStr) const {
+			return StringView(std::string(*this) + std::string(otherStr));
+		}
+		
 		static constexpr std::size_t nullPosition = super::npos;
 		
-		enum TrimMode { start, end, both };
-		constexpr void trim(const TrimMode& trimMode = both) {
+		enum TrimMode { trimStart, trimEnd, trimBoth };
+		constexpr void trim(const TrimMode& trimMode = trimBoth) {
 			
 			switch (trimMode) {
 					
-				case start:
+				case trimStart:
 					if (std::size_t position = this->findFirstNotOf(" "); position != StringView::nullPosition) {
 						this->removePrefix(position);
 					}
 					break;
 					
-				case end:
+				case trimEnd:
 					if (std::size_t position = this->count() - this->findLastOf(" ") + 1; position != StringView::nullPosition) {
 						this->removeSuffix(position);
 					}
 					break;
 					
-				case both:
+				case trimBoth:
 					if (std::size_t position = this->findFirstNotOf(" "); position != StringView::nullPosition) {
 						this->removePrefix(position);
 					}
@@ -102,7 +107,7 @@ namespace evt {
 			}
 		}
 		
-		constexpr StringView trimmed(const TrimMode& trimMode = both) const {
+		constexpr StringView trimmed(const TrimMode& trimMode = trimBoth) const {
 			StringView aux(*this);
 			aux.trim(trimMode);
 			return aux;
@@ -124,6 +129,16 @@ namespace evt {
 				outputStr += str[i];
 			}
 			return outputStr;
+		}
+		
+		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
+		StringView operator*(Type number) const {
+			std::string originalStr(*this);
+			std::string concatenatedStr;
+			for (Type i = 0; i < number; i++) {
+				concatenatedStr += originalStr;
+			}
+			return StringView(concatenatedStr);
 		}
 	};
 	
