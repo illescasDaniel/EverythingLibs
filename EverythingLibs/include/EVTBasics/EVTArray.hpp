@@ -225,7 +225,7 @@ namespace evt {
 		CONSTEXPR Array(const Container& elements) { assignNewElements(elements); }
 		
 		template <typename Container, typename = typename std::enable_if<!std::is_same<Container, Type>::type>>
-		CONSTEXPR Array(Container&& elements) { assignNewElementsMOVE(elements); }
+		CONSTEXPR Array(Container&& elements) { assignNewElementsMOVE(std::move(elements)); }
 		
 		virtual ~Array() {
 			values.~Pointer();
@@ -378,7 +378,7 @@ namespace evt {
 		CONSTEXPR void appendElements(const Container& newElements) { appendNewElements(newElements); }
 		
 		template<typename Container>
-		CONSTEXPR void appendElements(Container&& newElements) { appendNewElementsMOVE(newElements); }
+		CONSTEXPR void appendElements(Container&& newElements) { appendNewElementsMOVE(std::move(newElements)); }
 		
 		/// Only reserves new memory if the new size if bigger than the array capacity
 		CONSTEXPR void reserve(const SizeType newSize) {
@@ -715,7 +715,7 @@ namespace evt {
 		
 		template <typename Container>
 		CONSTEXPR Array& operator+=(Container&& newElements) {
-			return appendNewElementsMOVE(newElements);
+			return appendNewElementsMOVE(std::move(newElements));
 		}
 		
 		CONSTEXPR Array& operator+=(InitializerList newElements) {

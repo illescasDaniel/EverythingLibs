@@ -38,8 +38,8 @@
 namespace evt {
 	
 	// Exception thrown on attempt to access an uninitialized Lazy
-	struct uninitializedLazyException: public std::runtime_error {
-		uninitializedLazyException(): std::runtime_error("uninitialized lazy value") {}
+	struct uninitializedLazy: public std::runtime_error {
+		uninitializedLazy(): std::runtime_error("Uninitialized lazy value") {}
 	};
 
 	template<typename Type>
@@ -67,7 +67,7 @@ namespace evt {
 		
 		// Throw exception on attempt to access uninitialized lazy
 		static Type defaultInitializer() {
-			throw uninitializedLazyException();
+			throw uninitializedLazy();
 		}
 		
 		static void defaultDeinitializer(Type&) {}
@@ -90,7 +90,6 @@ namespace evt {
 		}
 		
 		CONSTEXPR Lazy& operator=(const Lazy<Type>& otherLazy) {
-			
 			destroy();
 			initializer = otherLazy.initializer;
 			deinitializer = otherLazy.deinitializer;

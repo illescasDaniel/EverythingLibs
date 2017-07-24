@@ -73,5 +73,11 @@ namespace evt {
 			value_ = std::make_shared<void*>(new Type{newValue});
 			return *reinterpret_cast<Type*>(*value_);
 		}
+		
+		template<typename Type>
+		CONSTEXPR Any& operator=(const Any& newValue) {
+			value_ = std::move(newValue.value_);
+			return *this;
+		}
 	};
 }

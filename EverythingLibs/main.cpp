@@ -127,6 +127,8 @@ int main(int argc, char* argv[]) {
 			print(thing.value().as<int>());
 		}
 	#endif
+	
+	Optional<const int> testOpt{10};
 	 
 	Array<int> numbersArr {1,2,3,4,5};
 	if (numbersArr.find(3) != numbersArr.count()) {
@@ -274,6 +276,7 @@ int main(int argc, char* argv[]) {
 	print("Hello everyone!"_upper);
 	
 	Optional<string> otherName;
+	cout << (otherName == "hola") << endl;
 	if (otherName) {
 		cout << otherName << endl;
 	}
@@ -376,4 +379,24 @@ int main(int argc, char* argv[]) {
 	
 	//int number2 = readLine<int>();
 	//print(number2);
+	
+	string yourName = input("What is your name?: ");
+	print(yourName);
+	
+	// Equivalent to:
+	/*
+	 string yourName;
+	 cout << "What is your name?: ";
+	 getline(cin, yourName>;
+	 cout << yourName << endl;
+	 */
+	
+	print(input("something: "));
+	int number09898 = readLine<int>("Phone Number?: ");
+	print("number:", number09898);
+	
+	string number76588 = input<string>();
+	print("otherNumbe:", number76588);
+	
+	print(input("something again: "));
 }

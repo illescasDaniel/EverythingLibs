@@ -187,12 +187,30 @@ namespace evt {
 		}
 			
 		template <typename Type = std::string>
-		CONSTEXPR Type readLine() {
+		CONSTEXPR Type readLine(const std::string& promptText = "") {
+			
 			Type readContent{};
-			std::cin >> readContent;
+			
+			if (!promptText.empty()) { std::cout << promptText; }
+			
+			if constexpr (std::is_same<std::string, Type>()) {
+				std::getline(std::cin, readContent);
+			} else {
+				
+				if (!(std::cin >> readContent)) {
+					std::cin.clear();
+				}
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
+			
 			return readContent;
 		}
-			
+		
+		template <typename Type = std::string>
+		CONSTEXPR Type input(const std::string& promptText = "") {
+			return readLine<Type>(promptText);
+		}
+		
 		std::string quoted(const std::string& str) {
 			return "\"" + str + "\"";
 		}
