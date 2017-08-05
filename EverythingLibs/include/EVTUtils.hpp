@@ -191,17 +191,21 @@ namespace evt {
 			
 			Type readContent{};
 			
-			if (!promptText.empty()) { std::cout << promptText; }
+			if (!promptText.empty()) { std::cout << promptText << ' ' ; }
 			
+			#if (__cplusplus > 201103L)
 			if constexpr (std::is_same<std::string, Type>()) {
 				std::getline(std::cin, readContent);
-			} else {
-				
+			}
+			else {
+			#endif
 				if (!(std::cin >> readContent)) {
 					std::cin.clear();
 				}
 				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			#if (__cplusplus > 201103L)
 			}
+			#endif
 			
 			return readContent;
 		}
