@@ -38,6 +38,6 @@
 #include "EVTBasics/EVTReadOnly.hpp"
 #include "EVTBasics/EVTLazy.hpp"
 
-#if (__cplusplus >= 201406L) // ~C++17 Libraries
+#if __cplusplus >= 201406L && __has_include(<string_view>) // ~C++17 Libraries
 	#include "EVTBasics/EVTString.hpp"
 #endif

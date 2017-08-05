@@ -65,7 +65,7 @@ namespace evt {
 	
 	// MARK: - Array Class
 	template <typename Type, std::size_t initialCapacity = 2>
-	class Array: public EVTObject {
+	class Array {
 		
 		// Types and macros
 		typedef std::size_t SizeType;
@@ -96,7 +96,7 @@ namespace evt {
 			Pointer newValues (newSize);
 			
 			move ? newValues.moveValuesFrom(values) : newValues.copyValuesFrom(values);
-			values = newValues;
+			values = std::move(newValues);
 		}
 		
 		/// Replaces the content of the array with other elements
@@ -131,7 +131,7 @@ namespace evt {
 				std::copy(&values[0], &values[count_], &newValues[0]);
 				newValues.copyValuesFrom(newElements, count_);
 				
-				values = newValues;
+				values = std::move(newValues);
 			}
 			
 			count_ += countOfContainer;
@@ -156,7 +156,7 @@ namespace evt {
 				std::move(&values[0], &values[count_], &newValues[0]);
 				newValues.moveValuesFrom(newElements, count_);
 				
-				values = newValues;
+				values = std::move(newValues);
 			}
 			
 			count_ += countOfContainer;
@@ -216,7 +216,7 @@ namespace evt {
 		
 		// MARK: Constructors
 		
-		CONSTEXPR Array() { }
+		CONSTEXPR Array() {}
 		CONSTEXPR Array(InitializerList elements) { assignNewElements(elements); }
 		CONSTEXPR Array(const Array& otherArray) { (*this) = otherArray; }
 		CONSTEXPR Array(Array&& otherArray) { (*this) = otherArray; }
@@ -227,7 +227,7 @@ namespace evt {
 		template <typename Container, typename = typename std::enable_if<!std::is_same<Container, Type>::type>>
 		CONSTEXPR Array(Container&& elements) { assignNewElementsMOVE(std::move(elements)); }
 		
-		virtual ~Array() {
+		~Array() {
 			values.~Pointer();
 		}
 		
@@ -292,7 +292,7 @@ namespace evt {
 				std::copy(&values[0], &values[index], &newValues[0]);
 				newValues.copyValuesFrom(values, index+1);
 				
-				values = newValues;
+				values = std::move(newValues);
 			}
 			else {
 				std::copy(&values[index], &values[count_], &values[index + 1]);
@@ -321,7 +321,7 @@ namespace evt {
 				std::move(&values[0], &values[index], &newValues[0]);
 				newValues.moveValuesFrom(values, index+1);
 				
-				values = newValues;
+				values = std::move(newValues);
 			}
 			else {
 				std::move(&values[index], &values[count_], &values[index + 1]);
@@ -367,7 +367,7 @@ namespace evt {
 			if (values.capacity() == count_) {
 				resizeValuesToSize((sizeOfArrayInMB(values.capacity()) < 500) ? (values.capacity() << 2) : (values.capacity() << 1), 1);
 			}
-			values[count_] = newElement;
+			values[count_] = std::move(newElement);
 			count_ += 1;
 		}
 		
@@ -496,13 +496,13 @@ namespace evt {
 		
 		CONSTEXPR void swap(Array& otherArray) {
 			
-			Pointer auxValues = this->values;
+			Pointer auxValues = std::move(this->values);
 			SizeType auxCount = this->count_;
 			
-			this->values = otherArray.values;
+			this->values = std::move(otherArray.values);
 			this->count_ = otherArray.count_;
 			
-			otherArray.values = auxValues;
+			otherArray.values = std::move(auxValues);
 			otherArray.count_ = auxCount;
 		}
 		
@@ -514,7 +514,7 @@ namespace evt {
 		CONSTEXPR Array& removeElements(InitializerList newElements, bool onlyFirstOcurrence = false) {
 			return removeElementsFromContainer(newElements, onlyFirstOcurrence);
 		}
-		
+		 
 		template <typename Container>
 		CONSTEXPR void swap(Container& container) {
 			Array otherArray(container);
@@ -528,7 +528,7 @@ namespace evt {
 			}
 			return false;
 		}
-		
+		 
 		/// Returns the index of the first ocurrence of the element. Last position if the element isn't found
 		CONSTEXPR SizeType find(const Type& element) const {
 			return (std::find(&values[0], &values[count_], element) - &values[0]);
@@ -553,8 +553,8 @@ namespace evt {
 			
 			return positions;
 		}
-		
-		std::string toString() const override {
+		 
+		std::string toString() const {
 			
 			if (this->isEmpty()) {
 				return "[]";
@@ -600,6 +600,10 @@ namespace evt {
 			return output;
 		}
 		
+		friend std::ostream& operator<<(std::ostream& os, const Array& object) noexcept {
+			return os << object.toString();
+		}
+			
 		/// Converts Array to other types
 		template <typename Container>
 		CONSTEXPR static Container to(const Array& elements) {
@@ -633,7 +637,7 @@ namespace evt {
 			}
 			return filteredArray;
 		}
-		
+		 
 		CONSTEXPR Optional<Type> first(const std::function<bool(const Type&)>& filterFunction) const {
 			for (const auto& element: *this) {
 				if (filterFunction(element)) {
@@ -670,7 +674,7 @@ namespace evt {
 				return values[index];
 			}
 		}
-		
+		 
 		// MARK: Operators overload
 		
 		CONSTEXPR Type& operator[](const SizeType index) {
@@ -707,7 +711,7 @@ namespace evt {
 			otherArray += newElements;
 			return otherArray;
 		}
-		
+		 
 		template <typename Container>
 		CONSTEXPR Array& operator+=(const Container& newElements) {
 			return appendNewElements(newElements);
@@ -752,7 +756,7 @@ namespace evt {
 			
 			return count_ < countOfContainer;
 		}
-		
+		 
 		template <typename Container>
 		CONSTEXPR bool operator<=(const Container& elements) {
 			
@@ -807,7 +811,7 @@ namespace evt {
 			
 			return count_ >= countOfContainer;
 		}
-		
+		 
 		Array& operator=(const Array& otherArray) {
 			
 			if (this != &otherArray) {
@@ -835,13 +839,13 @@ namespace evt {
 		CONSTEXPR void moveFrom(Array&& otherArray) {
 			
 			if (this != &otherArray) {
-				values = otherArray.values;
+				values = std::move(otherArray.values);
 				count_ = otherArray.count_;
 				
 				otherArray.count_ = 0;
 			}
 		}
-		
+		 
 		// MARK: Shuffle
 		
 		void shuffle() {
@@ -868,7 +872,7 @@ namespace evt {
 			
 			return otherArray;
 		}
-		
+		 
 		// MARK: Sort
 		
 		CONSTEXPR void sort(const std::function<bool(Type&,Type&)>& compareFunction = std::less_equal<Type>()) {

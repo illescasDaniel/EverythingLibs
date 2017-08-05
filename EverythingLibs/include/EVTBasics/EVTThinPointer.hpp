@@ -163,7 +163,7 @@ namespace evt {
 		}
 		
 		CONSTEXPR ThinPointer(ThinPointer<Type[]>&& otherPtr) {
-			this->operator=(otherPtr);
+			this->operator=(std::move(otherPtr));
 		}
 		
 		CONSTEXPR ThinPointer(const ThinPointer<Type[]>& otherPtr) {
@@ -182,10 +182,9 @@ namespace evt {
 				std::move(std::begin(otherPtr), std::end(otherPtr), &valuePtr[0]);
 				otherPtr.freePointer();
 			}
-			
 			return *this;
 		}
-		
+
 		CONSTEXPR Type& operator[](const std::size_t index) const {
 			if (valuePtr == nullptr) { throw std::bad_alloc(); }
 			return valuePtr[index];

@@ -76,6 +76,8 @@ public:
 
 int main(int argc, char* argv[]) {
 	
+	cout << sizeof(Array<int>) << " " << sizeof(unique_ptr<int[]>) << endl;
+	
 	Array<string> someStrings {"daniel", "test", "daniel", "john", "null", "macOS"};
 	print(someStrings.countOf("Daniel"_lower));
 	print(someStrings.countOf([](const string& str){ return str.length() > 4; }));
@@ -380,23 +382,26 @@ int main(int argc, char* argv[]) {
 	//int number2 = readLine<int>();
 	//print(number2);
 	
-	string yourName = input("What is your name?: ");
-	print(yourName);
+	
+	int myAge = input<int>("Age?: ");
+	print(myAge);
+
+	/*
+	// Equivalent to:
+	 int myAge_;
+	 cout << "Age?: ";
+	 cin >> myAge_;
+	 // ...
+	*/
+	
+	//string yourName = input("What is your name?: ");
+	//print(yourName);
 	
 	// Equivalent to:
 	/*
-	 string yourName;
+	 string yourName_;
 	 cout << "What is your name?: ";
-	 getline(cin, yourName>;
-	 cout << yourName << endl;
-	 */
-	
-	print(input("something: "));
-	int number09898 = readLine<int>("Phone Number?: ");
-	print("number:", number09898);
-	
-	string number76588 = input<string>();
-	print("otherNumbe:", number76588);
-	
-	print(input("something again: "));
+	 getline(cin, yourName_);
+	 cout << yourName_ << endl;
+	*/
 }
