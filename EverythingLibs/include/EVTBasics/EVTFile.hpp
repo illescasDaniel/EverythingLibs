@@ -53,7 +53,7 @@ namespace evt {
 		
 		std::fstream fileStream;
 		std::ios_base::openmode inputOutputMode;
-		std::string fileName;
+		std::string fileName_;
 		Mode mode {Mode::both};
 		
 		void open(const std::ios_base::openmode inputOutputMode) {
@@ -62,7 +62,7 @@ namespace evt {
 				
 				close();
 				this->inputOutputMode = inputOutputMode;
-				fileStream.open(fileName, inputOutputMode);
+				fileStream.open(fileName_, inputOutputMode);
 				
 				if (fileStream.fail()) {
 					std::cerr << "File couldn't be open" << std::endl;
@@ -86,7 +86,7 @@ namespace evt {
 		bool writeAtEnd = true;
 		
 		File(const std::string& fileName, const Mode mode = Mode::both) noexcept {
-			this->fileName = fileName;
+			this->fileName_ = fileName;
 			this->mode = mode;
 		}
 		
@@ -246,7 +246,7 @@ namespace evt {
 		}
 		
 		void open(const std::string& fileName, const Mode mode = Mode::both) {
-			this->fileName = fileName;
+			this->fileName_ = fileName;
 			this->mode = mode;
 			this->close();
 		}
@@ -255,8 +255,8 @@ namespace evt {
 			return fileStream.eof();
 		}
 		
-		std::string getFileName() const noexcept {
-			return fileName;
+		std::string fileName() const noexcept {
+			return fileName_;
 		}
 		
 		~File() {

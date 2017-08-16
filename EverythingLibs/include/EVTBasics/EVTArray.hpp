@@ -32,7 +32,7 @@
 #include <random>
 #include <functional>
 #include "EVTOptional.hpp"
-#include "EVTThinPointer.hpp"
+#include "EVTRawPointer.hpp"
 #include "../EVTObject.hpp"
 
 #if (__cplusplus > 201103L)
@@ -64,24 +64,20 @@ namespace evt {
 	}
 	
 	// MARK: - Array Class
-	template <typename Type, std::size_t initialCapacity = 2>
+	template <typename Type>
 	class Array {
 		
 		// Types and macros
 		typedef std::size_t SizeType;
-		typedef evt::ThinPointer<Type[]> Pointer;
+		typedef evt::RawPointer<Type[]> Pointer;
 		typedef std::initializer_list<Type> InitializerList;
 		
 		// MARK: - Attributes
 		
-		Pointer values = {Pointer((initialCapacity > 2) ? initialCapacity : 2)};
+		Pointer values;
 		SizeType count_ {0};
 		
 		// MARK: - Private Functions
-		
-		CONSTEXPR double sizeOfArrayInMB(const double currentCapacity) const noexcept {
-			return (sizeof(Type)*(currentCapacity)) / 1000000;
-		}
 		
 		/// Assigns new memory, also updates the new capacity.
 		CONSTEXPR void assignMemoryAndCapacityForSize(SizeType newSize, bool forceResize = false) {
@@ -99,19 +95,21 @@ namespace evt {
 			values = std::move(newValues);
 		}
 		
+		template <typename MagicContainer>
+		CONSTEXPR void assignNewMagicElements(MagicContainer&& elements, const std::size_t initialCapacity = 2) {
+			count_ = std::distance(std::begin(elements), std::end(elements));
+			assignMemoryAndCapacityForSize((count_ > initialCapacity) ? count_ : initialCapacity);
+			assignNewElements(std::forward<MagicContainer>(elements));
+		}
 		/// Replaces the content of the array with other elements
 		template <typename Container>
 		CONSTEXPR void assignNewElements(const Container& elements) {
-			count_ = std::distance(std::begin(elements), std::end(elements));
-			assignMemoryAndCapacityForSize(count_);
 			values.copyValuesFrom(elements);
 		}
 		
 		template <typename Container>
-		CONSTEXPR void assignNewElementsMOVE(Container&& elements) {
-			count_ = std::distance(std::begin(elements), std::end(elements));
-			assignMemoryAndCapacityForSize(count_);
-			values.moveValuesFrom(elements);
+		CONSTEXPR void assignNewElements(Container&& elements) {
+			values.moveValuesFrom(std::move(elements));
 		}
 		
 		template <typename Container>
@@ -212,24 +210,37 @@ namespace evt {
 			}
 		}
 		
+		void assignArrayWithOptionalInitialCapacity(const Array& otherArray, const size_t initialCapacity = 2) {
+			if (this != &otherArray) {
+				count_ = otherArray.count();
+				std::size_t capacity = (otherArray.count() > initialCapacity) ? otherArray.count() : initialCapacity;
+				assignMemoryAndCapacityForSize(capacity);
+				values.copyValuesFrom(otherArray);
+			}
+		}
+		
+		void assignArrayWithOptionalInitialCapacity(Array&& otherArray, const size_t initialCapacity = 2) {
+			if (this != &otherArray) {
+				count_ = otherArray.count();
+				std::size_t capacity = (otherArray.count() > initialCapacity) ? otherArray.count() : initialCapacity;
+				assignMemoryAndCapacityForSize(capacity);
+				values.moveValuesFrom(std::move(otherArray));
+			}
+		}
+		
 	public:
 		
 		// MARK: Constructors
 		
 		CONSTEXPR Array() {}
-		CONSTEXPR Array(InitializerList elements) { assignNewElements(elements); }
-		CONSTEXPR Array(const Array& otherArray) { (*this) = otherArray; }
-		CONSTEXPR Array(Array&& otherArray) { (*this) = otherArray; }
+		CONSTEXPR Array(const int initialCapacity) { assignMemoryAndCapacityForSize((initialCapacity > 0) ? initialCapacity : 2); }
+		CONSTEXPR Array(std::size_t initialCapacity) { assignMemoryAndCapacityForSize(initialCapacity); }
+		CONSTEXPR Array(InitializerList&& elements, std::size_t initialCapacity = 2) { assignNewMagicElements(elements, initialCapacity); }
+		CONSTEXPR Array(const Array& otherArray, std::size_t initialCapacity = 2) { assignArrayWithOptionalInitialCapacity(otherArray, initialCapacity); }
+		CONSTEXPR Array(Array&& otherArray, std::size_t initialCapacity = 2) { assignArrayWithOptionalInitialCapacity(std::move(otherArray), initialCapacity); }
 		
-		template<typename Container>
-		CONSTEXPR Array(const Container& elements) { assignNewElements(elements); }
-		
-		template <typename Container, typename = typename std::enable_if<!std::is_same<Container, Type>::type>>
-		CONSTEXPR Array(Container&& elements) { assignNewElementsMOVE(std::move(elements)); }
-		
-		~Array() {
-			values.~Pointer();
-		}
+		template <typename Container, typename = typename std::enable_if<!std::is_same<Container,Array>::value && !std::is_same<Container,Type>::value>::type>
+		CONSTEXPR Array(Container&& elements, SizeType initialCapacity = 2) { assignNewMagicElements(elements, initialCapacity); }
 		
 		// MARK: Capacity
 		
@@ -273,7 +284,7 @@ namespace evt {
 			}
 		}
 		
-		CONSTEXPR void insert(const Type& newElement, const SizeType index) {
+		CONSTEXPR void insert(const Type& newElement, const SizeType index, const SizeType capacityResizeFactor = 2) {
 			
 			if (index != 0) {
 				checkIfOutOfRange(index);
@@ -285,7 +296,7 @@ namespace evt {
 			
 			if (values.capacity() == count_) {
 				
-				SizeType newCapacity = (sizeOfArrayInMB(values.capacity()) < 500) ? (values.capacity() << 2) : (values.capacity() << 1);
+				SizeType newCapacity = values.capacity() * capacityResizeFactor;
 				
 				Pointer newValues (newCapacity);
 				
@@ -302,7 +313,7 @@ namespace evt {
 			count_ += 1;
 		}
 		
-		CONSTEXPR void insert(Type&& newElement, const SizeType index) {
+		CONSTEXPR void insert(Type&& newElement, const SizeType index, const SizeType capacityResizeFactor = 2) {
 			
 			if (index != 0) {
 				checkIfOutOfRange(index);
@@ -314,7 +325,7 @@ namespace evt {
 			
 			if (values.capacity() == count_) {
 				
-				SizeType newCapacity = (sizeOfArrayInMB(values.capacity()) < 500) ? (values.capacity() << 2) : (values.capacity() << 1);
+				SizeType newCapacity = values.capacity() * capacityResizeFactor;
 				
 				Pointer newValues (newCapacity);
 				
@@ -353,19 +364,19 @@ namespace evt {
 			}
 		}
 		
-		CONSTEXPR void append(const Type& newElement) {
+		CONSTEXPR void append(const Type& newElement, const SizeType capacityResizeFactor = 2) {
 			
 			if (values.capacity() == count_) {
-				resizeValuesToSize((sizeOfArrayInMB(values.capacity()) < 500) ? (values.capacity() << 2) : (values.capacity() << 1));
+				resizeValuesToSize(values.capacity() * capacityResizeFactor);
 			}
 			values[count_] = newElement;
 			count_ += 1;
 		}
 		
-		CONSTEXPR void append(Type&& newElement) {
+		CONSTEXPR void append(Type&& newElement, const SizeType capacityResizeFactor = 2) {
 			
 			if (values.capacity() == count_) {
-				resizeValuesToSize((sizeOfArrayInMB(values.capacity()) < 500) ? (values.capacity() << 2) : (values.capacity() << 1), 1);
+				resizeValuesToSize(values.capacity() * capacityResizeFactor, 1);
 			}
 			values[count_] = std::move(newElement);
 			count_ += 1;
@@ -568,11 +579,11 @@ namespace evt {
 					
 					#if (__cplusplus >= 201406L)
 					
-						if CONSTEXPR (std::is_same<Type, std::string>::value) {
+						if constexpr (std::is_same<Type, std::string>::value) {
 							return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
-						} else if CONSTEXPR (std::is_same<Type, char>::value) {
+						} else if constexpr (std::is_same<Type, char>::value) {
 							return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
-						} else if CONSTEXPR (std::is_arithmetic<Type>::value || std::is_same<Type, EVTObject>::value || std::is_base_of<EVTObject, Type>::value) {
+						} else if constexpr (std::is_arithmetic<Type>::value || std::is_same<Type, EVTObject>::value || std::is_base_of<EVTObject, Type>::value) {
 							return evt::internalArrayPrintEVT::to_string(value);
 						}
 						return std::string("Object");
@@ -811,28 +822,25 @@ namespace evt {
 			
 			return count_ >= countOfContainer;
 		}
-		 
-		Array& operator=(const Array& otherArray) {
+
+		Array& operator=(Array&& otherArray) {
 			
 			if (this != &otherArray) {
-				count_ = otherArray.count_;
-				
+				count_ = otherArray.count();
 				assignMemoryAndCapacityForSize(otherArray.capacity());
-				values.copyValuesFrom(otherArray);
+				values.moveValuesFrom(std::move(otherArray));
 			}
 			
 			return *this;
 		}
 		
-		CONSTEXPR Array& operator=(Array&& otherArray) {
+		Array& operator=(const Array& otherArray) {
 			
 			if (this != &otherArray) {
-				count_ = otherArray.count_;
-				
+				count_ = otherArray.count();
 				assignMemoryAndCapacityForSize(otherArray.capacity());
-				values.moveValuesFrom(otherArray);
+				values.copyValuesFrom(otherArray);
 			}
-			
 			return *this;
 		}
 		

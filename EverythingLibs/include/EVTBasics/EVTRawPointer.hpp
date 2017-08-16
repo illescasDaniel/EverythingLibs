@@ -40,7 +40,7 @@
 namespace evt {
 	
 	template <typename Type>
-	class ThinPointer {
+	class RawPointer {
 		
 		Type* valuePtr {new Type{}};
 		
@@ -51,7 +51,7 @@ namespace evt {
 			}
 		}
 		
-		CONSTEXPR void copyAssignFrom(const ThinPointer& otherPtr) {
+		CONSTEXPR void copyAssignFrom(const RawPointer& otherPtr) {
 			if (this != &otherPtr && otherPtr.isNotNull()) {
 				this->freePointer();
 				valuePtr = new Type{*otherPtr.valuePtr};
@@ -60,26 +60,26 @@ namespace evt {
 		
 	public:
 		
-		CONSTEXPR ThinPointer(){ }
+		CONSTEXPR RawPointer(){ }
 		
-		CONSTEXPR ThinPointer(const Type& value) {
+		CONSTEXPR RawPointer(const Type& value) {
 			valuePtr = new Type{value};
 		}
 		
-		CONSTEXPR ThinPointer(ThinPointer& otherPtr) {
+		CONSTEXPR RawPointer(RawPointer& otherPtr) {
 			copyAssignFrom(otherPtr);
 		}
 		
-		CONSTEXPR ThinPointer(ThinPointer&& otherPtr) {
+		CONSTEXPR RawPointer(RawPointer&& otherPtr) {
 			this->operator=(std::move(otherPtr));
 		}
 		
-		CONSTEXPR ThinPointer operator=(const ThinPointer& otherPtr) {
+		CONSTEXPR RawPointer operator=(const RawPointer& otherPtr) {
 			copyAssignFrom(otherPtr);
 			return *this;
 		}
 		
-		CONSTEXPR ThinPointer operator=(ThinPointer&& otherPtr) {
+		CONSTEXPR RawPointer operator=(RawPointer&& otherPtr) {
 			
 			if (this != &otherPtr && otherPtr.isNotNull()) {
 				this->freePointer();
@@ -108,16 +108,16 @@ namespace evt {
 			return valuePtr != nullptr;
 		}
 		
-		~ThinPointer() {
+		~RawPointer() {
 			this->freePointer();
 		}
 	};
 	
 	
 	template <typename Type>
-	class ThinPointer<Type[]> {
+	class RawPointer<Type[]> {
 		
-		std::size_t capacity_ {0};
+		std::size_t capacity_ {1};
 		Type* valuePtr {new Type[capacity_]{}};
 		
 		void freePointer() {
@@ -136,7 +136,7 @@ namespace evt {
 			}
 		}
 		
-		CONSTEXPR void copyPointerValuesFrom(const ThinPointer<Type[]>& otherPtr) {
+		CONSTEXPR void copyPointerValuesFrom(const RawPointer<Type[]>& otherPtr) {
 			if (otherPtr.capacity() != 0 && this != &otherPtr) {
 				assignMemoryForCapacity(otherPtr.capacity_);
 				std::copy(std::begin(otherPtr), std::end(otherPtr), &valuePtr[0]);
@@ -145,13 +145,13 @@ namespace evt {
 		
 	public:
 		
-		CONSTEXPR ThinPointer() {}
+		CONSTEXPR RawPointer() {}
 		
-		CONSTEXPR ThinPointer(const std::size_t capacity) {
+		CONSTEXPR RawPointer(const std::size_t capacity) {
 			assignMemoryForCapacity(capacity);
 		}
 		
-		CONSTEXPR ThinPointer(std::initializer_list<Type> values) {
+		CONSTEXPR RawPointer(std::initializer_list<Type> values) {
 			
 			assignMemoryForCapacity(values.size());
 			
@@ -162,20 +162,20 @@ namespace evt {
 			}
 		}
 		
-		CONSTEXPR ThinPointer(ThinPointer<Type[]>&& otherPtr) {
+		CONSTEXPR RawPointer(RawPointer<Type[]>&& otherPtr) {
 			this->operator=(std::move(otherPtr));
 		}
 		
-		CONSTEXPR ThinPointer(const ThinPointer<Type[]>& otherPtr) {
+		CONSTEXPR RawPointer(const RawPointer<Type[]>& otherPtr) {
 			copyPointerValuesFrom(otherPtr);
 		}
 		
-		CONSTEXPR ThinPointer<Type[]>& operator=(const ThinPointer<Type[]>& otherPtr) {
+		CONSTEXPR RawPointer<Type[]>& operator=(const RawPointer<Type[]>& otherPtr) {
 			copyPointerValuesFrom(otherPtr);
 			return *this;
 		}
 		
-		CONSTEXPR ThinPointer<Type[]>& operator=(ThinPointer<Type[]>&& otherPtr)  {
+		CONSTEXPR RawPointer<Type[]>& operator=(RawPointer<Type[]>&& otherPtr)  {
 			
 			if (otherPtr.capacity() != 0 && this != &otherPtr) {
 				assignMemoryForCapacity(otherPtr.capacity_);
@@ -216,7 +216,7 @@ namespace evt {
 			return &valuePtr[capacity_];
 		}
 		
-		CONSTEXPR bool operator==(ThinPointer<Type[]>& otherPtr) {
+		CONSTEXPR bool operator==(RawPointer<Type[]>& otherPtr) {
 			return std::equal(&valuePtr[0], &valuePtr[capacity_], otherPtr.begin());
 		}
 		
@@ -229,7 +229,7 @@ namespace evt {
 			std::move(std::begin(container), std::end(container), &(this->at(position)));
 		}
 		
-		CONSTEXPR void moveValuesFrom(ThinPointer<Type[]>&& container, std::size_t position = 0) {
+		CONSTEXPR void moveValuesFrom(RawPointer<Type[]>&& container, std::size_t position = 0) {
 			std::move(container.begin(), container.end(), &(this->at(position)));
 		}
 		
@@ -242,7 +242,7 @@ namespace evt {
 			std::copy(std::begin(container), std::end(container), &(this->at(position)));
 		}
 		
-		CONSTEXPR void copyValuesFrom(const ThinPointer<Type[]>& container, std::size_t position = 0) {
+		CONSTEXPR void copyValuesFrom(const RawPointer<Type[]>& container, std::size_t position = 0) {
 			std::copy(container.begin(), container.end(), &(this->at(position)));
 		}
 		
@@ -254,7 +254,7 @@ namespace evt {
 			return valuePtr != nullptr;
 		}
 		
-		~ThinPointer() {
+		~RawPointer() {
 			freePointer();
 		}
 	};

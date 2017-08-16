@@ -11,6 +11,8 @@
 #include "fullClassExample/Car.hpp"
 #include <thread>
 
+#include <vector>
+
 using namespace std;
 using namespace evt;
 using namespace evt::utils;
@@ -29,7 +31,7 @@ namespace evt {
 		
 		// Necessary for the "Array" class to extract a string from this object
 		string toString() const override {
-			return "Age: " + std::to_string(age) + "\nName: " + string(name);
+			return "Age: " + evt::toString(age) + "\nName: " + string(name);
 		}
 	};
 }
@@ -42,7 +44,7 @@ public:
 	Stuff(int a, int b): a(a), b(b) {}
 	
 	string toString() const override {
-		return "Things: " + to_string(a) + " " + to_string(b);
+		return "Things: " + evt::toString(a) + " " + evt::toString(b);
 	}
 };
 
@@ -54,7 +56,7 @@ public:
 	Test() {}
 	
 	string toString() const override {
-		return super::toString() + " and " + to_string(c) + " " + to_string(d);
+		return super::toString() + " and " + evt::toString(c) + " " + evt::toString(d);
 	}
 };
 
@@ -76,6 +78,10 @@ public:
 
 int main(int argc, char* argv[]) {
 	
+	Int8 test00001(-98);
+	UInt8 test0002(54);
+	print(test00001, test0002);
+	
 	cout << sizeof(Array<int>) << " " << sizeof(unique_ptr<int[]>) << endl;
 	
 	Array<string> someStrings {"daniel", "test", "daniel", "john", "null", "macOS"};
@@ -83,8 +89,8 @@ int main(int argc, char* argv[]) {
 	print(someStrings.countOf([](const string& str){ return str.length() > 4; }));
 	print(someStrings.findIf([](const string& str){ return str == "test"; }));
 	 
-	ThinPointer<int> number0001(10);
-	ThinPointer<int> number0002(100);
+	RawPointer<int> number0001(10);
+	RawPointer<int> number0002(100);
 	
 	number0001 = std::move(number0002); // Uses move operations, deletes the pointer & content of "number0002"
 	// number0001 = number0002; // Copies the content of the pointer, doesn't destroy the original ("number0002")
@@ -95,7 +101,7 @@ int main(int argc, char* argv[]) {
 		print(number0002);
 	}
 	
-	ThinPointer<Stuff[]> stuffs(3);
+	RawPointer<Stuff[]> stuffs(3);
 	stuffs[0] = Stuff(1, 2);
 	print(stuffs[0]);
 	
@@ -113,6 +119,8 @@ int main(int argc, char* argv[]) {
 	
 	Pointer<int> aP(10);
 	Pointer<int> bP(aP);
+	Pointer<Int> cP(80);
+	print("Value of pointer:", *cP);
 	
 	if (bP.isNotNull()) {
 		print(bP);
@@ -190,8 +198,8 @@ int main(int argc, char* argv[]) {
 		//print("Hi\n"_sv * 3);
 	#endif
 	
-	ThinPointer<int> ptest(100);
-	ThinPointer<int> ptest2(400);
+	RawPointer<int> ptest(100);
+	RawPointer<int> ptest2(400);
 	ptest = ptest2;
 	if (!ptest.isNull()) {
 		cout << *ptest << endl;
@@ -238,7 +246,7 @@ int main(int argc, char* argv[]) {
 	// NOPE -> daniel.name = "Test";
 	
 	cout << "Random: " << randomIntegralNumber(-90, -10) << endl;
-	int randomIntNumber = randomIntegralNumber<int>(0,100);
+	Int randomIntNumber = Int::random(0,100);
 	cout << randomIntNumber << endl;
 	cout << randomRealNumber(-10.3, 10.86) << endl;
 	
@@ -247,7 +255,7 @@ int main(int argc, char* argv[]) {
 	
 	cout << trimmed(" hi ") << endl;
 	
-	print("My name is", to_string(numbers));
+	print("My name is", evt::toString(numbers));
 	
 	Array<string> names {"daniel", "john", "mary"};
 	Array<string> copyNames = names;
@@ -328,13 +336,13 @@ int main(int argc, char* argv[]) {
 	cout << pNumbers.capacity() << " " << pNumbers2.capacity() << endl;
 	cout << pNumbers[2] << endl;
 	
-	print(to_string(pNumbers));
+	print(toStringContainer(pNumbers));
 	
 	Int128 bigNumber = 234567876543256343;
 	cout << (bigNumber + 1) << endl;
 	cout << (2 * bigNumber) << endl;
  
-	Number test (8745.54);
+	AnyNumber test (8745.54);
 	cout << test.multiply<double>(10.0) << endl;
 	
 	test = 10;
@@ -381,7 +389,6 @@ int main(int argc, char* argv[]) {
 	
 	//int number2 = readLine<int>();
 	//print(number2);
-	
 	
 	int myAge = input<int>("Age?: ");
 	print(myAge);

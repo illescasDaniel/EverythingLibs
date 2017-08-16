@@ -25,6 +25,7 @@
 #pragma once
 
 #include "EVTBasics/EVTArray.hpp"
+#include "EVTObject.hpp"
 #include <type_traits>
 #include <random>
 #include <string>
@@ -52,10 +53,10 @@ namespace evt {
 		#define cplusplus11 201103L
 		#define cplusplus98 199711L
 		
-		#define xAssert(_condition, _message) if (bool(_condition) == false) { \
-		std::cerr << "- Assertion failed: " << (#_condition)<< "\n- Error: " << (_message) << std::endl; exit(1); }
+		#define xAssert(condition_, message_) if (bool(condition_) == false) { \
+		std::cerr << "- Assertion failed: " << (#condition_)<< "\n- Error: " << (message_) << std::endl; exit(1); }
 		
-		#define guard(_condition) if (bool(_condition)){}
+		#define guard(condition_) if (bool(condition_)){}
 		
 		#define var auto
 		#define let const auto
@@ -215,10 +216,42 @@ namespace evt {
 			return readLine<Type>(promptText);
 		}
 		
+		#if (__cplusplus <= 201103L)
 		std::string quoted(const std::string& str) {
 			return "\"" + str + "\"";
 		}
 		
+		std::string quoted(const char* str) {
+			return "\"" + std::string(str) + "\"";
+		}
+		
+		std::string quoted(const char chr) {
+			return "'" + std::string(1, chr) + "'";
+		}
+		#else
+		template <typename Type>
+		std::string quoted(const Type& value, bool quoteAnything = true) {
+			if constexpr (std::is_same<std::string, Type>()) {
+				return "\"" + value + "\"";
+			}
+			else if constexpr (std::is_same<const char*, Type>()) {
+				return "\"" + std::string(value) + "\"";
+			}
+			else if constexpr (std::is_same<char, Type>()) {
+				return "'" + std::string(1, value) + "'";
+			}
+			else if constexpr (std::is_arithmetic<Type>()) {
+				return quoteAnything ? ("\"" + std::to_string(value) + "\"") : std::to_string(value);
+			}
+			else if constexpr (std::is_object<Type>()) {
+				return quoteAnything ? "\"[Object]\"" : "[Object]";
+			}
+			else {
+				return "[Error, value is not a valid type to quote]";
+			}
+		}
+		#endif
+
 		template <typename Function>
 		CONSTEXPR float benchmark(const Function& functionToBenchmark, std::size_t iterations = 1) {
 			

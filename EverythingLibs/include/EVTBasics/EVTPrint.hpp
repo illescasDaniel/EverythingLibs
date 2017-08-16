@@ -46,8 +46,8 @@ namespace evt {
 		inline std::string to_string(const std::string& str) { return str; }
 		inline std::string to_string(const char chr) { return std::string(1,chr); }
 		
-		template <typename Fundamental, typename = typename std::enable_if<std::is_fundamental<Fundamental>::value,bool>::type>
-		inline std::string to_string(const Fundamental& fundamental) { return std::to_string(fundamental); }
+		template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value,bool>::type>
+		inline std::string to_string(const Arithmetic& arithmetic) { return std::to_string(arithmetic); }
 	}
 	
 	// To know if a given container is a set or not
@@ -342,3 +342,5 @@ return os << to_string(cont); \
 #undef ostreamOperator
 #undef ostreamOperatorMap
 #undef to_stringMAP
+
+

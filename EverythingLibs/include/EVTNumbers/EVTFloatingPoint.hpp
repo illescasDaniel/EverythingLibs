@@ -24,8 +24,7 @@
 
 #pragma once
 
-#include <random>
-#include <cstdint>
+#include "EVTNumber.hpp"
 
 #if (__cplusplus > 201103L)
 #define CONSTEXPR constexpr
@@ -35,47 +34,39 @@
 
 namespace evt {
 	
-	#define ArithmeticType_typename typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type
-	
-	template <typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type>
-	class Number {
+	template <typename FloatingType = float, typename = typename std::enable_if<std::is_floating_point<FloatingType>::value,bool>::type>
+	class FloatingPoint: public Number<FloatingType> {
 		
-	private:
-		
-		ArithmeticType value_;
+		typedef Number<FloatingType> super;
 		
 	public:
 		
-		CONSTEXPR Number() noexcept {}
-		CONSTEXPR Number(ArithmeticType number) noexcept : value_(number) {}
+		CONSTEXPR FloatingPoint() noexcept  {}
+		CONSTEXPR FloatingPoint(FloatingType floatNumber) noexcept : super(floatNumber) {}
 		
-		CONSTEXPR operator ArithmeticType() const noexcept {
-			return value_;
+		template <typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type>
+		CONSTEXPR FloatingType operator=(const Number<ArithmeticType>& number) noexcept  {
+			super::set(number);
+			return *this;
 		}
 		
-		std::string toString() const {
-			return std::to_string(value_);
-		}
-		
-		CONSTEXPR ArithmeticType absolute() const noexcept {
-			return (value_ < 0) ? -value_ : value_;
-		}
-		
-		template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
-		Type as() const {
-			return static_cast<Type>(value_);
-		}
-		
-	protected:
-		
-		CONSTEXPR void set(ArithmeticType number) noexcept {
-			value_ = number;
-		}
-		
-		CONSTEXPR ArithmeticType value() const noexcept {
-			return value_;
+		static FloatingType random(FloatingType lowerBound = std::numeric_limits<FloatingType>::denorm_min(),
+								   FloatingType upperBound = std::numeric_limits<FloatingType>::max()) {
+			
+			std::random_device rd;
+			std::mt19937_64 rng(rd());
+			
+			if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
+			std::uniform_real_distribution<FloatingType> randomValue(lowerBound, upperBound);
+			
+			return randomValue(rng);
 		}
 	};
+	
+	typedef FloatingPoint<float> Float;
+	typedef FloatingPoint<double> Double;
+	typedef FloatingPoint<long double> LongDouble;
+	typedef FloatingPoint<long double> Float80;
 }
 
 #undef CONSTEXPR

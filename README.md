@@ -16,7 +16,7 @@ Libraries:
 	  [Array (without EVT dependencies)](https://github.com/illescasDaniel/Array.hpp)  `// An array implementation that is faster and prettier that std::vector`
 	- [File](https://github.com/illescasDaniel/File) `// Read & write files in text or binary mode easily`
 	- [Optional](https://github.com/illescasDaniel/Optional) `// Manage optional values that can be null or the internal type`
-	- [ThinPointer](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTThinPointer.hpp) `// Easier and powerful way to use raw pointers in C++`
+	- [RawPointer](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTRawPointer.hpp) `// Easier and powerful way to use raw pointers in C++`
 	- [Pointer](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTPointer.hpp) `// Easier and powerful way to use smart pointers in C++`
 	- [Print](https://github.com/illescasDaniel/print.hpp) `// Print any container (including classic arrays, matrices, pointer arrays...)`
 	- [ReadOnly](https://github.com/illescasDaniel/Var-ReadOnly) `// Manage values that can only be modified inside the class but can be accessed outside of it`
