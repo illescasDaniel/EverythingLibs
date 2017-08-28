@@ -129,18 +129,19 @@ namespace evt {
 	};
 }
 
-
 /*
- // EXPERIMENTAL, not working on GCC yet 
+ // Working fine only on Clang!
  #pragma once
 
 #include <cstddef>
 #include <ostream>
 
 #if (__cplusplus > 201103L)
-#define CONSTEXPR constexpr
+	#define CONSTEXPR constexpr
+	#define CONSTEXPRvar constexpr
 #else
-#define CONSTEXPR
+	#define CONSTEXPR inline
+	#define CONSTEXPRvar
 #endif
 
 namespace evt {
@@ -149,6 +150,7 @@ namespace evt {
 	union Optional {
 		
 	private:
+		
 		std::nullptr_t none;
 		Type some{};
 		
@@ -160,10 +162,6 @@ namespace evt {
 		Optional(std::nullptr_t none = nullptr): none(none) {}
 		Optional(const Type& something): some(something) { }
 		Optional(Type&& something): some(std::move(something)) { }
-		
-		//Optional(std::nullptr_t none = nullptr) { this->none = none; }
-		//Optional(const Type& something) { this->some = something; }
-		//Optional(Type&& something) { this->some = std::move(something); }
 		
 		CONSTEXPR Optional& operator=(const Type& something) { this->some = something; return *this; }
 		CONSTEXPR Optional& operator=(Type&& something) { this->some = std::move(something); return *this; }
@@ -193,6 +191,7 @@ namespace evt {
 		CONSTEXPR bool operator!=(const std::nullptr_t& none) const noexcept { return this->none != none; }
 		CONSTEXPR Type operator*() const noexcept { return some; }
 		CONSTEXPR Type value() const noexcept { return some; }
+		CONSTEXPR Type& value() noexcept { return some; }
 		CONSTEXPR explicit operator bool() const noexcept { return this->isNotNull(); }
 		CONSTEXPR operator Type() const noexcept { return this->orEmpty(); }
 		CONSTEXPR Type orEmpty() const noexcept { return this->isNotNull() ? some : Type{}; }
@@ -201,8 +200,12 @@ namespace evt {
 			return this->isNotNull() ? some : other;
 		}
 		
-		CONSTEXPR friend std::ostream& operator<<(std::ostream& os, const Optional& optionalValue) noexcept {
+		template <typename ValueType>
+		CONSTEXPR friend std::ostream& operator<<(std::ostream& os, const Optional<ValueType>& optionalValue) noexcept {
 			return os << optionalValue.orEmpty();
 		}
 	};
+}
 */
+
+#undef CONSTEXPR

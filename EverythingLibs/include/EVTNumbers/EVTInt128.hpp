@@ -175,3 +175,5 @@ namespace evt {
 		#undef assignmentOperator
 	}
 }
+
+#undef CONSTEXPR

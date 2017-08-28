@@ -16,7 +16,7 @@
 #include <unordered_map>
 #include <queue>
 #include <stack>
-#include "../EVTObject.hpp"
+#include "../Object.hpp"
 
 namespace evt {
 	
@@ -331,7 +331,7 @@ return internalPrintEVT::toStringMAP(map); \
 		else if constexpr (std::is_arithmetic<Type>()) {
 			return std::to_string(value);
 		}
-		else if constexpr (std::is_base_of<EVTObject, Type>()) {
+		else if constexpr (std::is_base_of<Object, Type>()) {
 			return value.toString();
 		}
 		else if constexpr (internalPrintEVT::is_container<Type>() || std::is_array<Type>()) {

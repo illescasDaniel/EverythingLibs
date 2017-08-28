@@ -34,6 +34,14 @@
 
 namespace evt {
 	
+	struct Division {
+		std::intmax_t quotient = 0;
+		std::intmax_t remaining = 0;
+		Division(const std::intmax_t quotient, const std::intmax_t remaining): quotient(quotient), remaining(remaining) {}
+		std::string toString() const noexcept { return "Quotient: " + std::to_string(quotient) + "\nRemaining: " + std::to_string(remaining); }
+		friend std::ostream& operator<<(std::ostream& os, const Division& object) noexcept { return os << object.toString(); }
+	};
+	
 	template <typename IntegralType = int, typename = typename std::enable_if<std::is_integral<IntegralType>::value,bool>::type>
 	class Integer: public Number<IntegralType> {
 		
@@ -92,6 +100,11 @@ namespace evt {
 			
 			return randomValue(rng);
 		}
+		
+		Division dividedBy(const IntegralType number) const {
+			auto divisionResult = std::lldiv(super::value(), number);
+			return Division(divisionResult.quot, divisionResult.rem);
+		}
 	};
 	
 	typedef Integer<int> Int;
@@ -105,6 +118,8 @@ namespace evt {
 	typedef Integer<uint16_t> UInt16;
 	typedef Integer<uint32_t> UInt32;
 	typedef Integer<uint64_t> UInt64;
+	typedef Integer<intmax_t> IntMax;
+	typedef Integer<uintmax_t> UIntMax;
 	
 	std::ostream& operator<<(std::ostream& os, const UInt8& number) noexcept {
 		return os << static_cast<uint16_t>(number);

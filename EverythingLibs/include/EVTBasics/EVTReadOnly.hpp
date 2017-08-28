@@ -62,4 +62,4 @@ namespace evt {
 	};
 }
 
-
+#undef CONSTEXPR

@@ -10,7 +10,7 @@
 
 #include "../include/EVT.hpp"
 
-class Car: public evt::EVTObject {
+class Car: public evt::Object {
 public:
 	
 	std::string model {};

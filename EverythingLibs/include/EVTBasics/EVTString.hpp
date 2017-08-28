@@ -25,7 +25,7 @@
 #pragma once
 
 #include <string_view>
-#include "../EVTObject.hpp"
+#include "../Object.hpp"
 
 namespace evt {
 	
@@ -36,7 +36,7 @@ namespace evt {
 			std::is_same<CharType, char32_t>::value>::type,
 	typename Traits = std::char_traits<CharType>>
 	
-	class StringView: public std::basic_string_view<CharType>, public EVTObject {
+	class BasicStringView: public std::basic_string_view<CharType>, public Object {
 		
 		typedef std::basic_string_view<CharType> super;
 		
@@ -48,14 +48,14 @@ namespace evt {
 		constexpr void remove_prefix(std::size_t n) { return super::remove_prefix(n); }
 		constexpr void remove_suffix(std::size_t n) { return super::remove_suffix(n); }
 		static constexpr std::size_t npos = super::npos;
-		constexpr StringView substr(std::size_t pos = 0, std::size_t count = super::npos ) const { return super::substr(pos, count); }
+		constexpr BasicStringView substr(std::size_t pos = 0, std::size_t count = super::npos ) const { return super::substr(pos, count); }
 		
 	public:	
-		constexpr StringView() noexcept : super() {}
-		constexpr StringView(const std::basic_string_view<CharType>& other) noexcept : super(other) {}
-		constexpr StringView(const std::string& other) noexcept : super(other) {}
-		constexpr StringView(const CharType* str, std::size_t count) noexcept : super(str, count) {}
-		constexpr StringView(const CharType* str) noexcept : super(str) {}
+		constexpr BasicStringView() noexcept : super() {}
+		constexpr BasicStringView(const std::basic_string_view<CharType>& other) noexcept : super(other) {}
+		constexpr BasicStringView(const std::string& other) noexcept : super(other) {}
+		constexpr BasicStringView(const CharType* str, std::size_t count) noexcept : super(str, count) {}
+		constexpr BasicStringView(const CharType* str) noexcept : super(str) {}
 		
 		constexpr bool isEmpty() const noexcept { return this->empty(); }
 		constexpr std::size_t count() const noexcept { return this->length(); }
@@ -65,15 +65,15 @@ namespace evt {
 		constexpr const CharType& last() const { return (*this)[this->count()-1]; }
 		constexpr void removePrefix(std::size_t prefixSize) { return this->remove_prefix(prefixSize); }
 		constexpr void removeSuffix(std::size_t suffixSize) { return this->remove_suffix(suffixSize); }
-		constexpr std::size_t findFirstOf(const StringView& str, std::size_t position = 0) const noexcept { return this->find_first_of(str, position); }
-		constexpr std::size_t findFirstNotOf(const StringView& str, std::size_t position = 0) const noexcept { return this->find_first_not_of(str, position); }
-		constexpr std::size_t findLastOf(const StringView& str, std::size_t position = StringView::nullPosition) const noexcept { return this->find_last_of(str, position); }
-		constexpr std::size_t findLastNotOf(const StringView& str, std::size_t position = StringView::nullPosition) const noexcept { return this->find_last_not_of(str, position); }
-		constexpr StringView subString(std::size_t position = 0, std::size_t count = StringView::nullPosition ) const { return this->substr(position, count); }
+		constexpr std::size_t findFirstOf(const BasicStringView& str, std::size_t position = 0) const noexcept { return this->find_first_of(str, position); }
+		constexpr std::size_t findFirstNotOf(const BasicStringView& str, std::size_t position = 0) const noexcept { return this->find_first_not_of(str, position); }
+		constexpr std::size_t findLastOf(const BasicStringView& str, std::size_t position = BasicStringView::nullPosition) const noexcept { return this->find_last_of(str, position); }
+		constexpr std::size_t findLastNotOf(const BasicStringView& str, std::size_t position = BasicStringView::nullPosition) const noexcept { return this->find_last_not_of(str, position); }
+		constexpr BasicStringView subString(std::size_t position = 0, std::size_t count = BasicStringView::nullPosition ) const { return this->substr(position, count); }
 		
 		// Don't try to assign it to another StringView, for whatever reason it doesn't seem to 'work' fine
-		constexpr StringView operator+(const StringView& otherStr) const {
-			return StringView(std::string(*this) + std::string(otherStr));
+		constexpr BasicStringView operator+(const BasicStringView& otherStr) const {
+			return BasicStringView(std::string(*this) + std::string(otherStr));
 		}
 		
 		static constexpr std::size_t nullPosition = super::npos;
@@ -84,39 +84,39 @@ namespace evt {
 			switch (trimMode) {
 					
 				case trimStart:
-					if (std::size_t position = this->findFirstNotOf(" "); position != StringView::nullPosition) {
+					if (std::size_t position = this->findFirstNotOf(" "); position != BasicStringView::nullPosition) {
 						this->removePrefix(position);
 					}
 					break;
 					
 				case trimEnd:
-					if (std::size_t position = this->count() - this->findLastOf(" ") + 1; position != StringView::nullPosition) {
+					if (std::size_t position = this->count() - this->findLastOf(" ") + 1; position != BasicStringView::nullPosition) {
 						this->removeSuffix(position);
 					}
 					break;
 					
 				case trimBoth:
-					if (std::size_t position = this->findFirstNotOf(" "); position != StringView::nullPosition) {
+					if (std::size_t position = this->findFirstNotOf(" "); position != BasicStringView::nullPosition) {
 						this->removePrefix(position);
 					}
-					if (std::size_t position = this->count() - this->findLastOf(" ") + 1; position != StringView::nullPosition) {
+					if (std::size_t position = this->count() - this->findLastOf(" ") + 1; position != BasicStringView::nullPosition) {
 						this->removeSuffix(position);
 					}
 					break;
 			}
 		}
 		
-		constexpr StringView trimmed(const TrimMode& trimMode = trimBoth) const {
-			StringView aux(*this);
+		constexpr BasicStringView trimmed(const TrimMode& trimMode = trimBoth) const {
+			BasicStringView aux(*this);
 			aux.trim(trimMode);
 			return aux;
 		}
 		
-		constexpr bool contains(const StringView& str, size_t pos = 0) const {
-			return this->find(str, pos) != StringView::nullPosition;
+		constexpr bool contains(const BasicStringView& str, size_t pos = 0) const {
+			return this->find(str, pos) != BasicStringView::nullPosition;
 		}
 		
-		constexpr std::size_t reverseFind(const StringView& str, std::size_t position = StringView::nullPosition) {
+		constexpr std::size_t reverseFind(const BasicStringView& str, std::size_t position = BasicStringView::nullPosition) {
 			return this->find(str, position);
 		}
 		
@@ -131,20 +131,20 @@ namespace evt {
 		}
 		
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
-		StringView operator*(Type number) const {
+		BasicStringView operator*(Type number) const {
 			std::string originalStr(*this);
 			std::string concatenatedStr;
 			for (Type i = 0; i < number; i++) {
 				concatenatedStr += originalStr;
 			}
-			return StringView(concatenatedStr);
+			return BasicStringView(concatenatedStr);
 		}
 	};
 	
-	typedef StringView<char> String;
+	typedef BasicStringView<char> StringView;
 	
-	constexpr String operator "" _sv(const char* str, size_t length) noexcept { return String(str, length); }
-	constexpr StringView<wchar_t> operator "" _sv(const wchar_t* str, size_t length) noexcept { return StringView<wchar_t>(str, length); }
-	constexpr StringView<char16_t> operator "" _sv(const char16_t* str, size_t length) noexcept { return StringView<char16_t>(str, length); }
-	constexpr StringView<char32_t> operator "" _sv(const char32_t* str, size_t length) noexcept { return StringView<char32_t>(str, length); }
+	constexpr StringView operator "" _sv(const char* str, size_t length) noexcept { return StringView(str, length); }
+	constexpr BasicStringView<wchar_t> operator "" _sv(const wchar_t* str, size_t length) noexcept { return BasicStringView<wchar_t>(str, length); }
+	constexpr BasicStringView<char16_t> operator "" _sv(const char16_t* str, size_t length) noexcept { return BasicStringView<char16_t>(str, length); }
+	constexpr BasicStringView<char32_t> operator "" _sv(const char32_t* str, size_t length) noexcept { return BasicStringView<char32_t>(str, length); }
 }

@@ -25,7 +25,8 @@
 #pragma once
 
 #include "EVTBasics/EVTArray.hpp"
-#include "EVTObject.hpp"
+#include "EVTBasics/EVTOptional.hpp"
+#include "Object.hpp"
 #include <type_traits>
 #include <random>
 #include <string>
@@ -57,6 +58,8 @@ namespace evt {
 		std::cerr << "- Assertion failed: " << (#condition_)<< "\n- Error: " << (message_) << std::endl; exit(1); }
 		
 		#define guard(condition_) if (bool(condition_)){}
+		
+		#define sizeOf sizeof
 		
 		#define var auto
 		#define let const auto
@@ -186,24 +189,27 @@ namespace evt {
 			std::for_each(strings.begin(), strings.end(), [](std::string& str){ str = toLower(str); });
 			return strings;
 		}
-			
+		
 		template <typename Type = std::string>
-		CONSTEXPR Type readLine(const std::string& promptText = "") {
+		CONSTEXPR Optional<Type> readLine(const std::string& promptText = "") {
 			
-			Type readContent{};
+			Type readContent;
 			
-			if (!promptText.empty()) { std::cout << promptText << ' ' ; }
+			if (!promptText.empty()) { std::cout << promptText << ' '; }
 			
 			#if (__cplusplus > 201103L)
-			if constexpr (std::is_same<std::string, Type>()) {
-				std::getline(std::cin, readContent);
-			}
-			else {
-			#endif
-				if (!(std::cin >> readContent)) {
-					std::cin.clear();
+				if constexpr (std::is_same<std::string, Type>()) {
+					std::getline(std::cin, readContent);
 				}
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				else {
+			#endif
+					bool willExit = false;
+					if (!(std::cin >> readContent)) {
+						std::cin.clear();
+						willExit = true;
+					}
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					if (willExit) { return nullptr; }
 			#if (__cplusplus > 201103L)
 			}
 			#endif
@@ -212,7 +218,7 @@ namespace evt {
 		}
 		
 		template <typename Type = std::string>
-		CONSTEXPR Type input(const std::string& promptText = "") {
+		CONSTEXPR Optional<Type> input(const std::string& promptText = "") {
 			return readLine<Type>(promptText);
 		}
 		
@@ -277,3 +283,5 @@ namespace evt {
 		}
 	}
 }
+
+#undef CONSTEXPR

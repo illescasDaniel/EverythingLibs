@@ -13,12 +13,12 @@
 
 namespace evt {
 	
-	class EVTObject {
+	class Object {
 	public:
 		
 		virtual std::string toString() const = 0;
 		
-		friend std::ostream& operator<<(std::ostream& os, const EVTObject& object) noexcept {
+		friend std::ostream& operator<<(std::ostream& os, const Object& object) noexcept {
 			return os << object.toString();
 		}
 	};

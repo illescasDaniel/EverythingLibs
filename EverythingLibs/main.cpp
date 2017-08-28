@@ -19,7 +19,7 @@ using namespace evt::utils;
 using namespace evt::numbers;
 
 namespace evt {
-	class Human: public EVTObject {
+	class Human: public Object {
 	public:
 		
 		int age = 10;
@@ -36,7 +36,7 @@ namespace evt {
 	};
 }
 
-class Stuff: public EVTObject {
+class Stuff: public Object {
 public:
 	int a = 10, b = 90;
 	
@@ -78,9 +78,11 @@ public:
 
 int main(int argc, char* argv[]) {
 	
-	Int8 test00001(-98);
+	Int8 test00001(89);
 	UInt8 test0002(54);
 	print(test00001, test0002);
+	
+	print(test00001.dividedBy(4));
 	
 	cout << sizeof(Array<int>) << " " << sizeof(unique_ptr<int[]>) << endl;
 	
@@ -88,11 +90,11 @@ int main(int argc, char* argv[]) {
 	print(someStrings.countOf("Daniel"_lower));
 	print(someStrings.countOf([](const string& str){ return str.length() > 4; }));
 	print(someStrings.findIf([](const string& str){ return str == "test"; }));
-	 
+	
 	RawPointer<int> number0001(10);
 	RawPointer<int> number0002(100);
 	
-	number0001 = std::move(number0002); // Uses move operations, deletes the pointer & content of "number0002"
+	number0001 = std::move(number0002); // Uses move operations, deletes the pointer and content of "number0002"
 	// number0001 = number0002; // Copies the content of the pointer, doesn't destroy the original ("number0002")
 	
 	print("This:", number0001);
@@ -133,14 +135,14 @@ int main(int argc, char* argv[]) {
 		print(things[1].as<int>());
 		print(things[2].as<double>());
 	
-		if (auto thing = things.at(3); thing.isNotNull()) { // Optional
-			print(thing.value().as<int>());
+		if (auto thing = things.at(2); thing.isNotNull()) {
+			print(thing.value().as<double>());
 		}
 	#endif
 	
 	Optional<const int> testOpt{10};
 	 
-	Array<int> numbersArr {1,2,3,4,5};
+	Array<int> numbersArr {0,2,3,4,5};
 	if (numbersArr.find(3) != numbersArr.count()) {
 		print("Found!!");
 	}
@@ -152,6 +154,11 @@ int main(int argc, char* argv[]) {
 	print(numbersArr.first([](const int& number) {
 		return number % 2 == 0;
 	}));
+	
+	Optional<int> firstOdd = numbersArr.last([](const int& n){
+		return n % 2 == 1;
+	});
+	print("wiii:", firstOdd.valueOr(-1));
 	
 	if (const auto firstOdd = numbersArr.first([](const int& n) { return n % 2 == 1; })) { // Optional
 		print(firstOdd);
@@ -173,19 +180,19 @@ int main(int argc, char* argv[]) {
 	
 		string name2 = "  Daniel2  ";
 	
-		String name3 = "hola, daniel";
+		StringView name3 = "hola, daniel";
 	
 		print("HEYYY:", name3);
 		print(name3 * 4);
 	
-		constexpr String testName = "YEP"_sv;
+		constexpr StringView testName = "YEP"_sv;
 		// static_assert(testName == "YEP"_sv, "Not equal strings"); [in gcc operator== is not constexpr]
 		cout << testName << endl;
 	
 		cout << name3.findFirstNotOf(" ") << endl;
 		cout << name3.count() - name3.findLastOf(" ") << endl;
 	
-		name3.trim(String::TrimMode::trimStart);
+		name3.trim(StringView::TrimMode::trimStart);
 		cout << name3 << endl;
 		cout << name3.trimmed() << endl;
 		cout << name3.trimmed() << endl;
@@ -389,11 +396,12 @@ int main(int argc, char* argv[]) {
 	
 	//int number2 = readLine<int>();
 	//print(number2);
-	
+
+	/*
 	int myAge = input<int>("Age?: ");
 	print(myAge);
 
-	/*
+	
 	// Equivalent to:
 	 int myAge_;
 	 cout << "Age?: ";

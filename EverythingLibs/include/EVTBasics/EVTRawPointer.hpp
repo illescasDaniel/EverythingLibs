@@ -259,3 +259,5 @@ namespace evt {
 		}
 	};
 }
+
+#undef CONSTEXPR

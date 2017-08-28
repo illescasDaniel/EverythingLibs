@@ -33,7 +33,7 @@
 #include <functional>
 #include "EVTOptional.hpp"
 #include "EVTRawPointer.hpp"
-#include "../EVTObject.hpp"
+#include "../Object.hpp"
 
 #if (__cplusplus > 201103L)
 	#define CONSTEXPR constexpr
@@ -59,7 +59,7 @@ namespace evt {
 			return std::to_string(arithmeticValue);
 		}
 		
-		inline std::string to_string(const EVTObject& evtObject) { return evtObject.toString(); }
+		inline std::string to_string(const Object& evtObject) { return evtObject.toString(); }
 		/* Place your custom "to_string()" function/s here for other classes, or just inherit from EVTObject. */
 	}
 	
@@ -233,8 +233,8 @@ namespace evt {
 		// MARK: Constructors
 		
 		CONSTEXPR Array() {}
-		CONSTEXPR Array(const int initialCapacity) { assignMemoryAndCapacityForSize((initialCapacity > 0) ? initialCapacity : 2); }
-		CONSTEXPR Array(std::size_t initialCapacity) { assignMemoryAndCapacityForSize(initialCapacity); }
+		CONSTEXPR Array(const int initialCapacity) { assignMemoryAndCapacityForSize(initialCapacity, true); }
+		CONSTEXPR Array(std::size_t initialCapacity) { assignMemoryAndCapacityForSize(initialCapacity, true); }
 		CONSTEXPR Array(InitializerList&& elements, std::size_t initialCapacity = 2) { assignNewMagicElements(elements, initialCapacity); }
 		CONSTEXPR Array(const Array& otherArray, std::size_t initialCapacity = 2) { assignArrayWithOptionalInitialCapacity(otherArray, initialCapacity); }
 		CONSTEXPR Array(Array&& otherArray, std::size_t initialCapacity = 2) { assignArrayWithOptionalInitialCapacity(std::move(otherArray), initialCapacity); }
@@ -271,13 +271,13 @@ namespace evt {
 		CONSTEXPR void insertAt(const Type* position, Type&& newElement) {
 			
 			if (position == &values[count_]) {
-				this->append(newElement);
+				this->append(std::move(newElement));
 			}
 			else if (position == &values[0]) {
-				this->insert(newElement, 0);
+				this->insert(std::move(newElement), 0);
 			}
 			else if (position > &values[0] && position < &values[count_]) {
-				this->insert(newElement, position - &values[0]);
+				this->insert(std::move(newElement), position - &values[0]);
 			}
 			else {
 				throw std::out_of_range("Index out of range");
@@ -319,7 +319,7 @@ namespace evt {
 				checkIfOutOfRange(index);
 			}
 			else if (index == count_ || this->isEmpty()) {
-				this->append(newElement);
+				this->append(std::move(newElement));
 				return;
 			}
 			
@@ -376,7 +376,7 @@ namespace evt {
 		CONSTEXPR void append(Type&& newElement, const SizeType capacityResizeFactor = 2) {
 			
 			if (values.capacity() == count_) {
-				resizeValuesToSize(values.capacity() * capacityResizeFactor, 1);
+				resizeValuesToSize(values.capacity() * capacityResizeFactor, true);
 			}
 			values[count_] = std::move(newElement);
 			count_ += 1;
@@ -423,7 +423,6 @@ namespace evt {
 		
 		/// Requests the removal of unused capacity. The new capacity will be the number of elements (count)
 		CONSTEXPR bool shrink() {
-			
 			if (values.capacity() > count_) {
 				resizeValuesToSize(count_);
 				return true;
@@ -438,7 +437,6 @@ namespace evt {
 		
 		/// Removes all elements in array, capacity will be 1 if desired
 		CONSTEXPR void removeAll(const bool keepCapacity = false) {
-			
 			if (!keepCapacity) {
 				assignMemoryAndCapacityForSize(2, true);
 			}
@@ -508,13 +506,10 @@ namespace evt {
 		CONSTEXPR void swap(Array& otherArray) {
 			
 			Pointer auxValues = std::move(this->values);
-			SizeType auxCount = this->count_;
-			
 			this->values = std::move(otherArray.values);
-			this->count_ = otherArray.count_;
-			
 			otherArray.values = std::move(auxValues);
-			otherArray.count_ = auxCount;
+			
+			std::swap(this->count_, otherArray.count_);
 		}
 		
 		template <typename Container>
@@ -529,7 +524,7 @@ namespace evt {
 		template <typename Container>
 		CONSTEXPR void swap(Container& container) {
 			Array otherArray(container);
-			swap(otherArray);
+			this->swap(otherArray);
 			container = Array::to<Container>(otherArray);
 		}
 		
@@ -583,7 +578,7 @@ namespace evt {
 							return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
 						} else if constexpr (std::is_same<Type, char>::value) {
 							return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
-						} else if constexpr (std::is_arithmetic<Type>::value || std::is_same<Type, EVTObject>::value || std::is_base_of<EVTObject, Type>::value) {
+						} else if constexpr (std::is_arithmetic<Type>::value || std::is_same<Type, Object>::value || std::is_base_of<Object, Type>::value) {
 							return evt::internalArrayPrintEVT::to_string(value);
 						}
 						return std::string("Object");
@@ -635,7 +630,7 @@ namespace evt {
 			return (*this == elements);
 		}
 		
-		CONSTEXPR bool equal(InitializerList elements) const {
+		CONSTEXPR bool equal(InitializerList&& elements) const {
 			return this->operator==(elements);
 		}
 		
@@ -658,15 +653,16 @@ namespace evt {
 			return nullptr;
 		}
 		
-		CONSTEXPR Optional<Type> last(const std::function<bool(const Type&)>& filterFunction) const {
+		Optional<Type> last(const std::function<bool(const Type&)>& filterFunction) const {
 			
 			Optional<Type> optElement;
 			
-			for (const auto& element: *this) {
+			for (const Type& element: *this) {
 				if (filterFunction(element)) {
 					optElement = element;
 				}
 			}
+			
 			return optElement;
 		}
 		
@@ -930,3 +926,5 @@ namespace evt {
 		}
 	};
 }
+
+#undef CONSTEXPR

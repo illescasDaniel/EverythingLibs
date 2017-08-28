@@ -26,6 +26,8 @@
 
 #include <random>
 #include <cstdint>
+#include  <cstdlib>
+
 
 #if (__cplusplus > 201103L)
 #define CONSTEXPR constexpr
