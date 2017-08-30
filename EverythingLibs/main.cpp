@@ -103,8 +103,6 @@ int main(int argc, char* argv[]) {
 	
 	cout << isEquatable<Person>::value << endl;
 	
-	cout << "lol" << " " << quoted(true) << endl;
-	
 	print(sizeof(Array<int>));
 	
 	for (constVar i: RangeUntil(10)) {
