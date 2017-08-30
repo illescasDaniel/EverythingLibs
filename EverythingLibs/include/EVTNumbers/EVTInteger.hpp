@@ -34,99 +34,102 @@
 
 namespace evt {
 	
-	struct Division {
-		std::intmax_t quotient = 0;
-		std::intmax_t remaining = 0;
-		Division(const std::intmax_t quotient, const std::intmax_t remaining): quotient(quotient), remaining(remaining) {}
-		std::string toString() const noexcept { return "Quotient: " + std::to_string(quotient) + "\nRemaining: " + std::to_string(remaining); }
-		friend std::ostream& operator<<(std::ostream& os, const Division& object) noexcept { return os << object.toString(); }
-	};
+	namespace numbers {
 	
-	template <typename IntegralType = int, typename = typename std::enable_if<std::is_integral<IntegralType>::value,bool>::type>
-	class Integer: public Number<IntegralType> {
+		struct Division {
+			std::intmax_t quotient = 0;
+			std::intmax_t remaining = 0;
+			Division(const std::intmax_t quotient, const std::intmax_t remaining): quotient(quotient), remaining(remaining) {}
+			std::string toString() const noexcept { return "Quotient: " + std::to_string(quotient) + "\nRemaining: " + std::to_string(remaining); }
+			friend std::ostream& operator<<(std::ostream& os, const Division& object) noexcept { return os << object.toString(); }
+		};
 		
-		typedef Number<IntegralType> super;
-		
-	public:
-		
-		CONSTEXPR Integer() noexcept  {}
-		CONSTEXPR Integer(IntegralType integer) noexcept : super(integer) {}
-		
-		CONSTEXPR bool isOdd() noexcept {
-			return (super::value() & 1) == 1;
-		}
-		
-		CONSTEXPR bool isEven() noexcept {
-			return (super::value() & 1) == 0;
-		}
-		
-		CONSTEXPR bool isPrime() noexcept {
+		template <typename IntegralType = int, typename = typename std::enable_if<std::is_integral<IntegralType>::value,bool>::type>
+		class Integer: public Number<IntegralType> {
 			
-			IntegralType number = (*this).absolute();
+			typedef Number<IntegralType> super;
 			
-			if (number <= 1) {
-				return false;
-			} else if (number <= 3) {
-				return true;
-			} else if (number % 2 == 0 or number % 3 == 0) {
-				return false;
+		public:
+			
+			CONSTEXPR Integer() noexcept  {}
+			CONSTEXPR Integer(IntegralType integer) noexcept : super(integer) {}
+			
+			CONSTEXPR bool isOdd() noexcept {
+				return (super::value() & 1) == 1;
 			}
 			
-			IntegralType currentNumber {5};
+			CONSTEXPR bool isEven() noexcept {
+				return (super::value() & 1) == 0;
+			}
 			
-			while (currentNumber * currentNumber <= number) {
-				if (number % currentNumber == 0 or number % (currentNumber + 2) == 0) {
+			CONSTEXPR bool isPrime() noexcept {
+				
+				IntegralType number = (*this).absolute();
+				
+				if (number <= 1) {
+					return false;
+				} else if (number <= 3) {
+					return true;
+				} else if (number % 2 == 0 or number % 3 == 0) {
 					return false;
 				}
-				currentNumber += 6;
+				
+				IntegralType currentNumber {5};
+				
+				while (currentNumber * currentNumber <= number) {
+					if (number % currentNumber == 0 or number % (currentNumber + 2) == 0) {
+						return false;
+					}
+					currentNumber += 6;
+				}
+				
+				return true;
 			}
 			
-			return true;
-		}
-		
-		template <ArithmeticType_typename>
-		static IntegralType random(ArithmeticType lowerBound = std::numeric_limits<IntegralType>::denorm_min(),
-								  ArithmeticType upperBound = std::numeric_limits<IntegralType>::max()) {
-			
-			if ((lowerBound < 0 || upperBound < 0) && std::is_unsigned<IntegralType>()) {
-				throw std::logic_error("Type is unsigned and bounds were negative!");
+			template <ArithmeticType_typename>
+			static IntegralType random(ArithmeticType lowerBound = std::numeric_limits<IntegralType>::denorm_min(),
+									  ArithmeticType upperBound = std::numeric_limits<IntegralType>::max()) {
+				
+				if ((lowerBound < 0 || upperBound < 0) && std::is_unsigned<IntegralType>()) {
+					throw std::logic_error("Type is unsigned and bounds were negative!");
+				}
+				
+				std::random_device rd;
+				std::mt19937_64 rng(rd());
+				
+				if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
+				std::uniform_int_distribution<IntegralType> randomValue(lowerBound, upperBound);
+				
+				return randomValue(rng);
 			}
 			
-			std::random_device rd;
-			std::mt19937_64 rng(rd());
-			
-			if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
-			std::uniform_int_distribution<IntegralType> randomValue(lowerBound, upperBound);
-			
-			return randomValue(rng);
-		}
+			Division dividedBy(const IntegralType number) const {
+				auto divisionResult = std::lldiv(super::value(), number);
+				return Division(divisionResult.quot, divisionResult.rem);
+			}
+		};
 		
-		Division dividedBy(const IntegralType number) const {
-			auto divisionResult = std::lldiv(super::value(), number);
-			return Division(divisionResult.quot, divisionResult.rem);
-		}
-	};
-	
-	typedef Integer<int> Int;
-	typedef Integer<unsigned int> UInt;
-	typedef Integer<size_t> Size;
-	typedef Integer<int8_t> Int8;
-	typedef Integer<int16_t> Int16;
-	typedef Integer<int32_t> Int32;
-	typedef Integer<int64_t> Int64;
-	typedef Integer<uint8_t> UInt8;
-	typedef Integer<uint16_t> UInt16;
-	typedef Integer<uint32_t> UInt32;
-	typedef Integer<uint64_t> UInt64;
-	typedef Integer<intmax_t> IntMax;
-	typedef Integer<uintmax_t> UIntMax;
-	
-	std::ostream& operator<<(std::ostream& os, const UInt8& number) noexcept {
-		return os << static_cast<uint16_t>(number);
-	}
+		typedef Integer<int> Int;
+		typedef Integer<unsigned int> UInt;
+		typedef Integer<size_t> Size;
+		typedef Integer<int8_t> Int8;
+		typedef Integer<int16_t> Int16;
+		typedef Integer<int32_t> Int32;
+		typedef Integer<int64_t> Int64;
+		typedef Integer<uint8_t> UInt8;
+		typedef Integer<uint16_t> UInt16;
+		typedef Integer<uint32_t> UInt32;
+		typedef Integer<uint64_t> UInt64;
+		typedef Integer<intmax_t> IntMax;
+		typedef Integer<uintmax_t> UIntMax;
 		
-	std::ostream& operator<<(std::ostream& os, const Int8& number) noexcept {
-		return os << static_cast<int16_t>(number);
+		std::ostream& operator<<(std::ostream& os, const UInt8& number) noexcept {
+			return os << static_cast<uint16_t>(number);
+		}
+			
+		std::ostream& operator<<(std::ostream& os, const Int8& number) noexcept {
+			return os << static_cast<int16_t>(number);
+		}	
 	}
 }
 

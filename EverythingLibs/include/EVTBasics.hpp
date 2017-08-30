@@ -34,6 +34,9 @@
 #include "EVTBasics/EVTOptional.hpp"
 #include "EVTBasics/EVTPointer.hpp"
 #include "EVTBasics/EVTRawPointer.hpp"
+#include "EVTBasics/EVTReadOnly.hpp"
+#include "EVTBasics/EVTLazy.hpp"
+#include "EVTBasics/EVTRange.hpp"
 
 #if __cplusplus >= 201406L
 	#include "EVTBasics/EVTPrintC++17.hpp"
@@ -41,9 +44,7 @@
 	#include "EVTBasics/EVTPrint.hpp" // Might be a little 'heavy' to import, you can comment this out this library if you don't really need it
 #endif
 
-#include "EVTBasics/EVTReadOnly.hpp"
-#include "EVTBasics/EVTLazy.hpp"
-
 #if __cplusplus >= 201406L && __has_include(<string_view>) // ~C++17 Libraries
 	#include "EVTBasics/EVTString.hpp"
 #endif
+

@@ -10,13 +10,10 @@
 #include "include/EVT.hpp"
 #include "fullClassExample/Car.hpp"
 #include <thread>
-
 #include <vector>
 
 using namespace std;
-using namespace evt;
-using namespace evt::utils;
-using namespace evt::numbers;
+using namespace EVT;
 
 namespace evt {
 	class Human: public Object {
@@ -31,7 +28,7 @@ namespace evt {
 		
 		// Necessary for the "Array" class to extract a string from this object
 		string toString() const override {
-			return "Age: " + evt::toString(age) + "\nName: " + string(name);
+			return "Age: " + std::to_string(age) + "\nName: " + string(name); // You can use: evt::toString in c++17
 		}
 	};
 }
@@ -44,7 +41,7 @@ public:
 	Stuff(int a, int b): a(a), b(b) {}
 	
 	string toString() const override {
-		return "Things: " + evt::toString(a) + " " + evt::toString(b);
+		return "Things: " + std::to_string(a) + " " + std::to_string(b);
 	}
 };
 
@@ -56,7 +53,7 @@ public:
 	Test() {}
 	
 	string toString() const override {
-		return super::toString() + " and " + evt::toString(c) + " " + evt::toString(d);
+		return super::toString() + " and " + std::to_string(c) + " " + std::to_string(d);
 	}
 };
 
@@ -76,7 +73,43 @@ public:
 	LazyThings(size_t iterations_ = 1): iterations(iterations_) {}
 };
 
+class Person: public Comparable<Person> {
+public:
+	
+	int age;
+	
+	Person(int age): age(age) {}
+	
+	bool operator==(const Person& person) const override {
+		return this->age == person.age;
+	}
+	
+	bool operator <(const Person& person) const override {
+		return this->age < person.age;
+	}
+};
+
 int main(int argc, char* argv[]) {
+	
+	Person danielPerson(20);
+	Person otherPerson(20);
+	Person otherPerson2(10);
+	
+	print(danielPerson == otherPerson);
+	print(danielPerson == otherPerson2);
+	print(danielPerson > otherPerson2);
+	print(danielPerson >= otherPerson);
+	print(danielPerson > otherPerson);
+	
+	cout << isEquatable<Person>::value << endl;
+	
+	cout << "lol" << " " << quoted(true) << endl;
+	
+	print(sizeof(Array<int>));
+	
+	for (constVar i: RangeUntil(10)) {
+		print("Hi!", i);
+	}
 	
 	Int8 test00001(89);
 	UInt8 test0002(54);
@@ -129,7 +162,6 @@ int main(int argc, char* argv[]) {
 	}
 	 
 	#if (cplusplusVersion >= cplusplus1z)
-	
 		Array<Any> things {"hola", 10, 5.1};
 		print(things[0].as<string>());
 		print(things[1].as<int>());
@@ -262,7 +294,11 @@ int main(int argc, char* argv[]) {
 	
 	cout << trimmed(" hi ") << endl;
 	
-	print("My name is", evt::toString(numbers));
+	#if (cplusplusVersion >= cplusplus1z)
+		print("My name is", evt::toString(numbers));
+	#else
+		//print(to_string(numbers, 3));
+	#endif
 	
 	Array<string> names {"daniel", "john", "mary"};
 	Array<string> copyNames = names;
@@ -343,7 +379,9 @@ int main(int argc, char* argv[]) {
 	cout << pNumbers.capacity() << " " << pNumbers2.capacity() << endl;
 	cout << pNumbers[2] << endl;
 	
-	print(toStringContainer(pNumbers));
+	#if (cplusplusVersion >= cplusplus1z)
+		print(toStringContainer(pNumbers));
+	#endif
 	
 	Int128 bigNumber = 234567876543256343;
 	cout << (bigNumber + 1) << endl;

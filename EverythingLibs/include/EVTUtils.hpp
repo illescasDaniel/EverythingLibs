@@ -26,7 +26,7 @@
 
 #include "EVTBasics/EVTArray.hpp"
 #include "EVTBasics/EVTOptional.hpp"
-#include "Object.hpp"
+#include "EVTObject.hpp"
 #include <type_traits>
 #include <random>
 #include <string>
@@ -61,8 +61,10 @@ namespace evt {
 		
 		#define sizeOf sizeof
 		
+		#define ref auto&
+		#define constRef const auto&
 		#define var auto
-		#define let const auto
+		#define constVar const auto
 		
 		// Useful functions
 			
@@ -197,7 +199,7 @@ namespace evt {
 			
 			if (!promptText.empty()) { std::cout << promptText << ' '; }
 			
-			#if (__cplusplus > 201103L)
+			#if (__cplusplus > cplusplus14)
 				if constexpr (std::is_same<std::string, Type>()) {
 					std::getline(std::cin, readContent);
 				}
@@ -210,7 +212,7 @@ namespace evt {
 					}
 					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 					if (willExit) { return nullptr; }
-			#if (__cplusplus > 201103L)
+			#if (__cplusplus > cplusplus14)
 			}
 			#endif
 			
@@ -222,7 +224,7 @@ namespace evt {
 			return readLine<Type>(promptText);
 		}
 		
-		#if (__cplusplus <= 201103L)
+		#if (__cplusplus <= cplusplus14)
 		std::string quoted(const std::string& str) {
 			return "\"" + str + "\"";
 		}

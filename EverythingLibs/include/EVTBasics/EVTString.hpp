@@ -25,7 +25,7 @@
 #pragma once
 
 #include <string_view>
-#include "../Object.hpp"
+#include "../EVTObject.hpp"
 
 namespace evt {
 	

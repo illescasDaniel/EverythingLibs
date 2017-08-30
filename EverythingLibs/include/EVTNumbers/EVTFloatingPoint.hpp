@@ -34,39 +34,42 @@
 
 namespace evt {
 	
-	template <typename FloatingType = float, typename = typename std::enable_if<std::is_floating_point<FloatingType>::value,bool>::type>
-	class FloatingPoint: public Number<FloatingType> {
-		
-		typedef Number<FloatingType> super;
-		
-	public:
-		
-		CONSTEXPR FloatingPoint() noexcept  {}
-		CONSTEXPR FloatingPoint(FloatingType floatNumber) noexcept : super(floatNumber) {}
-		
-		template <typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type>
-		CONSTEXPR FloatingType operator=(const Number<ArithmeticType>& number) noexcept  {
-			super::set(number);
-			return *this;
-		}
-		
-		static FloatingType random(FloatingType lowerBound = std::numeric_limits<FloatingType>::denorm_min(),
-								   FloatingType upperBound = std::numeric_limits<FloatingType>::max()) {
-			
-			std::random_device rd;
-			std::mt19937_64 rng(rd());
-			
-			if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
-			std::uniform_real_distribution<FloatingType> randomValue(lowerBound, upperBound);
-			
-			return randomValue(rng);
-		}
-	};
+	namespace numbers {
 	
-	typedef FloatingPoint<float> Float;
-	typedef FloatingPoint<double> Double;
-	typedef FloatingPoint<long double> LongDouble;
-	typedef FloatingPoint<long double> Float80;
+		template <typename FloatingType = float, typename = typename std::enable_if<std::is_floating_point<FloatingType>::value,bool>::type>
+		class FloatingPoint: public Number<FloatingType> {
+			
+			typedef Number<FloatingType> super;
+			
+		public:
+			
+			CONSTEXPR FloatingPoint() noexcept  {}
+			CONSTEXPR FloatingPoint(FloatingType floatNumber) noexcept : super(floatNumber) {}
+			
+			template <typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type>
+			CONSTEXPR FloatingType operator=(const Number<ArithmeticType>& number) noexcept  {
+				super::set(number);
+				return *this;
+			}
+			
+			static FloatingType random(FloatingType lowerBound = std::numeric_limits<FloatingType>::denorm_min(),
+									   FloatingType upperBound = std::numeric_limits<FloatingType>::max()) {
+				
+				std::random_device rd;
+				std::mt19937_64 rng(rd());
+				
+				if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
+				std::uniform_real_distribution<FloatingType> randomValue(lowerBound, upperBound);
+				
+				return randomValue(rng);
+			}
+		};
+		
+		typedef FloatingPoint<float> Float;
+		typedef FloatingPoint<double> Double;
+		typedef FloatingPoint<long double> LongDouble;
+		typedef FloatingPoint<long double> Float80;	
+	}
 }
 
 #undef CONSTEXPR

@@ -33,7 +33,9 @@
 #include <functional>
 #include "EVTOptional.hpp"
 #include "EVTRawPointer.hpp"
-#include "../Object.hpp"
+#include "../EVTObject.hpp"
+
+#include "../EVTProtocols.hpp"
 
 #if (__cplusplus > 201103L)
 	#define CONSTEXPR constexpr
@@ -238,8 +240,17 @@ namespace evt {
 		CONSTEXPR Array(InitializerList&& elements, std::size_t initialCapacity = 2) { assignNewMagicElements(elements, initialCapacity); }
 		CONSTEXPR Array(const Array& otherArray, std::size_t initialCapacity = 2) { assignArrayWithOptionalInitialCapacity(otherArray, initialCapacity); }
 		CONSTEXPR Array(Array&& otherArray, std::size_t initialCapacity = 2) { assignArrayWithOptionalInitialCapacity(std::move(otherArray), initialCapacity); }
+		CONSTEXPR Array(const SizeType count, const Type& initialValue) {
+			assignMemoryAndCapacityForSize(count);
+			this->count_ = count;
+			Type n {initialValue};
+			std::generate(this->begin(), this->end(), [&n]{ return n++; });
+		}
 		
-		template <typename Container, typename = typename std::enable_if<!std::is_same<Container,Array>::value && !std::is_same<Container,Type>::value>::type>
+		template <typename Container, typename = typename std::enable_if<
+		!std::is_same<Container,Array>::value &&
+		!std::is_same<Container,Type>::value &&
+		!std::is_arithmetic<Container>::value>::type>
 		CONSTEXPR Array(Container&& elements, SizeType initialCapacity = 2) { assignNewMagicElements(elements, initialCapacity); }
 		
 		// MARK: Capacity

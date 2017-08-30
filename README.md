@@ -22,11 +22,20 @@ Libraries:
 	- [ReadOnly](https://github.com/illescasDaniel/Var-ReadOnly) `// Manage values that can only be modified inside the class but can be accessed outside of it`
 	- [StringView](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTString.hpp) `// String class based on std::basic_string_view`
 	- [Lazy](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTLazy.hpp) `// Class that stores an object delaying the creation/calculation of its value`
+	- [Range](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTRange.hpp) `// Class to iterate through a countable range`
 
 - **EVTNumbers**: classes related to numbers and mathematics.
 
 	- [Int128](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTInt128.hpp) `// Easier way to use __int128_t (integer of 128bits)`
 	- [Number](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTNumber.hpp) `// You can assign any arithmetical type to an object of "Number"`
+	
+- **EVTObject**: basic object that can be represented with a string, it (currently) has 1 virtual method: toString()
+<br>
+
+- **EVTProtocols**: taking the idea from Swift Protocols, implementing these "protocols" (classes) will add functionality to some classes. Current implemented protocols:
+	- Equatable
+	- Comparable
+	- Iterable
 
 - **EVTUtils**: few simple, yet useful, functions.
 
@@ -70,5 +79,3 @@ License [[MIT]](https://github.com/illescasDaniel/EverythingLibs/blob/master/LIC
 You are allowed to modify, distribute, make commercial or private use of all of these libraries.<br>
 The libraries are provided without warranties of any kind.<br>
 The only requierement is the preservation of copyright and license notices.<br>
-
-

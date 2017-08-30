@@ -42,4 +42,7 @@
 #include "EVTUtils.hpp"
 #include "EVTBasics.hpp"
 #include "EVTNumbers.hpp"
-#include "Object.hpp"
+#include "EVTProtocols.hpp"
+#include "EVTObject.hpp"
+
+#define EVT evt; using namespace evt::utils; using namespace evt::numbers; using namespace evt::protocols;
