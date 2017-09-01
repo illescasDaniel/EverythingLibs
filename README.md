@@ -12,8 +12,8 @@ Libraries:
 
 	- [Any](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTAny.hpp) `// Manage any type of data`
 	- [Arguments](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTArguments.hpp) `// Makes easier to use the program arguments by using an array`
-	- [Array](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTArray.hpp)
-	  [Array (without EVT dependencies)](https://github.com/illescasDaniel/Array.hpp)  `// An array implementation that is faster and prettier that std::vector`
+	- [Array](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTArray.hpp) ||
+	    [Array (without EVT dependencies)](https://github.com/illescasDaniel/Array.hpp)  `// An array implementation that is faster and prettier that std::vector`
 	- [File](https://github.com/illescasDaniel/File) `// Read & write files in text or binary mode easily`
 	- [Optional](https://github.com/illescasDaniel/Optional) `// Manage optional values that can be null or the internal type`
 	- [RawPointer](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTRawPointer.hpp) `// Easier and powerful way to use raw pointers in C++`
@@ -36,7 +36,7 @@ Libraries:
 	- Comparable
 	- Iterable
 
-- **EVTUtils**: few simple, yet useful, functions.
+- **[EVTUtils](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTUtils.hpp)**: few simple, yet useful, functions.
 
 	```c++
 	cplusplusVersion (macro)
@@ -70,6 +70,8 @@ Libraries:
 	std::string quoted(const std::string& str)
 
 	float benchmark(const Function& function, size_t iterations = 1)
+	
+	void repeat(std::size_t timesToRepeat, const Function& functionToRepeat)
 	```
 	
 License [[MIT]](https://github.com/illescasDaniel/EverythingLibs/blob/master/LICENSE):
