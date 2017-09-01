@@ -38,6 +38,7 @@
 namespace evt {
 	
 	#define ArithmeticType_typename typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type
+	#define operatorAssignment(_op_, _op2_); template <typename anyType> inline ArithmeticType operator _op_ (const anyType& Var) { return (*this = *this _op2_ Var); }
 	
 	template <typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type>
 	class Number {
@@ -51,9 +52,17 @@ namespace evt {
 		CONSTEXPR Number() noexcept {}
 		CONSTEXPR Number(ArithmeticType number) noexcept : value_(number) {}
 		
-		CONSTEXPR operator ArithmeticType() const noexcept {
+		CONSTEXPR operator ArithmeticType() const {
 			return value_;
 		}
+		
+		// Operators overloading
+		operatorAssignment(+=,+) operatorAssignment(-=,-) operatorAssignment(*=,*) operatorAssignment(/=,/) operatorAssignment(%=,%)
+		
+		CONSTEXPR ArithmeticType operator++() { return (*this = *this + 1); }
+		CONSTEXPR ArithmeticType operator--() { return (*this = *this - 1); }
+		CONSTEXPR ArithmeticType operator++(int) { return (this->operator++() - 1); }
+		CONSTEXPR ArithmeticType operator--(int) { return (this->operator--() + 1); }
 		
 		std::string toString() const {
 			return std::to_string(value_);
@@ -81,3 +90,4 @@ namespace evt {
 }
 
 #undef CONSTEXPR
+#undef operatorAssignment

@@ -10,16 +10,12 @@
 
 #include <string>
 #include <ostream>
+#include "EVTProtocols.hpp"
 
 namespace evt {
 	
-	class Object {
+	class Object: public protocols::CustomStringConvertible {
 	public:
 		
-		virtual std::string toString() const = 0;
-		
-		friend std::ostream& operator<<(std::ostream& os, const Object& object) noexcept {
-			return os << object.toString();
-		}
 	};
 }

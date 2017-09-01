@@ -63,7 +63,7 @@ public:
 	size_t iterations = 1;
 	size_t iterations2 = [&]{ return iterations*2; }(); // Non-lazy initialization
 	
-	Lazy<float> lazyBenchmark { Lazy<float>([&]{ // lazy initialization
+	LazyVar<float> lazyBenchmark { LazyVar<float>([&]{ // lazy initialization
 		return benchmark([&]{
 			Array<int> numbers;
 			repeat(30000000, [&](const size_t& i){ numbers.append(int(i)); });
@@ -73,12 +73,26 @@ public:
 	LazyThings(size_t iterations_ = 1): iterations(iterations_) {}
 };
 
-class Person: public Comparable<Person> {
+class Person: public Comparable<Person>, public Object {
+	
+	static void setAge(uint& age, const uint& newAge) {
+		if (newAge > 0 && newAge <= 150) (age = newAge);
+	}
+	
 public:
 	
-	int age;
+	ReadOnly<string,Person> name;
+	VarSetter<uint,Person> age {Person::setAge};
 	
-	Person(int age): age(age) {}
+	const Var<uint> doubleAge {[&]{
+		return this->age * 2;
+	}};
+	
+	Person(){}
+	Person(uint age, string name = "") {
+		this->age = age;
+		this->name = name;
+	}
 	
 	bool operator==(const Person& person) const override {
 		return this->age == person.age;
@@ -87,9 +101,16 @@ public:
 	bool operator <(const Person& person) const override {
 		return this->age < person.age;
 	}
+	
+	string toString() const override {
+		return "Person(age: " + std::to_string(age) + ")";
+	}
 };
-
+		
 int main(int argc, char* argv[]) {
+	
+	Person daniel1(10, "daniel");
+	daniel1.age = 2;
 	
 	Person danielPerson(20);
 	Person otherPerson(20);
@@ -100,6 +121,8 @@ int main(int argc, char* argv[]) {
 	print(danielPerson > otherPerson2);
 	print(danielPerson >= otherPerson);
 	print(danielPerson > otherPerson);
+	
+	cout << sizeof(Person) << ' ' << danielPerson << endl;
 	
 	cout << isEquatable<Person>::value << endl;
 	

@@ -24,7 +24,7 @@
 
 /* Begin PBXFileReference section */
 		650674271F169FAA00EB800E /* EVTString.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTString.hpp; sourceTree = "<group>"; };
-		6507CBF41F1CD41200A4EE27 /* EVTLazy.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTLazy.hpp; sourceTree = "<group>"; };
+		6507CBF41F1CD41200A4EE27 /* EVTLazyVar.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTLazyVar.hpp; sourceTree = "<group>"; };
 		651176EA1F1599E900AE43E6 /* EVTObject.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTObject.hpp; sourceTree = "<group>"; };
 		651176EC1F159A8E00AE43E6 /* Car.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Car.hpp; sourceTree = "<group>"; };
 		651EDB3C1F3E5C1800E340C7 /* EVTInteger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTInteger.hpp; sourceTree = "<group>"; };
@@ -102,7 +102,7 @@
 				6531C2C31F35F19100A7729A /* EVTPrintC++17.hpp */,
 				65CDA9491F0FF33B00D1C0C9 /* EVTReadOnly.hpp */,
 				650674271F169FAA00EB800E /* EVTString.hpp */,
-				6507CBF41F1CD41200A4EE27 /* EVTLazy.hpp */,
+				6507CBF41F1CD41200A4EE27 /* EVTLazyVar.hpp */,
 				65D3925A1F571EC400CB2E44 /* EVTRange.hpp */,
 			);
 			path = EVTBasics;
@@ -359,6 +359,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				DEVELOPMENT_TEAM = PRK6268SLD;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;

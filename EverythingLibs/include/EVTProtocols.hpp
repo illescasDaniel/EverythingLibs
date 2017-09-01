@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 #if (__cplusplus > 201103L)
 #define CONSTEXPR constexpr
 #else
@@ -49,6 +51,16 @@ namespace evt {
 			virtual bool operator>(const Type& rhs) const { return !this->operator<(rhs) and !this->operator==(rhs); };
 			virtual bool operator>=(const Type& rhs) const { return this->operator>(rhs) or this->operator==(rhs); };
 			virtual bool operator!=(const Type& rhs) const { return !this->operator==(rhs) and !this->operator<(rhs) and !this->operator>(rhs); };
+		};
+		
+		class CustomStringConvertible {
+		public:
+			
+			virtual std::string toString() const = 0;
+			
+			friend std::ostream& operator<<(std::ostream& os, const CustomStringConvertible& object) noexcept {
+				return os << object.toString();
+			}
 		};
 		
 		//

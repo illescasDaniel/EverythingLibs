@@ -35,7 +35,7 @@
 #include "EVTBasics/EVTPointer.hpp"
 #include "EVTBasics/EVTRawPointer.hpp"
 #include "EVTBasics/EVTReadOnly.hpp"
-#include "EVTBasics/EVTLazy.hpp"
+#include "EVTBasics/EVTLazyVar.hpp"
 #include "EVTBasics/EVTRange.hpp"
 
 #if __cplusplus >= 201406L

@@ -21,7 +21,7 @@ Libraries:
 	- [Print](https://github.com/illescasDaniel/print.hpp) `// Print any container (including classic arrays, matrices, pointer arrays...)`
 	- [ReadOnly](https://github.com/illescasDaniel/Var-ReadOnly) `// Manage values that can only be modified inside the class but can be accessed outside of it`
 	- [StringView](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTString.hpp) `// String class based on std::basic_string_view`
-	- [Lazy](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTLazy.hpp) `// Class that stores an object delaying the creation/calculation of its value`
+	- [LazyVar, Var, VarSetter](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTLazyVar.hpp) `// (LazyVar) Class that stores an object delaying the creation/calculation of its value`
 	- [Range](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTBasics/EVTRange.hpp) `// Class to iterate through a countable range`
 
 - **EVTNumbers**: classes related to numbers and mathematics.
@@ -29,10 +29,9 @@ Libraries:
 	- [Int128](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTInt128.hpp) `// Easier way to use __int128_t (integer of 128bits)`
 	- [Number](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTNumber.hpp) `// You can assign any arithmetical type to an object of "Number"`
 	
-- **EVTObject**: basic object that can be represented with a string, it (currently) has 1 virtual method: toString()
-<br>
+- **[EVTObject](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTObject.hpp)**: basic object that can be represented with a string, it (currently) has 1 virtual method: toString()
 
-- **EVTProtocols**: taking the idea from Swift Protocols, implementing these "protocols" (classes) will add functionality to some classes. Current implemented protocols:
+- **[EVTProtocols](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTProtocols.hpp)**: taking the idea from Swift Protocols, implementing these "protocols" (classes) will add functionality to some classes. Current implemented protocols:
 	- Equatable
 	- Comparable
 	- Iterable
