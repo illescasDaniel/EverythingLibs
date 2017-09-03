@@ -45,6 +45,6 @@
 #endif
 
 #if __cplusplus >= 201406L && __has_include(<string_view>) // ~C++17 Libraries
-	#include "EVTBasics/EVTString.hpp"
+	#include "EVTBasics/EVTStringView.hpp"
 #endif
 
