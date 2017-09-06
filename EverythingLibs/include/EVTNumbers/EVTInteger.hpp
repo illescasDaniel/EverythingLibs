@@ -25,6 +25,7 @@
 #pragma once
 
 #include "EVTNumber.hpp"
+#include <ostream>
 
 #if (__cplusplus > 201103L)
 #define CONSTEXPR constexpr

@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include <ostream>
+#include "EVTInteger.hpp"
 
 #if (__cplusplus > 201103L)
 #define CONSTEXPR constexpr
@@ -45,7 +45,6 @@ namespace evt {
 			
 			template <typename Type>
 			CONSTEXPR Int128(Type integer) noexcept : super(integer) {}
-
 			
 			friend std::ostream& operator<<(std::ostream& dest, const Int128& number) {
 				if (std::ostream::sentry(dest)) {
