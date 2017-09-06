@@ -45,7 +45,10 @@ namespace evt {
 	#define ArithmeticType_typename typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type
 	#define operatorAssignment(_op_, _op2_); template <typename anyType> inline ArithmeticType operator _op_ (const anyType& Var) { return (*this = *this _op2_ Var); }
 	
-	template <typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type>
+	template <typename ArithmeticType, typename = typename std::enable_if<
+	std::is_arithmetic<ArithmeticType>::value ||
+	std::is_same<ArithmeticType, __int128_t>::value ||
+	std::is_same<ArithmeticType, __uint128_t>::value>::type>
 	class Number {
 		
 	private:

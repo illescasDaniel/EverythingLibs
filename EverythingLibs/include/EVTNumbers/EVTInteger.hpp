@@ -45,7 +45,10 @@ namespace evt {
 			friend std::ostream& operator<<(std::ostream& os, const Division& object) noexcept { return os << object.toString(); }
 		};
 		
-		template <typename IntegralType = int, typename = typename std::enable_if<std::is_integral<IntegralType>::value,bool>::type>
+		template <typename IntegralType = int, typename = typename std::enable_if<
+		std::is_integral<IntegralType>::value ||
+		std::is_same<IntegralType, __int128_t>::value ||
+		std::is_same<IntegralType, __uint128_t>::value >::type>
 		class Integer: public Number<IntegralType> {
 			
 			typedef Number<IntegralType> super;
