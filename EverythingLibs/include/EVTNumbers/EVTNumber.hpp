@@ -28,11 +28,16 @@
 #include <cstdint>
 #include <cstdlib>
 
-
 #if (__cplusplus > 201103L)
 #define CONSTEXPR constexpr
 #else
 #define CONSTEXPR
+#endif
+
+#if (__cplusplus > 201103L)
+#define CONSTEXPRVar constexpr
+#else
+#define CONSTEXPRVar const
 #endif
 
 namespace evt {
@@ -48,6 +53,11 @@ namespace evt {
 		ArithmeticType value_;
 		
 	public:
+		
+		static CONSTEXPRVar ArithmeticType min = std::numeric_limits<ArithmeticType>::min();
+		static CONSTEXPRVar ArithmeticType max = std::numeric_limits<ArithmeticType>::max();
+		static CONSTEXPRVar ArithmeticType minPositive = std::numeric_limits<ArithmeticType>::denorm_min();
+		static CONSTEXPRVar ArithmeticType lowest = std::numeric_limits<ArithmeticType>::lowest();
 		
 		CONSTEXPR Number() noexcept {}
 		CONSTEXPR Number(ArithmeticType number) noexcept : value_(number) {}
@@ -90,4 +100,5 @@ namespace evt {
 }
 
 #undef CONSTEXPR
+#undef CONSTEXPRVar
 #undef operatorAssignment

@@ -86,9 +86,8 @@ namespace evt {
 				return true;
 			}
 			
-			template <ArithmeticType_typename>
-			static IntegralType random(ArithmeticType lowerBound = std::numeric_limits<IntegralType>::denorm_min(),
-									  ArithmeticType upperBound = std::numeric_limits<IntegralType>::max()) {
+			static Integer random(Integer lowerBound = std::numeric_limits<IntegralType>::denorm_min(),
+								 Integer upperBound = std::numeric_limits<IntegralType>::max()) {
 				
 				if ((lowerBound < 0 || upperBound < 0) && std::is_unsigned<IntegralType>()) {
 					throw std::logic_error("Type is unsigned and bounds were negative!");
@@ -100,7 +99,7 @@ namespace evt {
 				if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
 				std::uniform_int_distribution<IntegralType> randomValue(lowerBound, upperBound);
 				
-				return randomValue(rng);
+				return Integer(randomValue(rng));
 			}
 			
 			Division dividedBy(const IntegralType number) const {
@@ -129,7 +128,7 @@ namespace evt {
 			
 		std::ostream& operator<<(std::ostream& os, const Int8& number) noexcept {
 			return os << static_cast<int16_t>(number);
-		}	
+		}
 	}
 }
 

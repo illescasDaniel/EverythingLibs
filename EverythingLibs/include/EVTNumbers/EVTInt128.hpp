@@ -36,21 +36,20 @@ namespace evt {
 	
 	namespace numbers {
 		
-		class Int128 {
-			__int128_t value_ {0};
+		class Int128: public Integer<__int128_t> {
 		public:
 			
-			CONSTEXPR Int128() noexcept { }
-			CONSTEXPR Int128(const __int128_t value_) noexcept {
-				this->value_ = value_;
-			}
-			CONSTEXPR Int128(const Int128& number) noexcept {
-				this->value_ = number.value_;
-			}
+			typedef Integer<__int128_t> super;
+			
+			CONSTEXPR Int128() noexcept  {}
+			
+			template <typename Type>
+			CONSTEXPR Int128(Type integer) noexcept : super(integer) {}
+
 			
 			friend std::ostream& operator<<(std::ostream& dest, const Int128& number) {
 				if (std::ostream::sentry(dest)) {
-					__uint128_t tmp = number.value_ < 0 ? -number.value_ : number.value_;
+					__uint128_t tmp = number.as<__int128_t>() < 0 ? -number.as<__int128_t>() : number.as<__int128_t>();
 					char buffer[128];
 					char* d = std::end(buffer);
 					do {
@@ -59,7 +58,7 @@ namespace evt {
 						tmp /= 10;
 					} while (tmp != 0);
 					
-					if (number.value_ < 0) {
+					if (number.as<__int128_t>() < 0) {
 						d -= 1;
 						*d = '-';
 					}
@@ -72,56 +71,57 @@ namespace evt {
 				return dest;
 			}
 			
-			template <typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type>
-			CONSTEXPR operator ArithmeticType() const noexcept {
-				return value_;
+			static Int128 random(Int128 lowerBound = std::numeric_limits<__int128_t>::denorm_min(),
+									   Int128 upperBound = std::numeric_limits<__int128_t>::max()) {
+				
+				if ((lowerBound < 0 || upperBound < 0) && std::is_unsigned<__int128_t>()) {
+					throw std::logic_error("Type is unsigned and bounds were negative!");
+				}
+				
+				std::random_device rd;
+				std::mt19937_64 rng(rd());
+				
+				if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
+				std::uniform_int_distribution<__int128_t> randomValue(lowerBound, upperBound);
+				
+				return Int128(randomValue(rng));
 			}
 			
 			#define internalOperator(operation) \
 			template <typename Type> \
 			CONSTEXPR Int128 operator operation (Type otherNumber) const noexcept { \
-				Int128 newNumber(this->value_ operation otherNumber); \
+				Int128 newNumber(this->value() operation otherNumber); \
 				return newNumber; \
 			}
 			
 			#define externalOperator(operation) \
 			template <typename Type> \
-			CONSTEXPR friend Int128 operator operation (Type number, Int128 otherNumber) noexcept { \
+			CONSTEXPR friend Int128 operator operation (Type number, const Int128& otherNumber) noexcept { \
 				Int128 newNumber(otherNumber operation number); \
 				return newNumber; \
 			}
 			
-			#define assignmentOperator(operation) \
-			template <typename Type> \
-			CONSTEXPR Int128& operator operation (Type otherNumber) noexcept { \
-				this->value_ operation otherNumber; \
-				return *this; \
-			}
-			
 			internalOperator(+); internalOperator(-); internalOperator(*); internalOperator(/); internalOperator(%);
 			externalOperator(+); externalOperator(-); externalOperator(*); externalOperator(/); externalOperator(%);
-			assignmentOperator(+=); assignmentOperator(-=); assignmentOperator(*=); assignmentOperator(/=);
 		};
 		
 		#undef internalOperator
 		#undef externalOperator
 		#undef assignmentOperator
 		
-		class UInt128 {
-			__uint128_t value_ {0};
+		class UInt128: public Integer<__uint128_t> {
 		public:
 			
-			CONSTEXPR UInt128() { }
-			CONSTEXPR UInt128(const __uint128_t value_) noexcept {
-				this->value_ = value_;
-			}
-			CONSTEXPR UInt128(const UInt128& number) noexcept {
-				this->value_ = number.value_;
-			}
+			typedef Integer<__uint128_t> super;
+			
+			CONSTEXPR UInt128() noexcept  {}
+			
+			template <typename Type>
+			CONSTEXPR UInt128(Type integer) noexcept : super(integer) {}
 			
 			friend std::ostream& operator<<(std::ostream& dest, const UInt128& number) {
 				if (std::ostream::sentry(dest)) {
-					__uint128_t tmp = number.value_;
+					__uint128_t tmp = number.as<__uint128_t>();
 					char buffer[128];
 					char* d = std::end(buffer);
 					do {
@@ -139,40 +139,38 @@ namespace evt {
 				return dest;
 			}
 			
-			template <typename Type>
-			CONSTEXPR operator Type() const {
-				return value_;
+			static UInt128 random(UInt128 lowerBound = std::numeric_limits<__uint128_t>::denorm_min(),
+								 UInt128 upperBound = std::numeric_limits<__uint128_t>::max()) {
+				
+				std::random_device rd;
+				std::mt19937_64 rng(rd());
+				
+				if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
+				std::uniform_int_distribution<__uint128_t> randomValue(lowerBound, upperBound);
+				
+				return UInt128(randomValue(rng));
 			}
 			
 			#define internalOperator(operation) \
 			template <typename Type> \
 			CONSTEXPR UInt128 operator operation (Type otherNumber) const noexcept { \
-			UInt128 newNumber(this->value_ operation otherNumber); \
+			UInt128 newNumber(this->value() operation otherNumber); \
 			return newNumber; \
 			}
 			
 			#define externalOperator(operation) \
 			template <typename Type> \
-			CONSTEXPR friend UInt128 operator operation (Type number, Int128 otherNumber) noexcept { \
+			CONSTEXPR friend UInt128 operator operation (Type number, const Int128& otherNumber) noexcept { \
 			UInt128 newNumber(otherNumber operation number); \
 			return newNumber; \
 			}
 			
-			#define assignmentOperator(operation) \
-			template <typename Type> \
-			CONSTEXPR UInt128& operator operation (Type otherNumber) noexcept { \
-			this->value_ operation otherNumber; \
-			return *this; \
-			}
-			
 			internalOperator(+); internalOperator(-); internalOperator(*); internalOperator(/); internalOperator(%);
 			externalOperator(+); externalOperator(-); externalOperator(*); externalOperator(/); externalOperator(%);
-			assignmentOperator(+=); assignmentOperator(-=); assignmentOperator(*=); assignmentOperator(/=);
 		};
 		
 		#undef internalOperator
 		#undef externalOperator
-		#undef assignmentOperator
 	}
 }
 

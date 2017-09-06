@@ -52,8 +52,8 @@ namespace evt {
 				return *this;
 			}
 			
-			static FloatingType random(FloatingType lowerBound = std::numeric_limits<FloatingType>::denorm_min(),
-									   FloatingType upperBound = std::numeric_limits<FloatingType>::max()) {
+			static FloatingPoint random(FloatingPoint lowerBound = std::numeric_limits<FloatingType>::denorm_min(),
+									   FloatingPoint upperBound = std::numeric_limits<FloatingType>::max()) {
 				
 				std::random_device rd;
 				std::mt19937_64 rng(rd());
@@ -61,7 +61,7 @@ namespace evt {
 				if (lowerBound > upperBound) { std::swap(lowerBound, upperBound); }
 				std::uniform_real_distribution<FloatingType> randomValue(lowerBound, upperBound);
 				
-				return randomValue(rng);
+				return FloatingPoint(randomValue(rng));
 			}
 		};
 		

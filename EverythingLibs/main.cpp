@@ -109,6 +109,14 @@ public:
 		
 int main(int argc, char* argv[]) {
 	
+	Int128 test66(98765432345678);
+	test66 *= test66;
+	print(Int128(Int128::min), Int128(Int128::max));
+
+	print(test66, test66.random());
+	Int8 t0003(94);
+	print(t0003.random());
+	
 	Person daniel1(10, "daniel");
 	daniel1.age = 2;
 	
@@ -147,7 +155,7 @@ int main(int argc, char* argv[]) {
 	
 	RawPointer<int> number0001(10);
 	RawPointer<int> number0002(100);
-	
+
 	number0001 = std::move(number0002); // Uses move operations, deletes the pointer and content of "number0002"
 	// number0001 = number0002; // Copies the content of the pointer, doesn't destroy the original ("number0002")
 	
@@ -181,7 +189,7 @@ int main(int argc, char* argv[]) {
 	if (bP.isNotNull()) {
 		print(bP);
 	}
-	 
+
 	#if (cplusplusVersion >= cplusplus1z)
 		Array<Any> things {"hola", 10, 5.1};
 		print(things[0].as<string>());
@@ -220,7 +228,7 @@ int main(int argc, char* argv[]) {
 	if (const auto lastEven = numbersArr.last([](const int& n) { return n % 2 == 0; })) {
 		print(lastEven);
 	}
-	
+
 	print(numbersArr.first(), numbersArr.last());
 	
 	Array<Stuff> stuff;
@@ -257,7 +265,7 @@ int main(int argc, char* argv[]) {
 	
 		//print("Hi\n"_sv * 3);
 	#endif
-	
+
 	RawPointer<int> ptest(100);
 	RawPointer<int> ptest2(400);
 	ptest = ptest2;
@@ -290,7 +298,7 @@ int main(int argc, char* argv[]) {
 	Arguments args(argc, argv);
 	print(args.size());
 	print("Arguments:", args);
-	
+
 	Array<Human> humansTest;
 	humansTest.append(Human());
 	print(Human());
@@ -355,7 +363,7 @@ int main(int argc, char* argv[]) {
 		cout << otherName << endl;
 	}
 	string namesss = otherName;
-	
+
 	print(cplusplusVersion);
 	print(cplusplus1z);
 	
@@ -403,11 +411,11 @@ int main(int argc, char* argv[]) {
 	#if (cplusplusVersion >= cplusplus1z)
 		print(toStringContainer(pNumbers));
 	#endif
-	
+
 	Int128 bigNumber = 234567876543256343;
 	cout << (bigNumber + 1) << endl;
 	cout << (2 * bigNumber) << endl;
- 
+	
 	AnyNumber test (8745.54);
 	cout << test.multiply<double>(10.0) << endl;
 	

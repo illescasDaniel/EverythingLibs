@@ -81,8 +81,8 @@
 			children = (
 				651EDB3E1F3E5C1800E340C7 /* EVTNumber.hpp */,
 				651EDB3C1F3E5C1800E340C7 /* EVTInteger.hpp */,
-				651EDB3D1F3E5C1800E340C7 /* EVTFloatingPoint.hpp */,
 				6558658C1F151859002FC352 /* EVTInt128.hpp */,
+				651EDB3D1F3E5C1800E340C7 /* EVTFloatingPoint.hpp */,
 				6558658E1F15247A002FC352 /* EVTAnyNumber.hpp */,
 			);
 			path = EVTNumbers;
