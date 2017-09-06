@@ -106,14 +106,15 @@ public:
 		return "Person(age: " + std::to_string(age) + ")";
 	}
 };
-		
+
 int main(int argc, char* argv[]) {
 	
+#if defined(__clang__)
 	Int128 test66(98765432345678);
 	test66 *= test66;
 	print(Int128(Int128::min), Int128(Int128::max));
-
 	print(test66, test66.random());
+#endif
 	Int8 t0003(94);
 	print(t0003.random());
 	
@@ -155,7 +156,7 @@ int main(int argc, char* argv[]) {
 	
 	RawPointer<int> number0001(10);
 	RawPointer<int> number0002(100);
-
+	
 	number0001 = std::move(number0002); // Uses move operations, deletes the pointer and content of "number0002"
 	// number0001 = number0002; // Copies the content of the pointer, doesn't destroy the original ("number0002")
 	
@@ -189,20 +190,20 @@ int main(int argc, char* argv[]) {
 	if (bP.isNotNull()) {
 		print(bP);
 	}
-
-	#if (cplusplusVersion >= cplusplus1z)
-		Array<Any> things {"hola", 10, 5.1};
-		print(things[0].as<string>());
-		print(things[1].as<int>());
-		print(things[2].as<double>());
 	
-		if (auto thing = things.at(2); thing.isNotNull()) {
-			print(thing.value().as<double>());
-		}
-	#endif
+#if (cplusplusVersion >= cplusplus1z)
+	Array<Any> things {"hola", 10, 5.1};
+	print(things[0].as<string>());
+	print(things[1].as<int>());
+	print(things[2].as<double>());
+	
+	if (Optional<Any> thing = things.at(2)) {
+		print(thing.value().as<double>());
+	}
+#endif
 	
 	Optional<const int> testOpt{10};
-	 
+	
 	Array<int> numbersArr {0,2,3,4,5};
 	if (numbersArr.find(3) != numbersArr.count()) {
 		print("Found!!");
@@ -228,7 +229,7 @@ int main(int argc, char* argv[]) {
 	if (const auto lastEven = numbersArr.last([](const int& n) { return n % 2 == 0; })) {
 		print(lastEven);
 	}
-
+	
 	print(numbersArr.first(), numbersArr.last());
 	
 	Array<Stuff> stuff;
@@ -237,35 +238,35 @@ int main(int argc, char* argv[]) {
 	
 	print(Test());
 	
-	#if (cplusplusVersion >= cplusplus1z)
+#if (cplusplusVersion >= cplusplus1z) && __has_include(<string_view>)
 	
-		string name2 = "  Daniel2  ";
+	string name2 = "  Daniel2  ";
 	
-		StringView name3 = "hola, daniel";
+	StringView name3 = "hola, daniel";
 	
-		print("HEYYY:", name3);
-		print(name3 * 4);
+	print("HEYYY:", name3);
+	print(name3 * 4);
 	
-		constexpr StringView testName = "YEP"_sv;
-		// static_assert(testName == "YEP"_sv, "Not equal strings"); [in gcc operator== is not constexpr]
-		cout << testName << endl;
+	constexpr StringView testName = "YEP"_sv;
+	// static_assert(testName == "YEP"_sv, "Not equal strings"); [in gcc operator== is not constexpr]
+	cout << testName << endl;
 	
-		cout << name3.findFirstNotOf(" ") << endl;
-		cout << name3.count() - name3.findLastOf(" ") << endl;
+	cout << name3.findFirstNotOf(" ") << endl;
+	cout << name3.count() - name3.findLastOf(" ") << endl;
 	
-		name3.trim(StringView::TrimMode::trimStart);
-		cout << name3 << endl;
-		cout << name3.trimmed() << endl;
-		cout << name3.trimmed() << endl;
+	name3.trim(StringView::TrimMode::trimStart);
+	cout << name3 << endl;
+	cout << name3.trimmed() << endl;
+	cout << name3.trimmed() << endl;
 	
-		cout << name3.contains("ani") << endl;
+	cout << name3.contains("ani") << endl;
 	
-		cout << sizeof(name2) << endl;
-		cout << sizeof(name3) << endl;
+	cout << sizeof(name2) << endl;
+	cout << sizeof(name3) << endl;
 	
-		//print("Hi\n"_sv * 3);
-	#endif
-
+	//print("Hi\n"_sv * 3);
+#endif
+	
 	RawPointer<int> ptest(100);
 	RawPointer<int> ptest2(400);
 	ptest = ptest2;
@@ -288,7 +289,7 @@ int main(int argc, char* argv[]) {
 	int extraNumber = 7;
 	
 	numbers002.moveValuesFrom(numbers001); // move(numbers001.begin(), numbers001.end(), numbers002.begin());
-	numbers002[numbers002.capacity()-1] = extraNumber;	
+	numbers002[numbers002.capacity()-1] = extraNumber;
 	numbers001 = numbers002;
 	
 	cout << numbers001.capacity() << endl;
@@ -298,7 +299,7 @@ int main(int argc, char* argv[]) {
 	Arguments args(argc, argv);
 	print(args.size());
 	print("Arguments:", args);
-
+	
 	Array<Human> humansTest;
 	humansTest.append(Human());
 	print(Human());
@@ -323,11 +324,11 @@ int main(int argc, char* argv[]) {
 	
 	cout << trimmed(" hi ") << endl;
 	
-	#if (cplusplusVersion >= cplusplus1z)
-		print("My name is", evt::toString(numbers));
-	#else
-		//print(to_string(numbers, 3));
-	#endif
+#if (cplusplusVersion >= cplusplus1z) && defined(__clang__)
+	print("My name is", evt::toString(numbers));
+#else
+	//print(to_string(numbers, 3));
+#endif
 	
 	Array<string> names {"daniel", "john", "mary"};
 	Array<string> copyNames = names;
@@ -351,7 +352,7 @@ int main(int argc, char* argv[]) {
 	print("Uppercased names:", toUpperContainer(names));
 	
 	string otherNames[] = {"aCa", "pOp"};
-
+	
 	print("Uppercased names:", toUpperContainer(otherNames));
 	print("Uppercased names:", toUpperContainer({"aa", "bb"}));
 	
@@ -363,15 +364,23 @@ int main(int argc, char* argv[]) {
 		cout << otherName << endl;
 	}
 	string namesss = otherName;
-
+	
 	print(cplusplusVersion);
 	print(cplusplus1z);
 	
-	#if (cplusplusVersion >= cplusplus1z)
-		if (Optional<string> test("something"); test.orEmpty().length() > 2) {
-			print("Test is not null, value:", test);
-		}
-	#endif
+#if (cplusplusVersion >= cplusplus1z)
+#if defined(__clang__)
+	if (Optional<string> test("something"); test.orEmpty().length() > 2) {
+		print("Test is not null, value:", test);
+	}
+#else
+	Optional<string> test_("something");
+	if (test_.isNotNull() && test_.orEmpty().length() > 2) {
+		print("Test is not null, value:", test_);
+	}
+	
+#endif
+#endif
 	
 	cout << benchmark([]{
 		
@@ -408,13 +417,15 @@ int main(int argc, char* argv[]) {
 	cout << pNumbers.capacity() << " " << pNumbers2.capacity() << endl;
 	cout << pNumbers[2] << endl;
 	
-	#if (cplusplusVersion >= cplusplus1z)
-		print(toStringContainer(pNumbers));
-	#endif
-
+#if (cplusplusVersion >= cplusplus1z) && defined(__clang__)
+	print(toStringContainer(pNumbers));
+#endif
+	
+#if defined(__clang__)
 	Int128 bigNumber = 234567876543256343;
 	cout << (bigNumber + 1) << endl;
 	cout << (2 * bigNumber) << endl;
+#endif
 	
 	AnyNumber test (8745.54);
 	cout << test.multiply<double>(10.0) << endl;
@@ -428,6 +439,7 @@ int main(int argc, char* argv[]) {
 	test = -100;
 	cout << test.as<int>() << endl;
 	
+#if defined(__clang__)
 	test = Int128(3465789543789654378);
 	cout << test.as<Int128>() << endl;
 	
@@ -436,7 +448,7 @@ int main(int argc, char* argv[]) {
 	
 	test = reallyBigNumber;
 	cout << test.as<UInt128>() << endl;
-	
+#endif
 	Any something ("hello");
 	cout << something.as<string>() << endl;
 	
@@ -463,18 +475,18 @@ int main(int argc, char* argv[]) {
 	
 	//int number2 = readLine<int>();
 	//print(number2);
-
-	/*
-	int myAge = input<int>("Age?: ");
-	print(myAge);
-
 	
-	// Equivalent to:
+	/*
+	 int myAge = input<int>("Age?: ");
+	 print(myAge);
+	 
+	 
+	 // Equivalent to:
 	 int myAge_;
 	 cout << "Age?: ";
 	 cin >> myAge_;
 	 // ...
-	*/
+	 */
 	
 	//string yourName = input("What is your name?: ");
 	//print(yourName);
@@ -485,5 +497,6 @@ int main(int argc, char* argv[]) {
 	 cout << "What is your name?: ";
 	 getline(cin, yourName_);
 	 cout << yourName_ << endl;
-	*/
+	 */
 }
+

@@ -30,5 +30,9 @@
 #include "EVTNumbers/EVTNumber.hpp"
 #include "EVTNumbers/EVTInteger.hpp"
 #include "EVTNumbers/EVTFloatingPoint.hpp"
-#include "EVTNumbers/EVTInt128.hpp"
 #include "EVTNumbers/EVTAnyNumber.hpp"
+
+#if defined(__clang__)
+	#include "EVTNumbers/EVTInt128.hpp"
+#endif
+

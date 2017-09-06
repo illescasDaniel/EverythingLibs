@@ -199,7 +199,7 @@ namespace evt {
 			
 			if (!promptText.empty()) { std::cout << promptText << ' '; }
 			
-			#if (__cplusplus > cplusplus14)
+			#if (__cplusplus > cplusplus14) && defined(__clang__)
 				if constexpr (std::is_same<std::string, Type>()) {
 					std::getline(std::cin, readContent);
 				}
@@ -212,7 +212,7 @@ namespace evt {
 					}
 					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 					if (willExit) { return nullptr; }
-			#if (__cplusplus > cplusplus14)
+			#if (__cplusplus > cplusplus14) && defined(__clang__)
 			}
 			#endif
 			
@@ -224,19 +224,7 @@ namespace evt {
 			return readLine<Type>(promptText);
 		}
 		
-		#if (__cplusplus <= cplusplus14)
-		std::string quoted(const std::string& str) {
-			return "\"" + str + "\"";
-		}
-		
-		std::string quoted(const char* str) {
-			return "\"" + std::string(str) + "\"";
-		}
-		
-		std::string quoted(const char chr) {
-			return "'" + std::string(1, chr) + "'";
-		}
-		#else
+		#if (__cplusplus > cplusplus14) && defined(__clang__)
 		template <typename Type>
 		std::string quoted(const Type& value, bool quoteAnything = true) {
 			if constexpr (std::is_same<std::string, Type>()) {
@@ -257,6 +245,18 @@ namespace evt {
 			else {
 				return "[Error, value is not a valid type to quote]";
 			}
+		}
+		#else
+		std::string quoted(const std::string& str) {
+			return "\"" + str + "\"";
+		}
+		
+		std::string quoted(const char* str) {
+			return "\"" + std::string(str) + "\"";
+		}
+		
+		std::string quoted(const char chr) {
+			return "'" + std::string(1, chr) + "'";
 		}
 		#endif
 

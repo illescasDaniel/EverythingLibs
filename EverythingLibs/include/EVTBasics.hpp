@@ -38,7 +38,7 @@
 #include "EVTBasics/EVTLazyVar.hpp"
 #include "EVTBasics/EVTRange.hpp"
 
-#if __cplusplus >= 201406L
+#if __cplusplus >= 201406L && defined(__clang__)
 	#include "EVTBasics/EVTPrintC++17.hpp"
 #else
 	#include "EVTBasics/EVTPrint.hpp" // Might be a little 'heavy' to import, you can comment this out this library if you don't really need it

@@ -42,13 +42,10 @@
 
 namespace evt {
 	
-	#define ArithmeticType_typename typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type
+	#define ArithmeticType_typename typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value || std::is_same<ArithmeticType, __int128_t>::value ||std::is_same<ArithmeticType, __uint128_t>::value>::type
 	#define operatorAssignment(_op_, _op2_); template <typename anyType> inline ArithmeticType operator _op_ (const anyType& Var) { return (*this = *this _op2_ Var); }
 	
-	template <typename ArithmeticType, typename = typename std::enable_if<
-	std::is_arithmetic<ArithmeticType>::value ||
-	std::is_same<ArithmeticType, __int128_t>::value ||
-	std::is_same<ArithmeticType, __uint128_t>::value>::type>
+	template <ArithmeticType_typename>
 	class Number {
 		
 	private:
@@ -85,7 +82,10 @@ namespace evt {
 			return (value_ < 0) ? -value_ : value_;
 		}
 		
-		template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
+		template <typename Type, typename = typename std::enable_if<
+		std::is_arithmetic<Type>::value ||
+		std::is_same<Type, __int128_t>::value ||
+		std::is_same<Type, __uint128_t>::value>::type>
 		Type as() const {
 			return static_cast<Type>(value_);
 		}

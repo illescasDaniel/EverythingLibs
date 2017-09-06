@@ -583,7 +583,7 @@ namespace evt {
 			for (const Type& value: *this) {
 				output += [&] {
 					
-					#if (__cplusplus >= 201406L)
+					#if (__cplusplus >= 201406L) && defined(__clang__)
 					
 						if constexpr (std::is_same<Type, std::string>::value) {
 							return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");

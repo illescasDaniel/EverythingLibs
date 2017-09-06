@@ -24,15 +24,21 @@
 
 #pragma once
 
-#include "EVTInt128.hpp"
+#if defined(__clang__)
+	#include "EVTInt128.hpp"
+#endif
+
 #include <memory>
 
 namespace evt {
 	
 	namespace numbers {
 		
+#if defined(__clang__)
 		#define templateType template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value || std::is_same<Type, Int128>::value || std::is_same<Type, UInt128>::value>::type>
-		
+#else
+		#define templateType template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value>::type>
+#endif
 		class AnyNumber {
 			
 			std::shared_ptr<void*> value_ { nullptr };
