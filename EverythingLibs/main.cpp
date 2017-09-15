@@ -109,12 +109,11 @@ public:
 
 int main(int argc, char* argv[]) {
 	
-	print(UInt128(20) ^ 3);
-	
 	Int32 numberA = 3;
 	print(numberA ^ 4);
 	
 #if defined(__clang__)
+	print(UInt128(20) ^ 3);
 	Int128 test66(98765432345678);
 	test66 *= test66;
 	print(Int128(Int128::min), Int128(Int128::max));
