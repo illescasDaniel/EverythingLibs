@@ -51,6 +51,8 @@ namespace evt {
 		std::is_same<IntegralType, __uint128_t>::value >::type>
 		class Integer: public Number<IntegralType> {
 			
+		protected:
+			
 			typedef Number<IntegralType> super;
 			
 		public:

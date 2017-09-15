@@ -37,9 +37,14 @@ namespace evt {
 	namespace numbers {
 		
 		class Int128: public Integer<__int128_t> {
-		public:
 			
 			typedef Integer<__int128_t> super;
+			
+			__int128_t getValue() const {
+				return super::value();
+			}
+			
+		public:
 			
 			CONSTEXPR Int128() noexcept  {}
 			
@@ -48,7 +53,7 @@ namespace evt {
 			
 			friend std::ostream& operator<<(std::ostream& dest, const Int128& number) {
 				if (std::ostream::sentry(dest)) {
-					__uint128_t tmp = number.as<__int128_t>() < 0 ? -number.as<__int128_t>() : number.as<__int128_t>();
+					__uint128_t tmp = number.getValue() < 0 ? -number.getValue() : number.getValue();
 					char buffer[128];
 					char* d = std::end(buffer);
 					do {
@@ -86,6 +91,16 @@ namespace evt {
 				return Int128(randomValue(rng));
 			}
 			
+			template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value>::type>
+			auto to(Arithmetic exponent) {
+				return std::pow(intmax_t(this->getValue()), exponent);
+			}
+			
+			template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value>::type>
+			auto operator^(Arithmetic exponent) {
+				return this->to(exponent);
+			}
+			
 			#define internalOperator(operation) \
 			template <typename Type> \
 			CONSTEXPR Int128 operator operation (Type otherNumber) const noexcept { \
@@ -109,9 +124,14 @@ namespace evt {
 		#undef assignmentOperator
 		
 		class UInt128: public Integer<__uint128_t> {
-		public:
 			
 			typedef Integer<__uint128_t> super;
+			
+			__uint128_t getValue() const {
+				return super::value();
+			}
+			
+		public:
 			
 			CONSTEXPR UInt128() noexcept  {}
 			
@@ -120,7 +140,7 @@ namespace evt {
 			
 			friend std::ostream& operator<<(std::ostream& dest, const UInt128& number) {
 				if (std::ostream::sentry(dest)) {
-					__uint128_t tmp = number.as<__uint128_t>();
+					__uint128_t tmp = number.getValue();
 					char buffer[128];
 					char* d = std::end(buffer);
 					do {
@@ -148,6 +168,16 @@ namespace evt {
 				std::uniform_int_distribution<__uint128_t> randomValue(lowerBound, upperBound);
 				
 				return UInt128(randomValue(rng));
+			}
+			
+			template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value>::type>
+			auto to(Arithmetic exponent) {
+				return std::pow(intmax_t(this->getValue()), exponent);
+			}
+			
+			template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value>::type>
+			auto operator^(Arithmetic exponent) {
+				return this->to(exponent);
 			}
 			
 			#define internalOperator(operation) \

@@ -27,6 +27,7 @@
 #include <random>
 #include <cstdint>
 #include <cstdlib>
+#include <cmath>
 
 #if (__cplusplus > 201103L)
 #define CONSTEXPR constexpr
@@ -79,6 +80,12 @@ namespace evt {
 		}
 		
 		CONSTEXPR ArithmeticType absolute() const noexcept {
+			
+		#if (__cplusplus > 201402L) && defined(__clang__)
+			if constexpr (std::is_unsigned<ArithmeticType>()) {
+				return value_;
+			}
+		#endif
 			return (value_ < 0) ? -value_ : value_;
 		}
 		
@@ -88,6 +95,16 @@ namespace evt {
 		std::is_same<Type, __uint128_t>::value>::type>
 		Type as() const {
 			return static_cast<Type>(value_);
+		}
+		
+		template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value>::type>
+		auto to(Arithmetic exponent) {
+			return std::pow(this->value_, exponent);
+		}
+		
+		template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value>::type>
+		auto operator^(Arithmetic exponent) {
+			return this->to(exponent);
 		}
 		
 	protected:

@@ -109,6 +109,11 @@ public:
 
 int main(int argc, char* argv[]) {
 	
+	print(UInt128(20) ^ 3);
+	
+	Int32 numberA = 3;
+	print(numberA ^ 4);
+	
 #if defined(__clang__)
 	Int128 test66(98765432345678);
 	test66 *= test66;
@@ -116,6 +121,7 @@ int main(int argc, char* argv[]) {
 	print(test66, test66.random());
 #endif
 	Int8 t0003(94);
+	print(t0003, "to 2:", t0003^(2));
 	print(t0003.random());
 	
 	Person daniel1(10, "daniel");
