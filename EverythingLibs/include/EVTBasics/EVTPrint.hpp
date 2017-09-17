@@ -282,6 +282,13 @@ return os << to_string(cont); \
 		static std::string terminator;
 		const static std::string defaultSeparator;
 		const static std::string defaultTerminator;
+		
+		static void enableHighFloatingPointPrecision() {
+			std::cout.precision(16);
+		}
+		static void disableHighFloatingPointPrecision() {
+			std::cout.precision(6);
+		}
 	};
 	
 	bool PrintSettings::boolalphaEnabled = true;

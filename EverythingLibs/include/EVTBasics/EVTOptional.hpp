@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <cstddef>
 #include <ostream>
 #include <stdexcept>

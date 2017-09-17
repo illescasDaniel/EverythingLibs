@@ -45,4 +45,5 @@
 #include "EVTProtocols.hpp"
 #include "EVTObject.hpp"
 
+// To use all namespaces do: using namespace EVT;
 #define EVT evt; using namespace evt::utils; using namespace evt::numbers; using namespace evt::protocols;

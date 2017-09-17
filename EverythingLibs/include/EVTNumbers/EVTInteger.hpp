@@ -33,6 +33,11 @@
 #define CONSTEXPR
 #endif
 
+#if INTPTR_MAX == INT32_MAX
+#define __int128_t intmax_t
+#define __uint128_t uintmax_t
+#endif
+
 namespace evt {
 	
 	namespace numbers {
@@ -114,8 +119,14 @@ namespace evt {
 			}
 		};
 		
-		typedef Integer<int> Int;
-		typedef Integer<unsigned int> UInt;
+		#if INTPTR_MAX == INT32_MAX
+			typedef Integer<int32_t> Int;
+			typedef Integer<uint32_t> UInt;
+		#else
+			typedef Integer<int64_t> Int;
+			typedef Integer<uint64_t> UInt;
+		#endif
+		
 		typedef Integer<size_t> Size;
 		typedef Integer<int8_t> Int8;
 		typedef Integer<int16_t> Int16;
@@ -139,3 +150,8 @@ namespace evt {
 }
 
 #undef CONSTEXPR
+			
+#if INTPTR_MAX == INT32_MAX
+#undef __int128_t
+#undef __uint128_t
+#endif

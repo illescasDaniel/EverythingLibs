@@ -41,6 +41,11 @@
 #define CONSTEXPRVar const
 #endif
 
+#if INTPTR_MAX == INT32_MAX
+	#define __int128_t intmax_t
+	#define __uint128_t uintmax_t
+#endif
+
 namespace evt {
 	
 	#define ArithmeticType_typename typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value || std::is_same<ArithmeticType, __int128_t>::value ||std::is_same<ArithmeticType, __uint128_t>::value>::type
@@ -51,7 +56,7 @@ namespace evt {
 		
 	private:
 		
-		ArithmeticType value_;
+		ArithmeticType value_{};
 		
 	public:
 		
@@ -107,6 +112,11 @@ namespace evt {
 			return this->to(exponent);
 		}
 		
+		template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value>::type>
+		auto remainderDividingBy(Arithmetic other) {
+			return std::fmod(this->value_, other);
+		}
+		
 	protected:
 		
 		CONSTEXPR void set(ArithmeticType number) noexcept {
@@ -122,3 +132,8 @@ namespace evt {
 #undef CONSTEXPR
 #undef CONSTEXPRVar
 #undef operatorAssignment
+
+#if INTPTR_MAX == INT32_MAX
+	#undef __int128_t
+	#undef __uint128_t
+#endif

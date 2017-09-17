@@ -35,13 +35,17 @@
 namespace evt {
 	
 	namespace numbers {
-	
-		template <typename FloatingType = float, typename = typename std::enable_if<std::is_floating_point<FloatingType>::value,bool>::type>
+		
+		template <typename FloatingType = float, typename = typename std::enable_if<std::is_floating_point<FloatingType>::value>::type>
 		class FloatingPoint: public Number<FloatingType> {
 			
 			typedef Number<FloatingType> super;
 			
 		public:
+			
+			#if (__cplusplus >= 201406L)
+				static constexpr FloatingType pi = 3.141592653589793;
+			#endif
 			
 			CONSTEXPR FloatingPoint() noexcept  {}
 			CONSTEXPR FloatingPoint(FloatingType floatNumber) noexcept : super(floatNumber) {}
@@ -65,10 +69,17 @@ namespace evt {
 			}
 		};
 		
-		typedef FloatingPoint<float> Float;
+		#if INTPTR_MAX == INT32_MAX
+			typedef FloatingPoint<float> Float;
+		#else
+			typedef FloatingPoint<double> Float;
+		#endif
+		
+		typedef FloatingPoint<float> Float32;
+		typedef FloatingPoint<double> Float64;
 		typedef FloatingPoint<double> Double;
 		typedef FloatingPoint<long double> LongDouble;
-		typedef FloatingPoint<long double> Float80;	
+		typedef FloatingPoint<long double> Float80;
 	}
 }
 

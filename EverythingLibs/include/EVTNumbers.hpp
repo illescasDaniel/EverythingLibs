@@ -32,7 +32,7 @@
 #include "EVTNumbers/EVTFloatingPoint.hpp"
 #include "EVTNumbers/EVTAnyNumber.hpp"
 
-#if defined(__clang__)
+#if defined(__clang__) && INTPTR_MAX == INT64_MAX
 	#include "EVTNumbers/EVTInt128.hpp"
 #endif
 

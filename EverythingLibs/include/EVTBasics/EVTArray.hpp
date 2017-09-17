@@ -33,8 +33,6 @@
 #include <functional>
 #include "EVTOptional.hpp"
 #include "EVTRawPointer.hpp"
-#include "../EVTObject.hpp"
-
 #include "../EVTProtocols.hpp"
 
 #if (__cplusplus > 201103L)
@@ -61,7 +59,7 @@ namespace evt {
 			return std::to_string(arithmeticValue);
 		}
 		
-		inline std::string to_string(const Object& evtObject) { return evtObject.toString(); }
+		inline std::string to_string(const protocols::CustomStringConvertible& object) { return object.toString(); }
 		/* Place your custom "to_string()" function/s here for other classes, or just inherit from EVTObject. */
 	}
 	
@@ -589,7 +587,7 @@ namespace evt {
 							return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
 						} else if constexpr (std::is_same<Type, char>::value) {
 							return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
-						} else if constexpr (std::is_arithmetic<Type>::value || std::is_same<Type, Object>::value || std::is_base_of<Object, Type>::value) {
+						} else if constexpr (std::is_arithmetic<Type>::value || std::is_same<Type, protocols::CustomStringConvertible>::value || std::is_base_of<protocols::CustomStringConvertible, Type>::value) {
 							return evt::internalArrayPrintEVT::to_string(value);
 						}
 						return std::string("Object");

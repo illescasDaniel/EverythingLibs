@@ -109,8 +109,16 @@ public:
 
 int main(int argc, char* argv[]) {
 	
+	#if (__cplusplus >= 201406L)
+		PrintSettings::enableHighFloatingPointPrecision();
+		print(Float::pi);
+	#endif
+	
 	Int32 numberA = 3;
-	print(numberA ^ 4);
+	print(numberA ^ 4, numberA.remainderDividingBy(2));
+	
+	Float numberB = 5.1;
+	print(numberB.remainderDividingBy(3));
 	
 #if defined(__clang__)
 	print(UInt128(20) ^ 3);
@@ -243,6 +251,7 @@ int main(int argc, char* argv[]) {
 	
 	print(Test());
 	
+	
 #if (cplusplusVersion >= cplusplus1z) && __has_include(<string_view>)
 	
 	string name2 = "  Daniel2  ";
@@ -285,6 +294,7 @@ int main(int argc, char* argv[]) {
 	toyotaCelica.owner = "Daniel";
 	print(toyotaCelica.wheels);
 	print(toyotaCelica.toString());
+	print(Array<Car>{toyotaCelica, toyotaCelica});
 	
 	Car nissanGT("Nissan GT");
 	print(nissanGT);

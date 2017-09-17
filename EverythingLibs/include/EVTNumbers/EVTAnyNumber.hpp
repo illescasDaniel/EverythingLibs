@@ -24,7 +24,7 @@
 
 #pragma once
 
-#if defined(__clang__)
+#if defined(__clang__) && INTPTR_MAX == INT64_MAX
 	#include "EVTInt128.hpp"
 #endif
 
@@ -34,7 +34,7 @@ namespace evt {
 	
 	namespace numbers {
 		
-#if defined(__clang__)
+#if defined(__clang__) && INTPTR_MAX == INT64_MAX
 		#define templateType template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value || std::is_same<Type, Int128>::value || std::is_same<Type, UInt128>::value>::type>
 #else
 		#define templateType template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value>::type>
