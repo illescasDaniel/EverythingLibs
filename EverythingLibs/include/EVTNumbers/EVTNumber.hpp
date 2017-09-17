@@ -41,7 +41,7 @@
 #define CONSTEXPRVar const
 #endif
 
-#if INTPTR_MAX == INT32_MAX
+#if !defined(__int128_t) || !defined(__uint128_t)
 	#define __int128_t intmax_t
 	#define __uint128_t uintmax_t
 #endif
@@ -133,7 +133,7 @@ namespace evt {
 #undef CONSTEXPRVar
 #undef operatorAssignment
 
-#if INTPTR_MAX == INT32_MAX
+#if !defined(__int128_t) || !defined(__uint128_t)
 	#undef __int128_t
 	#undef __uint128_t
 #endif

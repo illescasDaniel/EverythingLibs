@@ -109,6 +109,8 @@ public:
 
 int main(int argc, char* argv[]) {
 	
+	print(architecture() == ArchitectureMode::x64);
+	
 	#if (__cplusplus >= 201406L)
 		PrintSettings::enableHighFloatingPointPrecision();
 		print(Float::pi);

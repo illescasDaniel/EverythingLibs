@@ -33,7 +33,7 @@
 #define CONSTEXPR
 #endif
 
-#if INTPTR_MAX == INT32_MAX
+#if !defined(__int128_t) || !defined(__uint128_t)
 #define __int128_t intmax_t
 #define __uint128_t uintmax_t
 #endif
@@ -46,7 +46,7 @@ namespace evt {
 			std::intmax_t quotient = 0;
 			std::intmax_t remaining = 0;
 			Division(const std::intmax_t quotient, const std::intmax_t remaining): quotient(quotient), remaining(remaining) {}
-			std::string toString() const noexcept { return "Quotient: " + std::to_string(quotient) + "\nRemaining: " + std::to_string(remaining); }
+			std::string toString() const noexcept { return "Quotient: " + std::to_string(quotient) + "\nRemainder: " + std::to_string(remaining); }
 			friend std::ostream& operator<<(std::ostream& os, const Division& object) noexcept { return os << object.toString(); }
 		};
 		
@@ -151,7 +151,7 @@ namespace evt {
 
 #undef CONSTEXPR
 			
-#if INTPTR_MAX == INT32_MAX
+#if !defined(__int128_t) || !defined(__uint128_t)
 #undef __int128_t
 #undef __uint128_t
 #endif
