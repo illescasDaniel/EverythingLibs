@@ -33,7 +33,7 @@
 #define CONSTEXPR
 #endif
 
-#if !defined(__int128_t) || !defined(__uint128_t)
+#if !defined(__clang__) || INTPTR_MAX != INT64_MAX
 #define __int128_t intmax_t
 #define __uint128_t uintmax_t
 #endif
@@ -151,7 +151,7 @@ namespace evt {
 
 #undef CONSTEXPR
 			
-#if !defined(__int128_t) || !defined(__uint128_t)
+#if !defined(__clang__) || INTPTR_MAX != INT64_MAX
 #undef __int128_t
 #undef __uint128_t
 #endif
