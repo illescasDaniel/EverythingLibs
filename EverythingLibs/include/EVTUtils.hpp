@@ -43,6 +43,12 @@
 #define CONSTEXPR
 #endif
 
+#if (__cplusplus > 201103L)
+#define CONSTEXPRVar constexpr
+#else
+#define CONSTEXPRVar const
+#endif
+
 namespace evt {
 	namespace utils {
 		
@@ -53,8 +59,9 @@ namespace evt {
 		#define cplusplus14 201402L
 		#define cplusplus11 201103L
 		#define cplusplus98 199711L
-		#define is32Bits (INTPTR_MAX == INT32_MAX)
-		#define is64Bits (INTPTR_MAX == INT64_MAX)
+		
+		#define ArchitectureIs32Bits (INTPTR_MAX == INT32_MAX)
+		#define ArchitectureIs64Bits (INTPTR_MAX == INT64_MAX)
 		
 		#define xAssert(condition_, message_) if (bool(condition_) == false) { \
 		std::cerr << "- Assertion failed: " << (#condition_)<< "\n- Error: " << (message_) << std::endl; exit(1); }
@@ -69,17 +76,12 @@ namespace evt {
 		#define constVar const auto
 		
 		// Useful functions
-		enum ArchitectureMode { x86, x64, unknown };
-		CONSTEXPR ArchitectureMode architecture() {
-			switch (INTPTR_MAX) {
-				case INT32_MAX:
-					return ArchitectureMode::x86;
-				case INT64_MAX:
-					return ArchitectureMode::x64;
-				default: return ArchitectureMode::unknown;
-			}
-		}
-			
+		
+		struct Architecture {
+			CONSTEXPRVar static bool is64Bits = INTPTR_MAX == INT64_MAX;
+			CONSTEXPRVar static bool is32Bits = INTPTR_MAX == INT32_MAX;
+		};
+		
 		template <typename Type, typename = typename std::enable_if<std::is_integral<Type>::value,bool>::type>
 		CONSTEXPR bool isOdd(const Type number) {
 			return (number & 1) == 1;

@@ -67,7 +67,7 @@ namespace evt {
 		
 		CONSTEXPR Number() noexcept {}
 		CONSTEXPR Number(ArithmeticType number) noexcept : value_(number) {}
-		
+
 		CONSTEXPR operator ArithmeticType() const {
 			return value_;
 		}

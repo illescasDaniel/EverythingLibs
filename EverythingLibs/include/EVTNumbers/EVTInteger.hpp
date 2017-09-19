@@ -63,7 +63,7 @@ namespace evt {
 		public:
 			
 			CONSTEXPR Integer() noexcept  {}
-			CONSTEXPR Integer(IntegralType integer) noexcept : super(integer) {}
+			CONSTEXPR Integer(IntegralType integer) noexcept: super(integer) {}
 			
 			CONSTEXPR bool isOdd() noexcept {
 				return (super::value() & 1) == 1;

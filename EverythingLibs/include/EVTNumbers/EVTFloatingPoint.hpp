@@ -69,17 +69,12 @@ namespace evt {
 			}
 		};
 		
-		#if INTPTR_MAX == INT32_MAX
-			typedef FloatingPoint<float> Float;
-		#else
-			typedef FloatingPoint<double> Float;
-		#endif
-		
+		typedef FloatingPoint<float> Float;
 		typedef FloatingPoint<float> Float32;
 		typedef FloatingPoint<double> Float64;
+		typedef FloatingPoint<long double> Float80;
 		typedef FloatingPoint<double> Double;
 		typedef FloatingPoint<long double> LongDouble;
-		typedef FloatingPoint<long double> Float80;
 	}
 }
 

@@ -109,7 +109,7 @@ public:
 
 int main(int argc, char* argv[]) {
 	
-	print(architecture() == ArchitectureMode::x64);
+	print(Architecture::is64Bits);
 	
 	#if (__cplusplus >= 201406L)
 		PrintSettings::enableHighFloatingPointPrecision();
