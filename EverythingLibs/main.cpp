@@ -110,12 +110,14 @@ public:
 int main(int argc, char* argv[]) {
 	
 	print(Architecture::is64Bits);
-	Int128 test_t23 = 9876545678987654;
-	print(test_t23*100);
-	print(test_t23*1000);
-	print(test_t23*10000);
-	print(test_t23*10000000);
 	
+	#if defined(__clang__) && INTPTR_MAX == INT64_MAX
+		Int128 test_t23 = 9876545678987654;
+		print(test_t23*100);
+		print(test_t23*1000);
+		print(test_t23*10000);
+		print(test_t23*10000000);
+	#endif
 	#if (__cplusplus >= 201406L)
 		PrintSettings::enableHighFloatingPointPrecision();
 		print(Float::pi);
