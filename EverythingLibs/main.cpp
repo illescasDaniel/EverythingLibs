@@ -116,11 +116,12 @@ int main(int argc, char* argv[]) {
 	// OVERFLOW exceptio :)
 	//testFunction(-1);
 	
-	print(Int128(Int128::max), Int64::max);
-	
 	print(Architecture::is64Bits);
 	
 	#if defined(__clang__) && INTPTR_MAX == INT64_MAX
+	
+        print(Int128(Int128::max), Int64::max);
+	
 		Int128 test_t23 = 9876545678987654;
 		print(test_t23*100);
 		print(test_t23*1000);
