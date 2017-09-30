@@ -109,6 +109,8 @@ public:
 
 int main(int argc, char* argv[]) {
 	
+	print(Int128(Int128::max), Int64::max);
+	
 	print(Architecture::is64Bits);
 	
 	#if defined(__clang__) && INTPTR_MAX == INT64_MAX
@@ -129,7 +131,7 @@ int main(int argc, char* argv[]) {
 	Float numberB = 5.1;
 	print(numberB.remainderDividingBy(3));
 	
-#if defined(__clang__)
+#if defined(__clang__) && INTPTR_MAX == INT64_MAX
 	print(UInt128(20) ^ 3);
 	Int128 test66(98765432345678);
 	test66 *= test66;
@@ -137,8 +139,8 @@ int main(int argc, char* argv[]) {
 	print(test66, test66.random());
 #endif
 	Int8 t0003(94);
-	print(t0003, "to 2:", t0003^(2));
-	print(t0003.random());
+	print(t0003, "to 2:", t0003 ^ 2);
+	print(Int8::random());
 	
 	Person daniel1(10, "daniel");
 	daniel1.age = 2;
@@ -468,7 +470,7 @@ int main(int argc, char* argv[]) {
 	cout << test.as<Int128>() << endl;
 	
 	UInt128 reallyBigNumber = 0;
-	reallyBigNumber -= 2;
+	reallyBigNumber += 2;
 	
 	test = reallyBigNumber;
 	cout << test.as<UInt128>() << endl;
@@ -522,5 +524,9 @@ int main(int argc, char* argv[]) {
 	 getline(cin, yourName_);
 	 cout << yourName_ << endl;
 	 */
-}
+	
+	UInt value;
+	print(value);
+	// [UNDERFLOW :D] value -= 2;
 
+}

@@ -26,10 +26,7 @@
 
 #include <fstream>
 #include <string>
-
-#if (__cplusplus >= 201406)
-	#include <experimental/optional>
-#endif
+#include "../EVTBasics/EVTOptional.hpp"
 
 #if (__cplusplus > 201103L)
 #define CONSTEXPR constexpr
@@ -178,10 +175,8 @@ namespace evt {
 			
 			return s;
 		}
-		
-#if (__cplusplus >= 201406)
-		
-		std::experimental::optional<std::string> safeRead() {
+			
+		Optional<std::string> safeRead() {
 			
 			if (mode == Mode::binary) { incompatibleMode(); return std::string{}; }
 			
@@ -190,13 +185,13 @@ namespace evt {
 			fileStream >> readContent;
 			
 			if ((fileStream.eof() && readContent.empty()) || fileStream.fail()) {
-				return std::experimental::nullopt;
+				return nullptr;
 			}
 			
 			return readContent;
 		}
 		
-		std::experimental::optional<std::string> safeGetline() {
+		Optional<std::string> safeGetline() {
 			
 			if (mode == Mode::binary) { incompatibleMode(); return std::string{}; }
 			
@@ -206,13 +201,11 @@ namespace evt {
 			std::getline(fileStream, s);
 			
 			if ((fileStream.eof() && s.empty()) || fileStream.fail()) {
-				return std::experimental::nullopt;
+				return nullptr;
 			}
 			
 			return s;
 		}
-		
-#endif
 		
 		std::string toString() {
 			

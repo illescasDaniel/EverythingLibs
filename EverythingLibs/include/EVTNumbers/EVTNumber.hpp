@@ -28,6 +28,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cmath>
+#include <stdexcept>
 
 #if (__cplusplus > 201103L)
 #define CONSTEXPR constexpr
@@ -49,7 +50,6 @@
 namespace evt {
 	
 	#define ArithmeticType_typename typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value || std::is_same<ArithmeticType, __int128_t>::value ||std::is_same<ArithmeticType, __uint128_t>::value>::type
-	#define operatorAssignment(_op_, _op2_); template <typename anyType> inline ArithmeticType operator _op_ (const anyType& Var) { return (*this = *this _op2_ Var); }
 	
 	template <ArithmeticType_typename>
 	class Number {
@@ -57,6 +57,18 @@ namespace evt {
 	private:
 		
 		ArithmeticType value_{};
+		
+		void checkIfOverflows() {
+			if (this->value_ == std::numeric_limits<ArithmeticType>::max()) {
+				throw std::overflow_error("variable reached its maximum value and tried to increase it");
+			}
+		}
+		
+		void checkIfUnderflows() {
+			if (this->value_ == std::numeric_limits<ArithmeticType>::lowest()) {
+				throw std::underflow_error("variable reached its minimum value and tried to decrease it");
+			}
+		}
 		
 	public:
 		
@@ -73,12 +85,23 @@ namespace evt {
 		}
 		
 		// Operators overloading
-		operatorAssignment(+=,+) operatorAssignment(-=,-) operatorAssignment(*=,*) operatorAssignment(/=,/) operatorAssignment(%=,%)
+
+		template <typename anyType>
+		CONSTEXPR ArithmeticType operator+=(const anyType& Var) { this->checkIfOverflows(); return (*this = *this + Var); }
 		
-		CONSTEXPR ArithmeticType operator++() { return (*this = *this + 1); }
-		CONSTEXPR ArithmeticType operator--() { return (*this = *this - 1); }
-		CONSTEXPR ArithmeticType operator++(int) { return (this->operator++() - 1); }
-		CONSTEXPR ArithmeticType operator--(int) { return (this->operator--() + 1); }
+		template <typename anyType>
+		CONSTEXPR ArithmeticType operator-=(const anyType& Var) { this->checkIfUnderflows(); return (*this = *this - Var); }
+		
+		template <typename anyType>
+		CONSTEXPR ArithmeticType operator*=(const anyType& Var) { this->checkIfOverflows(); return (*this = *this * Var); }
+		
+		template <typename anyType>
+		CONSTEXPR ArithmeticType operator/=(const anyType& Var) { this->checkIfUnderflows(); return (*this = *this / Var); }
+			
+		CONSTEXPR ArithmeticType operator++() { this->checkIfOverflows(); return (*this = *this + 1); }
+		CONSTEXPR ArithmeticType operator--() { this->checkIfUnderflows(); return (*this = *this - 1); }
+		CONSTEXPR ArithmeticType operator++(int) { this->checkIfOverflows(); return (this->operator++() - 1); }
+		CONSTEXPR ArithmeticType operator--(int) { this->checkIfUnderflows(); return (this->operator--() + 1); }
 		
 		std::string toString() const {
 			return std::to_string(value_);
