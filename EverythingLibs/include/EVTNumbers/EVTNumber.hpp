@@ -58,19 +58,38 @@ namespace evt {
 		
 		ArithmeticType value_{};
 		
-		void checkIfOverflows() {
+		CONSTEXPR void checkIfOverflows() {
 			if (this->value_ == std::numeric_limits<ArithmeticType>::max()) {
-				throw std::overflow_error("variable reached its maximum value and tried to increase it");
+				Number::throwOverflow();
 			}
 		}
 		
-		void checkIfUnderflows() {
+		CONSTEXPR void checkIfUnderflows() {
 			if (this->value_ == std::numeric_limits<ArithmeticType>::lowest()) {
-				throw std::underflow_error("variable reached its minimum value and tried to decrease it");
+				Number::throwUnderFlow();
+			}
+		}
+		
+		template <typename Type, typename = typename std::enable_if<
+		std::is_arithmetic<Type>::value ||
+		std::is_same<Type, __int128_t>::value ||
+		std::is_same<Type, __uint128_t>::value>::type>
+		CONSTEXPR void assignNumberIfDoesntUnderOverflow(Type number) {
+			if (std::numeric_limits<Type>::max() > std::numeric_limits<ArithmeticType>::max() && number > static_cast<Type>(std::numeric_limits<ArithmeticType>::max())) {
+				this->throwOverflow();
+			}
+			else if (number < Type{} && std::is_unsigned<ArithmeticType>()) {
+				this->throwUnderFlow();
+			}
+			else {
+				value_ = static_cast<ArithmeticType>(number);
 			}
 		}
 		
 	public:
+		
+		CONSTEXPR static void throwOverflow() { throw std::overflow_error("variable reached its maximum value and tried to increase it"); }
+		CONSTEXPR static void throwUnderFlow() { throw std::underflow_error("variable reached its minimum value and tried to decrease it"); }
 		
 		static CONSTEXPRVar ArithmeticType min = std::numeric_limits<ArithmeticType>::min();
 		static CONSTEXPRVar ArithmeticType max = std::numeric_limits<ArithmeticType>::max();
@@ -78,7 +97,22 @@ namespace evt {
 		static CONSTEXPRVar ArithmeticType lowest = std::numeric_limits<ArithmeticType>::lowest();
 		
 		CONSTEXPR Number() noexcept {}
-		CONSTEXPR Number(ArithmeticType number) noexcept : value_(number) {}
+		
+		template <typename Type, typename = typename std::enable_if<
+		std::is_arithmetic<Type>::value ||
+		std::is_same<Type, __int128_t>::value ||
+		std::is_same<Type, __uint128_t>::value>::type>
+		CONSTEXPR Number(Type number) {
+			this->assignNumberIfDoesntUnderOverflow(number);
+		}
+		
+		template <typename Type, typename = typename std::enable_if<
+		std::is_arithmetic<Type>::value ||
+		std::is_same<Type, __int128_t>::value ||
+		std::is_same<Type, __uint128_t>::value>::type>
+		CONSTEXPR Number(const Number<Type>& number) {
+			this->assignNumberIfDoesntUnderOverflow(number.value());
+		}
 
 		CONSTEXPR operator ArithmeticType() const {
 			return value_;
@@ -140,7 +174,7 @@ namespace evt {
 			return std::fmod(this->value_, other);
 		}
 		
-	protected:
+	public:
 		
 		CONSTEXPR void set(ArithmeticType number) noexcept {
 			value_ = number;
@@ -150,6 +184,11 @@ namespace evt {
 			return value_;
 		}
 	};
+	
+	template <typename Type>
+	std::ostream& operator<<(std::ostream& os, const Number<Type>& number) noexcept {
+		return os << number.value();
+	}
 }
 
 #undef CONSTEXPR

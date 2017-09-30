@@ -49,7 +49,13 @@ namespace evt {
 			CONSTEXPR Int128() noexcept  {}
 			
 			template <typename Type>
-			CONSTEXPR Int128(Type integer) noexcept : super(integer) {}
+			CONSTEXPR Int128(Type integer) noexcept: super(integer) {}
+			
+			template <typename Type, typename = typename std::enable_if<
+			std::is_integral<Type>::value ||
+			std::is_same<Type, __int128_t>::value ||
+			std::is_same<Type, __uint128_t>::value>::type>
+			CONSTEXPR Int128(const Number<Type>& number): super(number) {}
 			
 			friend std::ostream& operator<<(std::ostream& dest, const Int128& number) {
 				if (std::ostream::sentry(dest)) {
@@ -136,7 +142,13 @@ namespace evt {
 			CONSTEXPR UInt128() noexcept  {}
 			
 			template <typename Type>
-			CONSTEXPR UInt128(Type integer) noexcept : super(integer) {}
+			CONSTEXPR UInt128(Type integer): super(integer) {}
+			
+			template <typename Type, typename = typename std::enable_if<
+			std::is_integral<Type>::value ||
+			std::is_same<Type, __int128_t>::value ||
+			std::is_same<Type, __uint128_t>::value>::type>
+			CONSTEXPR UInt128(const Number<Type>& number): super(number) {}
 			
 			friend std::ostream& operator<<(std::ostream& dest, const UInt128& number) {
 				if (std::ostream::sentry(dest)) {

@@ -48,7 +48,19 @@ namespace evt {
 			#endif
 			
 			CONSTEXPR FloatingPoint() noexcept  {}
-			CONSTEXPR FloatingPoint(FloatingType floatNumber) noexcept : super(floatNumber) {}
+			
+			template <typename Type, typename = typename std::enable_if<
+			std::is_arithmetic<Type>::value ||
+			std::is_same<Type, __int128_t>::value ||
+			std::is_same<Type, __uint128_t>::value>::type>
+			CONSTEXPR FloatingPoint(Type floatNumber) : super(floatNumber) {}
+			
+			template <typename Type, typename = typename std::enable_if<
+			std::is_arithmetic<Type>::value ||
+			std::is_same<Type, __int128_t>::value ||
+			std::is_same<Type, __uint128_t>::value>::type>
+			CONSTEXPR FloatingPoint(const Number<Type>& number): super(number) {}
+			
 			
 			template <typename ArithmeticType, typename = typename std::enable_if<std::is_arithmetic<ArithmeticType>::value,bool>::type>
 			CONSTEXPR FloatingType operator=(const Number<ArithmeticType>& number) noexcept  {

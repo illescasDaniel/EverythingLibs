@@ -63,7 +63,18 @@ namespace evt {
 		public:
 			
 			CONSTEXPR Integer() noexcept  {}
-			CONSTEXPR Integer(IntegralType integer) noexcept: super(integer) {}
+			
+			template <typename Type, typename = typename std::enable_if<
+			std::is_integral<Type>::value ||
+			std::is_same<Type, __int128_t>::value ||
+			std::is_same<Type, __uint128_t>::value>::type>
+			CONSTEXPR Integer(Type integer): super(integer) { }
+			
+			template <typename Type, typename = typename std::enable_if<
+			std::is_integral<Type>::value ||
+			std::is_same<Type, __int128_t>::value ||
+			std::is_same<Type, __uint128_t>::value>::type>
+			CONSTEXPR Integer(const Number<Type>& number): super(number) {}
 			
 			CONSTEXPR bool isOdd() noexcept {
 				return (super::value() & 1) == 1;

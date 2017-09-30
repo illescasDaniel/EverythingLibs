@@ -116,7 +116,6 @@ namespace evt {
 		CONSTEXPR Optional& operator=(std::nullptr_t none) {
 			if (none == nullptr) {
 				freePointer();
-				std::cout << this->isNotNull() << std::endl;
 			}
 			return *this;
 		}
