@@ -58,29 +58,15 @@ namespace evt {
 		
 		ArithmeticType value_{};
 		
-		CONSTEXPR void throwOverflow() { throw std::overflow_error("value overflows when stored in this integer type"); }
+		CONSTEXPR void throwOverflow() const { throw std::overflow_error("value overflows when stored in this type"); }
 		
-		CONSTEXPR bool isIntegral() {
+		CONSTEXPR bool isIntegral() const {
 			return std::is_integral<ArithmeticType>();
-		}
-		
-		CONSTEXPR void checkIfPositiveOverflow() {
-			if (!this->isIntegral()) { return; }
-			if (this->value_ == std::numeric_limits<ArithmeticType>::max()) {
-				this->throwOverflow();
-			}
-		}
-		
-		CONSTEXPR void checkIfNegativeOverflow() {
-			if (!this->isIntegral()) { return; }
-			if (this->value_ == std::numeric_limits<ArithmeticType>::lowest()) {
-				this->throwOverflow();
-			}
 		}
 		
 		template <typename Type>
 		CONSTEXPR void assignNumberIfDoesNotOverflow(Type number) {
-			
+		
 			if (!this->isIntegral()) { value_ = static_cast<ArithmeticType>(number); return; }
 			
 			if ((std::numeric_limits<Type>::max() > std::numeric_limits<ArithmeticType>::max() && number > static_cast<Type>(std::numeric_limits<ArithmeticType>::max())) || (number < Type{} && std::is_unsigned<ArithmeticType>())){
@@ -123,21 +109,69 @@ namespace evt {
 		// Operators overloading
 
 		template <typename anyType>
-		CONSTEXPR ArithmeticType operator+=(const anyType& Var) { this->checkIfPositiveOverflow(); return (*this = *this + Var); }
+		CONSTEXPR ArithmeticType operator+=(const anyType& number) { return (*this = *this + number); }
 		
 		template <typename anyType>
-		CONSTEXPR ArithmeticType operator-=(const anyType& Var) { this->checkIfNegativeOverflow(); return (*this = *this - Var); }
+		CONSTEXPR ArithmeticType operator-=(const anyType& number) { return (*this = *this - number); }
 		
 		template <typename anyType>
-		CONSTEXPR ArithmeticType operator*=(const anyType& Var) { this->checkIfPositiveOverflow(); return (*this = *this * Var); }
+		CONSTEXPR ArithmeticType operator*=(const anyType& number) { return (*this = *this * number); }
 		
 		template <typename anyType>
-		CONSTEXPR ArithmeticType operator/=(const anyType& Var) { this->checkIfNegativeOverflow(); return (*this = *this / Var); }
-			
-		CONSTEXPR ArithmeticType operator++() { this->checkIfPositiveOverflow(); return (*this = *this + 1); }
-		CONSTEXPR ArithmeticType operator--() { this->checkIfPossitiveOverflow(); return (*this = *this - 1); }
-		CONSTEXPR ArithmeticType operator++(int) { this->checkIfPositiveOverflow(); return (this->operator++() - 1); }
-		CONSTEXPR ArithmeticType operator--(int) { this->checkIfPossitiveOverflow(); return (this->operator--() + 1); }
+		CONSTEXPR ArithmeticType operator/=(const anyType& number) { return (*this = *this / number); }
+	
+		template <typename anyType>
+		CONSTEXPR ArithmeticType operator/(const anyType& number) const {
+			this->checkOperatorDivide(number);
+			return (this->value_ / number);
+		}
+		
+		template <typename anyType>
+		CONSTEXPR ArithmeticType operator*(const anyType& number) const {
+			this->checkOperatorMultiplyOverflow(number);
+			return (this->value_ * number);
+		}
+		
+		template <typename anyType>
+		CONSTEXPR ArithmeticType operator-(const anyType& number) const {
+			this->checkOperatorSubstractOverflow(number);
+			return (this->value_ - number);
+		}
+		
+	    template <typename anyType>
+	    CONSTEXPR ArithmeticType operator+(const anyType& number) const {
+			this->checkOperatorAdd(number);
+			return (this->value_ + number);
+		}
+		
+		template <typename Type>
+		CONSTEXPR friend Number<ArithmeticType> operator+(Type number, const Number<ArithmeticType>& otherNumber) {
+			Number<ArithmeticType> newNumber(otherNumber); newNumber += number;
+			return newNumber;
+		}
+		
+		template <typename Type>
+		CONSTEXPR friend Number<ArithmeticType> operator-(Type number, const Number<ArithmeticType>& otherNumber) {
+			Number<ArithmeticType> newNumber(otherNumber); newNumber -= number;
+			return newNumber;
+		}
+		
+		template <typename Type>
+		CONSTEXPR friend Number<ArithmeticType> operator*(Type number, const Number<ArithmeticType>& otherNumber) {
+			Number<ArithmeticType> newNumber(otherNumber); newNumber *= number;
+			return newNumber;
+		}
+		
+		template <typename Type>
+		CONSTEXPR friend Number<ArithmeticType> operator/(Type number, const Number<ArithmeticType>& otherNumber) {
+			Number<ArithmeticType> newNumber(otherNumber); newNumber /= number;
+			return newNumber;
+		}
+		
+		CONSTEXPR ArithmeticType operator++() { return (*this = *this + 1); }
+		CONSTEXPR ArithmeticType operator--() { return (*this = *this - 1); }
+		CONSTEXPR ArithmeticType operator++(int) { return (this->operator++() - 1); }
+		CONSTEXPR ArithmeticType operator--(int) { return (this->operator--() + 1); }
 		
 		std::string toString() const {
 			return std::to_string(value_);
@@ -185,11 +219,102 @@ namespace evt {
 		CONSTEXPR ArithmeticType value() const noexcept {
 			return value_;
 		}
+	protected:
+		
+		template <typename anyType>
+		CONSTEXPR void checkOperatorSubstractOverflow(anyType number) const {
+			if (this->value_ == std::numeric_limits<ArithmeticType>::min() && number > 0) {
+				this->throwOverflow();
+			}
+			else {
+				ArithmeticType maximumValueCanSubstract = std::numeric_limits<ArithmeticType>::min() + this->absolute();
+				
+				if (std::numeric_limits<ArithmeticType>::min() < std::numeric_limits<anyType>::min() && static_cast<ArithmeticType>(number) > maximumValueCanSubstract) {
+					this->throwOverflow();
+				} else if (std::numeric_limits<anyType>::min() <= std::numeric_limits<ArithmeticType>::min() && number > static_cast<anyType>(maximumValueCanSubstract)) {
+					this->throwOverflow();
+				}
+			}
+		}
+		
+		template <typename anyType>
+		 void checkOperatorMultiplyOverflow(anyType number) const {
+			if ((std::is_unsigned<ArithmeticType>() && number < 0) || (number >= 1 && (this->value_ * number) < this->value_)) {
+				this->throwOverflow();
+			}
+		}
+		
+		template <typename anyType>
+		CONSTEXPR void checkOperatorDivide(anyType number) const {
+			if ((std::is_unsigned<ArithmeticType>() && number < 0) || (number < 1 && (this->value_ / number) < this->value_)) {
+				this->throwOverflow();
+			}
+		}
+		
+		template <typename anyType>
+		CONSTEXPR void checkOperatorAdd(anyType number) const {
+			if ((std::is_unsigned<ArithmeticType>() && number < 0) || (this->value_ == std::numeric_limits<ArithmeticType>::max() && number > 0)) {
+				this->throwOverflow();
+			}
+			else {
+				ArithmeticType maximumValueCanAdd = std::numeric_limits<ArithmeticType>::max() - this->absolute();
+				
+				if (std::numeric_limits<ArithmeticType>::max() > std::numeric_limits<anyType>::max() && static_cast<ArithmeticType>(number) > maximumValueCanAdd) {
+					this->throwOverflow();
+				} else if (std::numeric_limits<anyType>::max() >= std::numeric_limits<ArithmeticType>::max() && number > static_cast<anyType>(maximumValueCanAdd)) {
+					this->throwOverflow();
+				}
+			}
+		}
 	};
 	
-	template <typename Type>
+	template <typename Type, typename = typename std::enable_if<!std::is_same<Type,__int128_t>::value>::type>
 	std::ostream& operator<<(std::ostream& os, const Number<Type>& number) noexcept {
 		return os << number.value();
+	}
+		
+	std::ostream& operator<<(std::ostream& dest, const Number<__int128_t>& number) {
+		if (std::ostream::sentry(dest)) {
+			__uint128_t tmp = number.value() < 0 ? -number.value() : number.value();
+			char buffer[128];
+			char* d = std::end(buffer);
+			do {
+				d -= 1;
+				*d = "0123456789"[tmp % 10];
+				tmp /= 10;
+			} while (tmp != 0);
+			
+			if (number.as<__int128_t>() < 0) {
+				d -= 1;
+				*d = '-';
+			}
+			long len = std::end(buffer) - d;
+			if (dest.rdbuf()->sputn(d, len) != len) {
+				dest.setstate(std::ios_base::badbit);
+			}
+		}
+		
+		return dest;
+	}
+		
+	std::ostream& operator<<(std::ostream& dest, const Number<__uint128_t>& number) {
+		if (std::ostream::sentry(dest)) {
+			__uint128_t tmp = number.value();
+			char buffer[128];
+			char* d = std::end(buffer);
+			do {
+				d -= 1;
+				*d = "0123456789"[tmp % 10];
+				tmp /= 10;
+			} while (tmp != 0);
+			
+			long len = std::end(buffer) - d;
+			if (dest.rdbuf()->sputn(d, len) != len) {
+				dest.setstate(std::ios_base::badbit);
+			}
+		}
+		
+		return dest;
 	}
 }
 

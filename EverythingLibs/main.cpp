@@ -113,8 +113,8 @@ void testFunction(UInt8 number) {
 
 int main(int argc, char* argv[]) {
 	
-	// OVERFLOW exceptio :)
-	//testFunction(-1);
+	// OVERFLOW exception :)
+	testFunction(-1);
 	
 	print(Architecture::is64Bits);
 	
@@ -123,7 +123,7 @@ int main(int argc, char* argv[]) {
         print(Int128(Int128::max), Int64::max);
 	
 		Int128 test_t23 = 9876545678987654;
-		print(test_t23*100);
+		print(test_t23 * 100);
 		print(test_t23*1000);
 		print(test_t23*10000);
 		print(test_t23*10000000);
