@@ -107,7 +107,14 @@ public:
 	}
 };
 
+void testFunction(UInt8 number) {
+	print(number);
+}
+
 int main(int argc, char* argv[]) {
+	
+	// OVERFLOW exceptio :)
+	//testFunction(-1);
 	
 	print(Int128(Int128::max), Int64::max);
 	

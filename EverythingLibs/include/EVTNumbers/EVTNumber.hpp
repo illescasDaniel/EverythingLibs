@@ -58,28 +58,33 @@ namespace evt {
 		
 		ArithmeticType value_{};
 		
-		CONSTEXPR void checkIfOverflows() {
+		CONSTEXPR void throwOverflow() { throw std::overflow_error("value overflows when stored in this integer type"); }
+		
+		CONSTEXPR bool isIntegral() {
+			return std::is_integral<ArithmeticType>();
+		}
+		
+		CONSTEXPR void checkIfPositiveOverflow() {
+			if (!this->isIntegral()) { return; }
 			if (this->value_ == std::numeric_limits<ArithmeticType>::max()) {
-				Number::throwOverflow();
-			}
-		}
-		
-		CONSTEXPR void checkIfUnderflows() {
-			if (this->value_ == std::numeric_limits<ArithmeticType>::lowest()) {
-				Number::throwUnderFlow();
-			}
-		}
-		
-		template <typename Type, typename = typename std::enable_if<
-		std::is_arithmetic<Type>::value ||
-		std::is_same<Type, __int128_t>::value ||
-		std::is_same<Type, __uint128_t>::value>::type>
-		CONSTEXPR void assignNumberIfDoesntUnderOverflow(Type number) {
-			if (std::numeric_limits<Type>::max() > std::numeric_limits<ArithmeticType>::max() && number > static_cast<Type>(std::numeric_limits<ArithmeticType>::max())) {
 				this->throwOverflow();
 			}
-			else if (number < Type{} && std::is_unsigned<ArithmeticType>()) {
-				this->throwUnderFlow();
+		}
+		
+		CONSTEXPR void checkIfNegativeOverflow() {
+			if (!this->isIntegral()) { return; }
+			if (this->value_ == std::numeric_limits<ArithmeticType>::lowest()) {
+				this->throwOverflow();
+			}
+		}
+		
+		template <typename Type>
+		CONSTEXPR void assignNumberIfDoesNotOverflow(Type number) {
+			
+			if (!this->isIntegral()) { value_ = static_cast<ArithmeticType>(number); return; }
+			
+			if ((std::numeric_limits<Type>::max() > std::numeric_limits<ArithmeticType>::max() && number > static_cast<Type>(std::numeric_limits<ArithmeticType>::max())) || (number < Type{} && std::is_unsigned<ArithmeticType>())){
+				this->throwOverflow();
 			}
 			else {
 				value_ = static_cast<ArithmeticType>(number);
@@ -87,9 +92,6 @@ namespace evt {
 		}
 		
 	public:
-		
-		CONSTEXPR static void throwOverflow() { throw std::overflow_error("variable reached its maximum value and tried to increase it"); }
-		CONSTEXPR static void throwUnderFlow() { throw std::underflow_error("variable reached its minimum value and tried to decrease it"); }
 		
 		static CONSTEXPRVar ArithmeticType min = std::numeric_limits<ArithmeticType>::min();
 		static CONSTEXPRVar ArithmeticType max = std::numeric_limits<ArithmeticType>::max();
@@ -103,7 +105,7 @@ namespace evt {
 		std::is_same<Type, __int128_t>::value ||
 		std::is_same<Type, __uint128_t>::value>::type>
 		CONSTEXPR Number(Type number) {
-			this->assignNumberIfDoesntUnderOverflow(number);
+			this->assignNumberIfDoesNotOverflow(number);
 		}
 		
 		template <typename Type, typename = typename std::enable_if<
@@ -111,7 +113,7 @@ namespace evt {
 		std::is_same<Type, __int128_t>::value ||
 		std::is_same<Type, __uint128_t>::value>::type>
 		CONSTEXPR Number(const Number<Type>& number) {
-			this->assignNumberIfDoesntUnderOverflow(number.value());
+			this->assignNumberIfDoesNotOverflow(number);
 		}
 
 		CONSTEXPR operator ArithmeticType() const {
@@ -121,21 +123,21 @@ namespace evt {
 		// Operators overloading
 
 		template <typename anyType>
-		CONSTEXPR ArithmeticType operator+=(const anyType& Var) { this->checkIfOverflows(); return (*this = *this + Var); }
+		CONSTEXPR ArithmeticType operator+=(const anyType& Var) { this->checkIfPositiveOverflow(); return (*this = *this + Var); }
 		
 		template <typename anyType>
-		CONSTEXPR ArithmeticType operator-=(const anyType& Var) { this->checkIfUnderflows(); return (*this = *this - Var); }
+		CONSTEXPR ArithmeticType operator-=(const anyType& Var) { this->checkIfNegativeOverflow(); return (*this = *this - Var); }
 		
 		template <typename anyType>
-		CONSTEXPR ArithmeticType operator*=(const anyType& Var) { this->checkIfOverflows(); return (*this = *this * Var); }
+		CONSTEXPR ArithmeticType operator*=(const anyType& Var) { this->checkIfPositiveOverflow(); return (*this = *this * Var); }
 		
 		template <typename anyType>
-		CONSTEXPR ArithmeticType operator/=(const anyType& Var) { this->checkIfUnderflows(); return (*this = *this / Var); }
+		CONSTEXPR ArithmeticType operator/=(const anyType& Var) { this->checkIfNegativeOverflow(); return (*this = *this / Var); }
 			
-		CONSTEXPR ArithmeticType operator++() { this->checkIfOverflows(); return (*this = *this + 1); }
-		CONSTEXPR ArithmeticType operator--() { this->checkIfUnderflows(); return (*this = *this - 1); }
-		CONSTEXPR ArithmeticType operator++(int) { this->checkIfOverflows(); return (this->operator++() - 1); }
-		CONSTEXPR ArithmeticType operator--(int) { this->checkIfUnderflows(); return (this->operator--() + 1); }
+		CONSTEXPR ArithmeticType operator++() { this->checkIfPositiveOverflow(); return (*this = *this + 1); }
+		CONSTEXPR ArithmeticType operator--() { this->checkIfPossitiveOverflow(); return (*this = *this - 1); }
+		CONSTEXPR ArithmeticType operator++(int) { this->checkIfPositiveOverflow(); return (this->operator++() - 1); }
+		CONSTEXPR ArithmeticType operator--(int) { this->checkIfPossitiveOverflow(); return (this->operator--() + 1); }
 		
 		std::string toString() const {
 			return std::to_string(value_);
