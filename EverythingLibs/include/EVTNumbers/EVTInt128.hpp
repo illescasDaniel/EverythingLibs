@@ -99,6 +99,8 @@ namespace evt {
 			
 			template <typename Type>
 			CONSTEXPR Int128 operator/(Type otherNumber) const {
+				if (this->value() == 0 && otherNumber == 0) { return std::numeric_limits<__int128_t>::quiet_NaN(); }
+				if (otherNumber == 0) { return std::numeric_limits<__int128_t>::infinity(); }
 				this->checkOperatorSubstractOverflow(otherNumber);
 				return Int128(this->value() / otherNumber);
 			}
@@ -167,6 +169,8 @@ namespace evt {
 			
 			template <typename Type>
 			CONSTEXPR UInt128 operator/(Type otherNumber) const {
+				if (this->value() == 0 && otherNumber == 0) { return std::numeric_limits<__uint128_t>::quiet_NaN(); }
+				if (otherNumber == 0) { return std::numeric_limits<__uint128_t>::infinity(); }
 				this->checkOperatorSubstractOverflow(otherNumber);
 				return UInt128(this->value() / otherNumber);
 			}

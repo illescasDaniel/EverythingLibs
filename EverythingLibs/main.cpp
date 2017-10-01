@@ -113,8 +113,12 @@ void testFunction(UInt8 number) {
 
 int main(int argc, char* argv[]) {
 	
+	Int number(10);
+	number /= 0;
+	print(number);
+	
 	// OVERFLOW exception :)
-	testFunction(-1);
+	/*testFunction(-1);
 	
 	print(Architecture::is64Bits);
 	
@@ -509,7 +513,7 @@ int main(int argc, char* argv[]) {
 	
 	//int number2 = readLine<int>();
 	//print(number2);
-	
+	*/
 	/*
 	 int myAge = input<int>("Age?: ");
 	 print(myAge);

@@ -122,6 +122,10 @@ namespace evt {
 	
 		template <typename anyType>
 		CONSTEXPR ArithmeticType operator/(const anyType& number) const {
+			
+			if (this->value_ == 0 && number == 0) { return std::numeric_limits<ArithmeticType>::quiet_NaN(); }
+			if (number == 0) { return std::numeric_limits<ArithmeticType>::infinity(); }
+			
 			this->checkOperatorDivide(number);
 			return (this->value_ / number);
 		}
@@ -239,9 +243,15 @@ namespace evt {
 		
 		template <typename anyType>
 		 void checkOperatorMultiplyOverflow(anyType number) const {
-			if ((std::is_unsigned<ArithmeticType>() && number < 0) || (number >= 1 && (this->value_ * number) < this->value_)) {
+			 
+			 ArithmeticType maximumValueCanMultiply = std::numeric_limits<ArithmeticType>::max() / this->value_;
+			 
+			 if ((std::numeric_limits<anyType>::max() > std::numeric_limits<ArithmeticType>::max() && number > static_cast<anyType>(maximumValueCanMultiply)) || (std::numeric_limits<ArithmeticType>::max() > std::numeric_limits<anyType>::max() && static_cast<ArithmeticType>(number) > maximumValueCanMultiply)) {
 				this->throwOverflow();
-			}
+			 }
+			 else if ((std::is_unsigned<ArithmeticType>() && number < 0) || (number >= 1 && (this->value_ * number) < this->value_)) {
+				 this->throwOverflow();
+			 }
 		}
 		
 		template <typename anyType>
@@ -249,6 +259,7 @@ namespace evt {
 			if ((std::is_unsigned<ArithmeticType>() && number < 0) || (number < 1 && (this->value_ / number) < this->value_)) {
 				this->throwOverflow();
 			}
+			// No need to check divisions like: X / 0.001, with Float types it will return "inf" in overflows :D XD
 		}
 		
 		template <typename anyType>
