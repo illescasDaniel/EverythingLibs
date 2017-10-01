@@ -5,6 +5,10 @@
 
 A few libraries that will make the programmer's life easier 😉.
 
+**Note:** these libraries need more testing on multiple compilers, if you find any compilation error or problem please create a new issue [here](https://github.com/illescasDaniel/EverythingLibs/issues)
+
+**Note2:** these libraries are also made to be used with c++14 or above, so please compile it with `-std=c++14` or similar.
+
 Libraries:
 -----------
 
