@@ -107,15 +107,11 @@ public:
 	}
 };
 
-void testFunction(UInt8 number) {
-	print(number);
-}
-
 int main(int argc, char* argv[]) {
 	
-	Array<string> names { "daniel", "test", "lol" };
+	Array<string> names0_ { "daniel", "test", "lol" };
 	
-	print(names.joinToString(" - ", [](const string& element){
+	print(names0_.joinToString(" - ", [](const string& element){
 		return element;
 	}));
 	
@@ -124,20 +120,12 @@ int main(int argc, char* argv[]) {
 		return "Number: " + to_string(element);
 	}));
 	
-	print(names.map<string>([](const string& element){
+	print(names0_.map<string>([](const string& element){
 		return element + "TEST";
 	}));
-	print(names);
-	
-	Array<int> test(1,1);
-	
-	UInt128 number(10);
-	//number /= 0;
-	//print(number);
-	print(number % 6);
+	print(names0_);
 	
 	// OVERFLOW exception :)
-	/*testFunction(-1);
 	
 	print(Architecture::is64Bits);
 	
@@ -532,7 +520,7 @@ int main(int argc, char* argv[]) {
 	
 	//int number2 = readLine<int>();
 	//print(number2);
-	*/
+	
 	/*
 	 int myAge = input<int>("Age?: ");
 	 print(myAge);
@@ -559,5 +547,4 @@ int main(int argc, char* argv[]) {
 	//UInt value;
 	//print(value);
 	// [UNDERFLOW :D] value -= 2;
-
 }

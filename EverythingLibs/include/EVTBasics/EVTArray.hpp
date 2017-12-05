@@ -592,11 +592,11 @@ namespace evt {
 					
 					#else
 						if (typeid(value) == typeid(std::string)) {
-							return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
+							return ("\"" + evt::ArrayPrint::to_string(value) + "\"");
 						} else if (typeid(value) == typeid(char)) {
-							return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
+							return ("\'" + evt::ArrayPrint::to_string(value) + "\'");
 						}
-						return evt::internalArrayPrintEVT::to_string(value);
+						return evt::ArrayPrint::to_string(value);
 					
 					#endif
 				}();
