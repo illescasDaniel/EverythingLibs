@@ -119,6 +119,9 @@ namespace evt {
 		
 		template <typename anyType>
 		CONSTEXPR ArithmeticType operator/=(const anyType& number) { return (*this = *this / number); }
+		
+		template <typename anyType>
+		CONSTEXPR ArithmeticType operator%=(const anyType& number) const { return (*this = *this % number); }
 	
 		template <typename anyType>
 		CONSTEXPR ArithmeticType operator/(const anyType& number) const {
@@ -134,6 +137,11 @@ namespace evt {
 		CONSTEXPR ArithmeticType operator*(const anyType& number) const {
 			this->checkOperatorMultiplyOverflow(number);
 			return (this->value_ * number);
+		}
+		
+		template <typename anyType>
+		CONSTEXPR ArithmeticType operator%(const anyType& number) const {
+			return std::fmod(this->value_, number);
 		}
 		
 		template <typename anyType>

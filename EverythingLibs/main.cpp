@@ -113,9 +113,28 @@ void testFunction(UInt8 number) {
 
 int main(int argc, char* argv[]) {
 	
-	Int number(10);
-	number /= 0;
-	print(number);
+	Array<string> names { "daniel", "test", "lol" };
+	
+	print(names.joinToString(" - ", [](const string& element){
+		return element;
+	}));
+	
+	Array<size_t> numbers_1 {1,2,3,4};
+	print(numbers_1.joinToString(", ", [](const size_t& element) {
+		return "Number: " + to_string(element);
+	}));
+	
+	print(names.map<string>([](const string& element){
+		return element + "TEST";
+	}));
+	print(names);
+	
+	Array<int> test(1,1);
+	
+	UInt128 number(10);
+	//number /= 0;
+	//print(number);
+	print(number % 6);
 	
 	// OVERFLOW exception :)
 	/*testFunction(-1);

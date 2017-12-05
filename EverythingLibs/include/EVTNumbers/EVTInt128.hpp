@@ -104,11 +104,12 @@ namespace evt {
 				this->checkOperatorSubstractOverflow(otherNumber);
 				return Int128(this->value() / otherNumber);
 			}
+			
+			template <typename Type>
+			CONSTEXPR Int128 operator%(Type otherNumber) const {
+				return this->value() % otherNumber;
+			}
 		};
-		
-		#undef internalOperator
-		#undef externalOperator
-		#undef assignmentOperator
 		
 		class UInt128: public Integer<__uint128_t> {
 			
@@ -174,10 +175,12 @@ namespace evt {
 				this->checkOperatorSubstractOverflow(otherNumber);
 				return UInt128(this->value() / otherNumber);
 			}
+			
+			template <typename Type>
+			CONSTEXPR UInt128 operator%(Type otherNumber) const {
+				return this->value() % otherNumber;
+			}
 		};
-		
-		#undef internalOperator
-		#undef externalOperator
 	}
 }
 

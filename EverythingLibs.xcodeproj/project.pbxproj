@@ -39,6 +39,7 @@
 		655865921F152A7A002FC352 /* EVTAny.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTAny.hpp; sourceTree = "<group>"; };
 		655865961F1538FB002FC352 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		655865971F153912002FC352 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		65849A0E1FD6CDF8004128F0 /* EVTUnitTest.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTUnitTest.hpp; sourceTree = "<group>"; };
 		659725FA1F16446800B483E8 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		659725FB1F16446C00B483E8 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		65A82BA61F157D2B00F748F8 /* EverythingLibs.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = EverythingLibs.profdata; sourceTree = "<group>"; };
@@ -104,6 +105,7 @@
 				650674271F169FAA00EB800E /* EVTStringView.hpp */,
 				6507CBF41F1CD41200A4EE27 /* EVTLazyVar.hpp */,
 				65D3925A1F571EC400CB2E44 /* EVTRange.hpp */,
+				65849A0E1FD6CDF8004128F0 /* EVTUnitTest.hpp */,
 			);
 			path = EVTBasics;
 			sourceTree = "<group>";
@@ -189,7 +191,7 @@
 		65CDA9321F0FE2DA00D1C0C9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = "Daniel Illescas Romero";
 				TargetAttributes = {
 					65CDA9391F0FE2DA00D1C0C9 = {
@@ -262,6 +264,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -321,6 +325,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;

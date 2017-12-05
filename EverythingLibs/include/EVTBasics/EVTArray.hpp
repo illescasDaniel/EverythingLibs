@@ -43,7 +43,7 @@
 
 namespace evt {
 	
-	namespace internalArrayPrintEVT {
+	namespace ArrayPrint {
 		
 		// Extra functions for the "toString()" method
 		inline std::string to_string(const std::string& str) noexcept { return str; }
@@ -51,11 +51,9 @@ namespace evt {
 		
 		template <typename Arithmetic, typename = typename std::enable_if<std::is_arithmetic<Arithmetic>::value,bool>::type>
 		inline std::string to_string(const Arithmetic& arithmeticValue) {
-			
 			if (std::is_same<Arithmetic, bool>::value) {
 				return arithmeticValue ? "true" : "false";
 			}
-			
 			return std::to_string(arithmeticValue);
 		}
 		
@@ -242,7 +240,7 @@ namespace evt {
 			assignMemoryAndCapacityForSize(count);
 			this->count_ = count;
 			Type n {initialValue};
-			std::generate(this->begin(), this->end(), [&n]{ return n++; });
+			std::generate(this->begin(), this->end(), [&]{ return n++; });
 		}
 		
 		template <typename Container, typename = typename std::enable_if<
@@ -549,7 +547,7 @@ namespace evt {
 			return (std::find(&values[0], &values[count_], element) - &values[0]);
 		}
 		
-		CONSTEXPR SizeType findIf(const std::function<bool(const Type&)>& findFunction) const {
+		CONSTEXPR SizeType findIf(std::function<bool(const Type&)> findFunction) const {
 			return (std::find_if(&values[0], &values[count_], findFunction) - &values[0]);
 		}
 		
@@ -584,11 +582,11 @@ namespace evt {
 					#if (__cplusplus >= 201406L) && defined(__clang__)
 					
 						if constexpr (std::is_same<Type, std::string>::value) {
-							return ("\"" + evt::internalArrayPrintEVT::to_string(value) + "\"");
+							return ("\"" + evt::ArrayPrint::to_string(value) + "\"");
 						} else if constexpr (std::is_same<Type, char>::value) {
-							return ("\'" + evt::internalArrayPrintEVT::to_string(value) + "\'");
+							return ("\'" + evt::ArrayPrint::to_string(value) + "\'");
 						} else if constexpr (std::is_arithmetic<Type>::value || std::is_same<Type, protocols::CustomStringConvertible>::value || std::is_base_of<protocols::CustomStringConvertible, Type>::value) {
-							return evt::internalArrayPrintEVT::to_string(value);
+							return evt::ArrayPrint::to_string(value);
 						}
 						return std::string("Object");
 					
@@ -643,7 +641,7 @@ namespace evt {
 			return this->operator==(elements);
 		}
 		
-		CONSTEXPR Array filter(const std::function<bool(const Type&)>& filterFunction) const {
+		CONSTEXPR Array filter(std::function<bool(const Type&)> filterFunction) const {
 			Array filteredArray;
 			for (const auto& element: *this) {
 				if (filterFunction(element)) {
@@ -652,8 +650,77 @@ namespace evt {
 			}
 			return filteredArray;
 		}
-		 
-		CONSTEXPR Optional<Type> first(const std::function<bool(const Type&)>& filterFunction) const {
+			
+		template <typename MapType>
+		Array<MapType> map(std::function<MapType(const Type&)> mapFunctor) const {
+			Array<MapType> mappedArray(this->count());
+			for (const auto& element: *this) {
+				mappedArray.append(mapFunctor(element));
+			}
+			return mappedArray;
+		}
+			
+		Array map(std::function<Type(const Type&)> mapFunctor) const {
+			return this->map<Type>(mapFunctor);
+		}
+			
+		template <typename ReduceType>
+		ReduceType reduce(std::function<ReduceType(const ReduceType result, const Type&)> reduceFunctor, ReduceType initialValue = ReduceType()) const {
+			ReduceType reducedArrayValue{initialValue};
+			for (const auto& element: *this) {
+				reducedArrayValue = reduceFunctor(reducedArrayValue, element);
+			}
+			return reducedArrayValue;
+		}
+		
+		CONSTEXPR size_t sum() const {
+			return this->reduce<size_t>([](const size_t result, const Type& value){ return result + value; });
+		}
+		
+		CONSTEXPR double mean() const {
+			return double(this->sum()) / double(this->count());
+		}
+			
+		std::string joinToString(const std::string& separator = ", ",
+								 const std::string& prefix = "",
+								 const std::string& postfix = "",
+								 const size_t limit = -1,
+								 const std::string& truncated = "...",
+								 std::function<const std::string(const Type&)> transform = [](const Type& element) { return ArrayPrint::to_string(element); }) const {
+			
+			std::string output = "";
+			output += prefix;
+			
+			std::size_t index = 0;
+			for (const auto& element: (*this)) {
+				
+				if (index < limit || limit == 0) {
+					if (index+1 < this->count()) {
+						output += transform(element) + separator;
+					} else {
+						output += transform(element);
+					}
+				} else {
+					output += truncated;
+					output += postfix;
+					return output;
+				}
+				index += 1;
+			}
+			
+			output += postfix;
+			return output;
+		}
+		
+		std::string joinToString(std::function<const std::string(const Type&)> transform) const {
+			return this->joinToString(", ", "", "", -1, "...", transform);
+		}
+		
+		std::string joinToString(const std::string& separator, std::function<const std::string(const Type&)> transform) const {
+			return this->joinToString(separator, "", "", -1, "...", transform);
+		}
+			
+		CONSTEXPR Optional<Type> first(std::function<bool(const Type&)> filterFunction) const {
 			for (const auto& element: *this) {
 				if (filterFunction(element)) {
 					return element;
@@ -662,7 +729,7 @@ namespace evt {
 			return nullptr;
 		}
 		
-		Optional<Type> last(const std::function<bool(const Type&)>& filterFunction) const {
+		Optional<Type> last(std::function<bool(const Type&)> filterFunction) const {
 			
 			Optional<Type> optElement;
 			
@@ -675,7 +742,7 @@ namespace evt {
 			return optElement;
 		}
 		
-		CONSTEXPR SizeType countOf(const std::function<bool(const Type&)>& countOfFunction) const {
+		CONSTEXPR SizeType countOf(std::function<bool(const Type&)> countOfFunction) const {
 			return std::count_if(this->begin(), this->end(), countOfFunction);
 		}
 		
@@ -888,11 +955,11 @@ namespace evt {
 		 
 		// MARK: Sort
 		
-		CONSTEXPR void sort(const std::function<bool(Type&,Type&)>& compareFunction = std::less_equal<Type>()) {
+		CONSTEXPR void sort(std::function<bool(Type&,Type&)> compareFunction = std::less_equal<Type>()) {
 			std::sort(&values[0], &values[count_], compareFunction);
 		}
 		
-		CONSTEXPR Array sorted(const std::function<bool(Type&,Type&)>& compareFunction = std::less_equal<Type>()) const {
+		CONSTEXPR Array sorted(std::function<bool(Type&,Type&)> compareFunction = std::less_equal<Type>()) const {
 			
 			if (this->isEmpty()) {
 				return *this;
