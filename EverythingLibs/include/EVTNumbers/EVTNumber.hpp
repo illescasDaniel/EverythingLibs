@@ -69,7 +69,7 @@ namespace evt {
 		
 			if (!this->isIntegral()) { value_ = static_cast<ArithmeticType>(number); return; }
 			
-			if ((std::numeric_limits<Type>::max() > std::numeric_limits<ArithmeticType>::max() && number > static_cast<Type>(std::numeric_limits<ArithmeticType>::max())) || (number < Type{} && std::is_unsigned<ArithmeticType>())){
+			if ((std::numeric_limits<Type>::max() > std::numeric_limits<ArithmeticType>::max() && number > static_cast<Type>(std::numeric_limits<ArithmeticType>::max())) || (number < Type{} && std::is_unsigned<ArithmeticType>())) {
 				this->throwOverflow();
 			}
 			else {
