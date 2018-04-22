@@ -39,8 +39,8 @@ namespace evt {
 	
 	template <size_t lowerBound, size_t upperBound>
 	struct Range {
-		auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound-1, true); }
-		auto end() { return lowerBound < upperBound ? RangeIterator(upperBound) : RangeIterator(upperBound-1, true); }
+		auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound, true); }
+		auto end() { return lowerBound < upperBound ? RangeIterator(upperBound) : RangeIterator(upperBound, true); }
 	};
 	
 	template <size_t lowerBound, size_t upperBound>
