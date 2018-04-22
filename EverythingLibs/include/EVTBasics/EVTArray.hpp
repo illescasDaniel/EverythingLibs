@@ -33,6 +33,7 @@
 #include <functional>
 #include "EVTOptional.hpp"
 #include "EVTRawPointer.hpp"
+#include "EVTRange.hpp"
 #include "../EVTProtocols.hpp"
 
 #if (__cplusplus > 201103L)
@@ -241,6 +242,13 @@ namespace evt {
 			this->count_ = count;
 			Type n {initialValue};
 			std::generate(this->begin(), this->end(), [&]{ return n++; });
+		}
+		
+		CONSTEXPR Array(evt::ArithmeticRange<size_t> range) {
+			this->reserve(range.count());
+			for (const auto number: range) {
+				this->append(number);
+			}
 		}
 		
 		template <typename Container, typename = typename std::enable_if<

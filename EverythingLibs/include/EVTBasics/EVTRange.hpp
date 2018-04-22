@@ -45,33 +45,7 @@ namespace evt {
 		CONSTEXPR RangeIterator operator++() { return reversed_ ? RangeIterator(--value_) : RangeIterator(++value_); }
 	};
 	
-	template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
-	struct UncountableRange {
-	private:
-		const Type lowerBound_;
-		const Type upperBound_;
-	public:
-		
-		CONSTEXPR UncountableRange(const Type lowerBound, const Type upperBound): lowerBound_(lowerBound), upperBound_(upperBound) {}
-		CONSTEXPR bool contains(const float number) const {
-			return (lowerBound_ < upperBound_)
-			? (number >= lowerBound_ && number < upperBound_)
-			: (number > upperBound_ && number <= lowerBound_);
-		}
-		CONSTEXPR bool isEmpty() const { return lowerBound_ == upperBound_; }
-		
-		friend std::ostream& operator<<(std::ostream& os, const UncountableRange& number) noexcept {
-			return os << number.toString();
-		}
-		
-		std::string toString() const {
-			auto lowerToHigherRange = "(" + std::to_string(lowerBound_) + "..<" + std::to_string(upperBound_) + ")";
-			auto higherToLowerRange = "(" + std::to_string(upperBound_) + ">.." + std::to_string(lowerBound_) + ")";
-			return lowerBound_ < upperBound_ ? lowerToHigherRange : higherToLowerRange;
-		}
-	};
-	
-	template <CONSTEXPRvar size_t lowerBound, CONSTEXPRvar size_t upperBound>
+	template <const size_t lowerBound, const size_t upperBound>
 	struct Range {
 		CONSTEXPR bool contains(const size_t number) const {
 			return (lowerBound < upperBound)
@@ -98,7 +72,7 @@ namespace evt {
 		}
 	};
 	
-	template <CONSTEXPRvar size_t lowerBound, CONSTEXPRvar size_t upperBound>
+	template <const size_t lowerBound, const size_t upperBound>
 	struct ClosedRange {
 		CONSTEXPR bool contains(const size_t number) const {
 			return (lowerBound < upperBound)
@@ -112,7 +86,7 @@ namespace evt {
 		}
 		CONSTEXPR bool isEmpty() const { return false; }
 		CONSTEXPR auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound, true); }
-		CONSTEXPR auto end() { return lowerBound < upperBound ? RangeIterator(upperBound + 1) : RangeIterator(upperBound-1, true); }
+		CONSTEXPR auto end() { return lowerBound < upperBound ? RangeIterator(upperBound + 1) : RangeIterator(upperBound - 1, true); }
 		
 		friend std::ostream& operator<<(std::ostream& os, const ClosedRange& number) noexcept {
 			return os << number.toString();
@@ -123,5 +97,51 @@ namespace evt {
 			auto higherToLowerRange = "(" + std::to_string(upperBound) + "..." + std::to_string(lowerBound) + ")";
 			return lowerBound < upperBound ? lowerToHigherRange : higherToLowerRange;
 		}
+	};
+	
+	template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value>::type>
+	struct ArithmeticRange {
+	private:
+		const Type lowerBound_;
+		const Type upperBound_;
+	public:
+		
+		CONSTEXPR ArithmeticRange(const Type lowerBound, const Type upperBound): lowerBound_(lowerBound), upperBound_(upperBound) {}
+		CONSTEXPR bool contains(const float number) const {
+			return (lowerBound_ < upperBound_)
+			? (number >= lowerBound_ && number < upperBound_)
+			: (number > upperBound_ && number <= lowerBound_);
+		}
+		CONSTEXPR bool isEmpty() const { return lowerBound_ == upperBound_; }
+		
+		CONSTEXPR Type lowerBound() const {
+			return this->lowerBound_;
+		}
+		CONSTEXPR Type upperBound() const {
+			return this->upperBound_;
+		}
+		
+		template <typename = typename std::enable_if<std::is_unsigned<Type>::value>::type>
+		CONSTEXPR size_t count() const {
+			return (lowerBound_ < upperBound_)
+			? (upperBound_ - lowerBound_)
+			: (lowerBound_ - upperBound_);
+		}
+		
+		friend std::ostream& operator<<(std::ostream& os, const ArithmeticRange& number) noexcept {
+			return os << number.toString();
+		}
+		
+		std::string toString() const {
+			auto lowerToHigherRange = "(" + std::to_string(lowerBound_) + "..<" + std::to_string(upperBound_) + ")";
+			auto higherToLowerRange = "(" + std::to_string(upperBound_) + ">.." + std::to_string(lowerBound_) + ")";
+			return lowerBound_ < upperBound_ ? lowerToHigherRange : higherToLowerRange;
+		}
+		
+		template <typename = typename std::enable_if<std::is_unsigned<Type>::value>::type>
+		CONSTEXPR auto begin() { return lowerBound_ < upperBound_ ? RangeIterator(lowerBound_) : RangeIterator(lowerBound_, true); }
+		
+		template <typename = typename std::enable_if<std::is_unsigned<Type>::value>::type>
+		CONSTEXPR auto end() { return lowerBound_ < upperBound_ ? RangeIterator(upperBound_ + 1) : RangeIterator(upperBound_ - 1, true); }
 	};
 }
