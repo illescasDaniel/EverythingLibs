@@ -74,6 +74,7 @@ namespace evt {
 		#define constRef const auto&
 		#define var auto
 		#define constVar const auto
+        #define constexprVar constexpr auto
 		
 		// Useful functions
 		
