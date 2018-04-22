@@ -26,41 +26,26 @@
 
 namespace evt {
 	
-	struct Range {
-		size_t first_{};
-		size_t last_{};
-		Range(size_t first, size_t last): first_(first), last_(last) {}
-		Range(size_t last): first_(size_t{}), last_(last) {}
-	};
-	
-	struct RangeUntil {
-		size_t first_{};
-		size_t last_{};
-		RangeUntil(size_t first, size_t last): first_(first) {
-			if (last > 0) {
-				this->last_ = last - 1;
-			}
-		}
-		RangeUntil(size_t last): first_(size_t{}) {
-			if (last > 0) {
-				this->last_ = last - 1;
-			}
-		}
-	};
-	
 	struct RangeIterator {
 	private:
 		size_t value_{};
+		bool reversed_ = false;
 	public:
-		RangeIterator(size_t value): value_(value) {}
+		RangeIterator(size_t value, bool reversed = false): value_(value), reversed_(reversed) {}
 		size_t operator*() const { return value_; }
 		bool operator!=(const RangeIterator& range) const { return value_ != range.value_; }
-		RangeIterator operator++() { return {++value_}; }
+		RangeIterator operator++() { return reversed_ ? RangeIterator(--value_) : RangeIterator(++value_); }
 	};
 	
-	RangeIterator begin(const Range& range) { return { range.first_ }; }
-	RangeIterator end(const Range& range) { return { range.last_ + 1 }; }
+	template <size_t lowerBound, size_t upperBound>
+	struct Range {
+		auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound-1, true); }
+		auto end() { return lowerBound < upperBound ? RangeIterator(upperBound) : RangeIterator(upperBound-1, true); }
+	};
 	
-	RangeIterator begin(const RangeUntil& range) { return { range.first_ }; }
-	RangeIterator end(const RangeUntil& range) { return { range.last_ + 1 }; }
+	template <size_t lowerBound, size_t upperBound>
+	struct ClosedRange {
+		auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound, true); }
+		auto end() { return lowerBound < upperBound ? RangeIterator(upperBound + 1) : RangeIterator(upperBound-1, true); }
+	};
 }

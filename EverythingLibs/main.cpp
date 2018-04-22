@@ -180,7 +180,7 @@ int main(int argc, char* argv[]) {
 	
 	print(sizeof(Array<int>));
 	
-	for (constVar i: RangeUntil(10)) {
+	for (constVar i: ClosedRange<0,10>()) {
 		print("Hi!", i);
 	}
 	
@@ -300,8 +300,8 @@ int main(int argc, char* argv[]) {
 	
 	name3.trim(StringView::TrimMode::trimStart);
 	cout << name3 << endl;
-	cout << name3.trimmed() << endl;
-	cout << name3.trimmed() << endl;
+	/*cout << name3.trimmed() << endl;
+	cout << name3.trimmed() << endl;*/
 	
 	cout << name3.contains("ani") << endl;
 	
@@ -367,7 +367,7 @@ int main(int argc, char* argv[]) {
 	int numbers[3] {1,2,8};
 	cout << arrayLengthOf(numbers) << endl;
 	
-	cout << trimmed(" hi ") << endl;
+	//cout << trimmed(" hi ") << endl;
 	
 #if (cplusplusVersion >= cplusplus1z) && defined(__clang__)
 	print("My name is", evt::toString(numbers));
