@@ -114,6 +114,21 @@ namespace evt {
 			
 			return true;
 		}
+		
+		template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
+		CONSTEXPR Type absolute(const Type& other) {
+			return other < 0 ? -other : other;
+		}
+		
+		template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
+		CONSTEXPR Type minimum(const Type& lhs, const Type& rhs) {
+			return lhs <= rhs ? lhs : rhs;
+		}
+		
+		template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
+		CONSTEXPR Type maximum(const Type& lhs, const Type& rhs) {
+			return lhs >= rhs ? lhs : rhs;
+		}
 			
 		template <typename IntegralType = uint64_t, typename = typename std::enable_if<std::is_integral<IntegralType>::value,bool>::type>
 		IntegralType randomIntegralNumber(IntegralType lowerBound = std::numeric_limits<IntegralType>::denorm_min(),

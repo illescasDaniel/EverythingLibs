@@ -24,6 +24,14 @@
 
 #pragma once
 
+#if (__cplusplus > 201103L)
+#define CONSTEXPR constexpr
+#define CONSTEXPRvar constexpr
+#else
+#define CONSTEXPR inline
+#define CONSTEXPRvar const
+#endif
+
 namespace evt {
 	
 	struct RangeIterator {
@@ -31,21 +39,58 @@ namespace evt {
 		size_t value_{};
 		bool reversed_ = false;
 	public:
-		RangeIterator(size_t value, bool reversed = false): value_(value), reversed_(reversed) {}
-		size_t operator*() const { return value_; }
-		bool operator!=(const RangeIterator& range) const { return value_ != range.value_; }
-		RangeIterator operator++() { return reversed_ ? RangeIterator(--value_) : RangeIterator(++value_); }
+		CONSTEXPR RangeIterator(size_t value, bool reversed = false): value_(value), reversed_(reversed) {}
+		CONSTEXPR size_t operator*() const { return value_; }
+		CONSTEXPR bool operator!=(const RangeIterator& range) const { return value_ != range.value_; }
+		CONSTEXPR RangeIterator operator++() { return reversed_ ? RangeIterator(--value_) : RangeIterator(++value_); }
 	};
 	
-	template <size_t lowerBound, size_t upperBound>
+	template <typename Type, typename = typename std::enable_if<std::is_arithmetic<Type>::value,bool>::type>
+	struct UncountableRange {
+	private:
+		const Type lowerBound_;
+		const Type upperBound_;
+	public:
+		CONSTEXPR UncountableRange(const Type lowerBound, const Type upperBound): lowerBound_(lowerBound), upperBound_(upperBound) {}
+		CONSTEXPR bool contains(const float number) const {
+			return (lowerBound_ < upperBound_)
+			? (number >= lowerBound_ && number < upperBound_)
+			: (number > upperBound_ && number <= lowerBound_);
+		}
+		CONSTEXPR bool isEmpty() const { return lowerBound_ == upperBound_; }
+	};
+	
+	template <CONSTEXPRvar size_t lowerBound, CONSTEXPRvar size_t upperBound>
 	struct Range {
-		auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound, true); }
-		auto end() { return lowerBound < upperBound ? RangeIterator(upperBound) : RangeIterator(upperBound, true); }
+		CONSTEXPR bool contains(const size_t number) const {
+			return (lowerBound < upperBound)
+			? (number >= lowerBound && number < upperBound)
+			: (number > upperBound && number <= lowerBound);
+		}
+		CONSTEXPR bool isEmpty() const { return lowerBound == upperBound; }
+		CONSTEXPR size_t count() const {
+			return (lowerBound < upperBound)
+			? (upperBound - lowerBound)
+			: (lowerBound - upperBound);
+		}
+		CONSTEXPR auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound, true); }
+		CONSTEXPR auto end() { return lowerBound < upperBound ? RangeIterator(upperBound) : RangeIterator(upperBound, true); }
 	};
 	
-	template <size_t lowerBound, size_t upperBound>
+	template <CONSTEXPRvar size_t lowerBound, CONSTEXPRvar size_t upperBound>
 	struct ClosedRange {
-		auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound, true); }
-		auto end() { return lowerBound < upperBound ? RangeIterator(upperBound + 1) : RangeIterator(upperBound-1, true); }
+		CONSTEXPR bool contains(const size_t number) const {
+			return (lowerBound < upperBound)
+			? (number >= lowerBound && number <= upperBound)
+			: (number >= upperBound && number <= lowerBound);
+		}
+		CONSTEXPR size_t count() const {
+			return (lowerBound < upperBound)
+			? (upperBound - lowerBound)+1
+			: (lowerBound - upperBound)+1;
+		}
+		CONSTEXPR bool isEmpty() const { return false; }
+		CONSTEXPR auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound, true); }
+		CONSTEXPR auto end() { return lowerBound < upperBound ? RangeIterator(upperBound + 1) : RangeIterator(upperBound-1, true); }
 	};
 }
