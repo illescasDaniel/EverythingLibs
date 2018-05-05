@@ -38,14 +38,26 @@ namespace evt {
 	private:
 		size_t value_{};
 		bool reversed_ = false;
+		size_t stride_ = 1;
 	public:
-		CONSTEXPR RangeIterator(const size_t value, const bool reversed = false): value_(value), reversed_(reversed) {}
+		CONSTEXPR RangeIterator(const size_t value, const size_t stride = 1, const bool reversed = false) {
+			this->value_ = value;
+			this->reversed_ = reversed;
+			this->stride_ = stride;
+		}
 		CONSTEXPR size_t operator*() const { return value_; }
-		CONSTEXPR bool operator!=(const RangeIterator& range) const { return value_ != range.value_; }
-		CONSTEXPR RangeIterator operator++() { return reversed_ ? RangeIterator(--value_) : RangeIterator(++value_); }
+		CONSTEXPR bool operator!=(const RangeIterator& range) const { return reversed_ ? value_ >= range.value_ : value_ <= range.value_; }
+		CONSTEXPR RangeIterator operator++() {
+			if (reversed_) {
+				value_ -= stride_;
+			} else {
+				value_ += stride_;
+			}
+			return value_;
+		}
 	};
 	
-	template <const size_t lowerBound, const size_t upperBound>
+	template <const size_t lowerBound, const size_t upperBound, const size_t stride = 1>
 	struct Range {
 		CONSTEXPR bool contains(const size_t number) const {
 			return (lowerBound < upperBound)
@@ -58,8 +70,8 @@ namespace evt {
 			? (upperBound - lowerBound)
 			: (lowerBound - upperBound);
 		}
-		CONSTEXPR auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound, true); }
-		CONSTEXPR auto end() { return lowerBound < upperBound ? RangeIterator(upperBound) : RangeIterator(upperBound, true); }
+		CONSTEXPR auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound, stride, false) : RangeIterator(lowerBound, stride, true); }
+		CONSTEXPR auto end() { return lowerBound < upperBound ? RangeIterator(upperBound, stride, false) : RangeIterator(upperBound, stride, true); }
 		
 		friend std::ostream& operator<<(std::ostream& os, const Range& number) noexcept {
 			return os << number.toString();
@@ -107,6 +119,9 @@ namespace evt {
 	public:
 		
 		CONSTEXPR ArithmeticRange(const Type lowerBound, const Type upperBound): lowerBound_(lowerBound), upperBound_(upperBound) {}
+		
+		CONSTEXPR ArithmeticRange(const Type upperBound): lowerBound_(0), upperBound_(upperBound) {}
+		
 		CONSTEXPR bool contains(const float number) const {
 			return (lowerBound_ < upperBound_)
 			? (number >= lowerBound_ && number < upperBound_)

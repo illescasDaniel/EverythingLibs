@@ -549,6 +549,13 @@ namespace evt {
 			}
 			return false;
 		}
+		
+		CONSTEXPR bool contains(std::function<bool(const Type&)> condition) const {
+			for (const Type& elm: (*this)) {
+				if (condition(elm)) { return true; }
+			}
+			return false;
+		}
 		 
 		/// Returns the index of the first ocurrence of the element. Last position if the element isn't found
 		CONSTEXPR SizeType find(const Type& element) const {
