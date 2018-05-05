@@ -27,6 +27,7 @@
 
 // namespace: evt::numbers
 
+#include "EVTNumbers/EVTSafeNumber.hpp"
 #include "EVTNumbers/EVTNumber.hpp"
 #include "EVTNumbers/EVTInteger.hpp"
 #include "EVTNumbers/EVTFloatingPoint.hpp"

@@ -40,6 +40,7 @@
 		655865961F1538FB002FC352 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		655865971F153912002FC352 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		65849A0E1FD6CDF8004128F0 /* EVTUnitTest.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTUnitTest.hpp; sourceTree = "<group>"; };
+		658C2F31209E65A00065BBE8 /* EVTSafeNumber.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTSafeNumber.hpp; sourceTree = "<group>"; };
 		659725FA1F16446800B483E8 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		659725FB1F16446C00B483E8 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		65A82BA61F157D2B00F748F8 /* EverythingLibs.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = EverythingLibs.profdata; sourceTree = "<group>"; };
@@ -80,6 +81,7 @@
 		6558658D1F1523A7002FC352 /* EVTNumbers */ = {
 			isa = PBXGroup;
 			children = (
+				658C2F31209E65A00065BBE8 /* EVTSafeNumber.hpp */,
 				651EDB3E1F3E5C1800E340C7 /* EVTNumber.hpp */,
 				651EDB3C1F3E5C1800E340C7 /* EVTInteger.hpp */,
 				6558658C1F151859002FC352 /* EVTInt128.hpp */,
