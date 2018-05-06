@@ -122,7 +122,7 @@ namespace evt {
 		
 		CONSTEXPR ArithmeticRange(const Type upperBound): lowerBound_(0), upperBound_(upperBound) {}
 		
-		CONSTEXPR bool contains(const float number) const {
+		CONSTEXPR bool contains(const Type number) const {
 			return (lowerBound_ < upperBound_)
 			? (number >= lowerBound_ && number < upperBound_)
 			: (number > upperBound_ && number <= lowerBound_);

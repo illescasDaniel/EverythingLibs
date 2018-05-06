@@ -25,6 +25,7 @@
 #endif
 
 namespace evt {
+	
 	namespace numbers {
 		namespace safe {
 			
@@ -52,7 +53,7 @@ namespace evt {
 				CONSTEXPR explicit SafeNumber(const ArithmeticType value): value_(value) { }
 				CONSTEXPR explicit SafeNumber(ArithmeticType&& value): value_(value) { }
 				
-				CONSTEXPR explicit SafeNumber(std::initializer_list<ArithmeticType> value) {
+				CONSTEXPR SafeNumber(std::initializer_list<ArithmeticType> value) {
 					const auto listValue = value.begin();
 					if (listValue != nullptr) {
 						this->value_ = static_cast<ArithmeticType>(*listValue);
@@ -61,6 +62,22 @@ namespace evt {
 				
 				template <typename OtherType>
 				CONSTEXPR explicit SafeNumber(const OtherType value) = delete;
+				
+				// Relational operators
+				
+				friend inline bool operator<(const SafeNumber& lhs, const SafeNumber& rhs){ return lhs.value_ < rhs.value_; }
+				friend inline bool operator> (const SafeNumber& lhs, const SafeNumber& rhs){ return rhs < lhs; }
+				friend inline bool operator<=(const SafeNumber& lhs, const SafeNumber& rhs){ return !(lhs > rhs); }
+				friend inline bool operator>=(const SafeNumber& lhs, const SafeNumber& rhs){ return !(lhs < rhs); }
+				friend inline bool operator==(const SafeNumber& lhs, const SafeNumber& rhs){ return lhs.value_ == rhs.value_; }
+				friend inline bool operator!=(const SafeNumber& lhs, const SafeNumber& rhs){ return !(lhs == rhs); }
+				
+				friend inline bool operator<(const SafeNumber& lhs, const ArithmeticType rhs){ return lhs.value_ < rhs; }
+				friend inline bool operator> (const SafeNumber& lhs, const ArithmeticType rhs){ return rhs < lhs; }
+				friend inline bool operator<=(const SafeNumber& lhs, const ArithmeticType rhs){ return !(lhs > rhs); }
+				friend inline bool operator>=(const SafeNumber& lhs, const ArithmeticType rhs){ return !(lhs < rhs); }
+				friend inline bool operator==(const SafeNumber& lhs, const ArithmeticType rhs){ return lhs.value_ == rhs; }
+				friend inline bool operator!=(const SafeNumber& lhs, const ArithmeticType rhs){ return !(lhs == rhs); }
 				
 				// Operator=
 				
@@ -79,6 +96,32 @@ namespace evt {
 				
 				template <typename OtherType>
 				SafeNumber& operator=(const OtherType value) = delete;
+				
+				// Operator++, --
+				
+				/// This operator doesn't check overflow
+				inline SafeNumber operator++() noexcept {
+					return { ++this->value_ };
+				}
+				
+				inline SafeNumber operator++(int) {
+					if (this->value_ == this->max) {
+						throw std::overflow_error("value overflows when stored in this type");
+					}
+					return { this->value_++ };
+				}
+				
+				/// This operator doesn't check underflow
+				inline SafeNumber operator--() noexcept {
+					return { --this->value_ };
+				}
+				
+				inline SafeNumber operator--(int) {
+					if (this->value_ == this->lowest) {
+						throw std::underflow_error("value underflows when stored in this type");
+					}
+					return { this->value_-- };
+				}
 				
 				// Operator +
 				
@@ -277,13 +320,7 @@ namespace evt {
 				// Ostream operator
 				
 				friend std::ostream& operator<<(std::ostream& os, const SafeNumber<ArithmeticType> safeNumber) noexcept {
-					if (typeid(safeNumber.value_) == typeid(uint8_t)) {
-						return os << static_cast<uint16_t>(safeNumber.value_);
-					}
-					else if (typeid(safeNumber.value_) == typeid(int8_t)) {
-						return os << static_cast<int16_t>(safeNumber.value_);
-					}
-					return os << static_cast<ArithmeticType>(safeNumber.value_);
+					return os << +safeNumber.value_;
 				}
 			};
 			
@@ -310,3 +347,27 @@ namespace evt {
 		}
 	}
 }
+		
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<float>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<double>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<long double>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<uint8_t>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<uint16_t>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<uint32_t>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<uint64_t>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<size_t>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<int8_t>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<int16_t>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<int32_t>> { constexpr static bool value = true; };
+template <> struct std::is_arithmetic<evt::numbers::safe::SafeNumber<int64_t>> { constexpr static bool value = true; };
+					
+template <> struct std::is_unsigned<evt::numbers::safe::SafeNumber<uint8_t>> { constexpr static bool value = true; };
+template <> struct std::is_unsigned<evt::numbers::safe::SafeNumber<uint16_t>> { constexpr static bool value = true; };
+template <> struct std::is_unsigned<evt::numbers::safe::SafeNumber<uint32_t>> { constexpr static bool value = true; };
+template <> struct std::is_unsigned<evt::numbers::safe::SafeNumber<uint64_t>> { constexpr static bool value = true; };
+template <> struct std::is_unsigned<evt::numbers::safe::SafeNumber<size_t>> { constexpr static bool value = true; };
+					
+template <> struct std::is_unsigned<evt::numbers::safe::SafeNumber<int8_t>> { constexpr static bool value = true; };
+template <> struct std::is_unsigned<evt::numbers::safe::SafeNumber<int16_t>> { constexpr static bool value = true; };
+template <> struct std::is_unsigned<evt::numbers::safe::SafeNumber<int32_t>> { constexpr static bool value = true; };
+template <> struct std::is_unsigned<evt::numbers::safe::SafeNumber<int64_t>> { constexpr static bool value = true; };
