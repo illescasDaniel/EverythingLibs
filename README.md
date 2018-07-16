@@ -34,6 +34,7 @@ Libraries:
 	- [Int128](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTInt128.hpp) `// Easier way to use __int128_t (integer of 128bits)`
 	- [Number](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTNumber.hpp) `// Base class for number types (like Int, Float, Int128...)`
 	- [Any Number](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTAnyNumber.hpp) `// You can assign any arithmetical type to an object of "Number"`
+	- [SafeNumber](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTSafeNumber.hpp) `// Manage primitive types in a more safe way. It also throws overflows exceptions.`
 	
 - **[EVTObject](https://github.com/illescasDaniel/EverythingLibs/blob/master/EverythingLibs/include/EVTNumbers/EVTObject.hpp)**: basic object that can be represented with a string, it (currently) has 1 virtual method: toString()
 

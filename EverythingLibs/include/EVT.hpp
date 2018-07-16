@@ -44,6 +44,7 @@
 #include "EVTNumbers.hpp"
 #include "EVTProtocols.hpp"
 #include "EVTObject.hpp"
+#include "EVTReflection.hpp"
 
 namespace EVT {
 	using namespace evt;

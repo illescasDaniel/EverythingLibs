@@ -56,6 +56,7 @@
 		65CDA94D1F10195B00D1C0C9 /* EVTUtils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTUtils.hpp; sourceTree = "<group>"; };
 		65D3925A1F571EC400CB2E44 /* EVTRange.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTRange.hpp; sourceTree = "<group>"; };
 		65D3925B1F572B5C00CB2E44 /* EVTProtocols.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTProtocols.hpp; sourceTree = "<group>"; };
+		65D45C3F209F388F0003DA37 /* EVTReflection.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTReflection.hpp; sourceTree = "<group>"; };
 		65E267A01F1D122700CEDC3A /* EVTRawPointer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EVTRawPointer.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -161,6 +162,7 @@
 				655865911F152617002FC352 /* EVTNumbers.hpp */,
 				65D3925B1F572B5C00CB2E44 /* EVTProtocols.hpp */,
 				651176EA1F1599E900AE43E6 /* EVTObject.hpp */,
+				65D45C3F209F388F0003DA37 /* EVTReflection.hpp */,
 				65CDA9441F0FE32400D1C0C9 /* EVT.hpp */,
 			);
 			path = include;

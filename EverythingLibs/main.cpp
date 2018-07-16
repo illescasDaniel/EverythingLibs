@@ -109,6 +109,8 @@ public:
 
 int main(int argc, char* argv[]) {
 	
+	print(typeOf(10));
+	
 	Array<string> names0_ { "daniel", "test", "lol" };
 	
 	print(names0_.joinToString(" - ", [](const string& element){

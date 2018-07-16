@@ -46,7 +46,9 @@ namespace evt {
 			this->stride_ = stride;
 		}
 		CONSTEXPR size_t operator*() const { return value_; }
-		CONSTEXPR bool operator!=(const RangeIterator& range) const { return reversed_ ? value_ >= range.value_ : value_ <= range.value_; }
+		CONSTEXPR bool operator!=(const RangeIterator& range) const {
+			return reversed_ ? value_ >= range.value_ : value_ <= range.value_;
+		}
 		CONSTEXPR RangeIterator operator++() {
 			if (reversed_) {
 				value_ -= stride_;
@@ -71,20 +73,37 @@ namespace evt {
 			: (lowerBound - upperBound);
 		}
 		CONSTEXPR auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound, stride, false) : RangeIterator(lowerBound, stride, true); }
-		CONSTEXPR auto end() { return lowerBound < upperBound ? RangeIterator(upperBound, stride, false) : RangeIterator(upperBound, stride, true); }
+		CONSTEXPR auto end() {
+			
+			size_t nonReversedValue = 0;
+			if constexpr (upperBound % stride == 0) {
+				nonReversedValue = upperBound;
+			} else {
+				nonReversedValue = upperBound-stride;
+				for (size_t i = nonReversedValue; i < upperBound; i++) {
+					if (i % stride == 0) {
+						nonReversedValue = i;
+						break;
+					}
+				}
+			}
+
+			return lowerBound < upperBound ? RangeIterator(nonReversedValue, stride, false) : RangeIterator(upperBound, stride, true); // can overflow, have to fix it
+		}
 		
 		friend std::ostream& operator<<(std::ostream& os, const Range& number) noexcept {
 			return os << number.toString();
 		}
 		
 		std::string toString() const {
-			auto lowerToHigherRange = "(" + std::to_string(lowerBound) + "..<" + std::to_string(upperBound) + ")";
-			auto higherToLowerRange = "(" + std::to_string(upperBound) + ">.." + std::to_string(lowerBound) + ")";
+			std::string strideText = (stride > 1) ? (", stride: " + std::to_string(stride)) : "";
+			auto lowerToHigherRange = "(" + std::to_string(lowerBound) + "..<" + std::to_string(upperBound) + strideText + ")";
+			auto higherToLowerRange = "(" + std::to_string(upperBound) + ">.." + std::to_string(lowerBound) + strideText + ")";
 			return lowerBound < upperBound ? lowerToHigherRange : higherToLowerRange;
 		}
 	};
 	
-	template <const size_t lowerBound, const size_t upperBound>
+	template <const size_t lowerBound, const size_t upperBound, const size_t stride = 1>
 	struct ClosedRange {
 		CONSTEXPR bool contains(const size_t number) const {
 			return (lowerBound < upperBound)
@@ -97,16 +116,19 @@ namespace evt {
 			: (lowerBound - upperBound)+1;
 		}
 		CONSTEXPR bool isEmpty() const { return false; }
-		CONSTEXPR auto begin() { return lowerBound < upperBound ? RangeIterator(lowerBound) : RangeIterator(lowerBound, true); }
-		CONSTEXPR auto end() { return lowerBound < upperBound ? RangeIterator(upperBound + 1) : RangeIterator(upperBound - 1, true); }
+		CONSTEXPR auto begin() {
+			return lowerBound < upperBound ? RangeIterator(lowerBound, stride) : RangeIterator(lowerBound, stride, true);
+		}
+		CONSTEXPR auto end() { return lowerBound < upperBound ? RangeIterator(upperBound + 1, stride) : RangeIterator(upperBound - 1, stride, true); }
 		
 		friend std::ostream& operator<<(std::ostream& os, const ClosedRange& number) noexcept {
 			return os << number.toString();
 		}
 		
 		std::string toString() const {
-			auto lowerToHigherRange = "(" + std::to_string(lowerBound) + "..." + std::to_string(upperBound) + ")";
-			auto higherToLowerRange = "(" + std::to_string(upperBound) + "..." + std::to_string(lowerBound) + ")";
+			std::string strideText = (stride > 1) ? (", stride: " + std::to_string(stride)) : "";
+			auto lowerToHigherRange = "(" + std::to_string(lowerBound) + "..." + std::to_string(upperBound) + strideText + ")";
+			auto higherToLowerRange = "(" + std::to_string(upperBound) + "..." + std::to_string(lowerBound) + strideText + ")";
 			return lowerBound < upperBound ? lowerToHigherRange : higherToLowerRange;
 		}
 	};
